@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Tag, GitBranch, Globe, AlertCircle } from "lucide-react";
 import { getChangelog } from "@/lib/changelog";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Changelog",
   description: "Release history for the CortexPrism project, pulled live from GitHub",
