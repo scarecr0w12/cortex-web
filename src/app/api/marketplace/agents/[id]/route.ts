@@ -25,7 +25,7 @@ const AgentUpdateSchema = z.object({
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const agent = await prisma.agentConfig.findFirst({
     where: { OR: [{ id: params.id }, { slug: params.id }] },
-    include: { category: true },
+    include: { category: true, user: { select: { username: true } } },
   });
 
   if (!agent) {

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, ChevronDown, LogIn, LayoutDashboard } from "lucide-react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -27,6 +27,15 @@ export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [user, setUser] = useState<{ username: string; role: string } | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetch("/api/auth/me", { headers: { authorization: `Bearer ${token}` } })
+        .then(r => r.json()).then(d => { if (!d.error) setUser(d.user); }).catch(() => {});
+    }
+  }, []);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[rgba(255,255,255,0.07)] bg-[#0a0a0f]/80 backdrop-blur-xl">
@@ -86,11 +95,28 @@ export function Navbar() {
                 </Link>
               )
             )}
+            {user ? (
+              <Link
+                href="/dashboard"
+                className="ml-3 flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-[#111118] text-[#e2e2ea] border border-[rgba(255,255,255,0.07)] hover:bg-[#18181f] transition-colors"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                {user.username}
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="ml-3 flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-[#111118] text-[#e2e2ea] border border-[rgba(255,255,255,0.07)] hover:bg-[#18181f] transition-colors"
+              >
+                <LogIn className="w-4 h-4" />
+                Sign In
+              </Link>
+            )}
             <a
               href="https://github.com/scarecr0w12/cortex"
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-3 px-4 py-2 text-sm font-medium rounded-lg accent-gradient text-white hover:opacity-90 transition-opacity"
+              className="ml-2 px-4 py-2 text-sm font-medium rounded-lg accent-gradient text-white hover:opacity-90 transition-opacity"
             >
               GitHub
             </a>
@@ -143,6 +169,15 @@ export function Navbar() {
                   {link.label}
                 </Link>
               )
+            )}
+            {user ? (
+              <Link href="/dashboard" className="block px-3 py-2 text-sm text-[#e2e2ea]" onClick={() => setMobileOpen(false)}>
+                Dashboard
+              </Link>
+            ) : (
+              <Link href="/login" className="block px-3 py-2 text-sm text-[#e2e2ea]" onClick={() => setMobileOpen(false)}>
+                Sign In
+              </Link>
             )}
             <a
               href="https://github.com/scarecr0w12/cortex"

@@ -2,8 +2,8 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const [pluginCount, agentCount, totalDownloads] = await Promise.all([
-    prisma.plugin.count({ where: { published: true } }),
-    prisma.agentConfig.count({ where: { published: true } }),
+    prisma.plugin.count({ where: { status: "approved" } }),
+    prisma.agentConfig.count({ where: { status: "approved" } }),
     prisma.plugin.aggregate({ _sum: { downloads: true } }),
   ]);
 

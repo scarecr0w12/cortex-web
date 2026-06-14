@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const agent = await prisma.agentConfig.findFirst({
-    where: { OR: [{ id: params.id }, { slug: params.id }] },
+    where: { OR: [{ id: params.id }, { slug: params.id }], status: "approved" },
   });
 
   if (!agent) {

@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { GitBranch, GitCommit, ExternalLink, FileText } from "lucide-react";
 import { MdxContent } from "@/components/docs/MdxContent";
-import fs from "fs";
-import path from "path";
 
 export const dynamic = "force-dynamic";
 
@@ -57,17 +55,12 @@ async function getChangelogMD(repo: string): Promise<string | null> {
 }
 
 export default async function ChangelogPage() {
-  const [websiteCommits, cortexCommits, cortexChangelog] = await Promise.all([
+  const [websiteCommits, cortexCommits, websiteChangelog, cortexChangelog] = await Promise.all([
     getRecentCommits("scarecr0w12", "cortex-web", 8),
     getRecentCommits("scarecr0w12", "cortex", 8),
+    getChangelogMD("scarecr0w12/cortex-web"),
     getChangelogMD("scarecr0w12/cortex"),
   ]);
-
-  const websiteChangelogPath = path.join(process.cwd(), "CHANGELOG.md");
-  let websiteChangelog = "";
-  try {
-    websiteChangelog = fs.readFileSync(websiteChangelogPath, "utf-8");
-  } catch {}
 
   const allCommits = [...websiteCommits, ...cortexCommits]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())

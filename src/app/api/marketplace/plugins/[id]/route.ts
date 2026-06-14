@@ -23,7 +23,7 @@ const PluginUpdateSchema = z.object({
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const plugin = await prisma.plugin.findFirst({
     where: { OR: [{ id: params.id }, { slug: params.id }] },
-    include: { category: true },
+    include: { category: true, user: { select: { username: true } } },
   });
 
   if (!plugin) {

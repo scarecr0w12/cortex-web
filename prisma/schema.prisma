@@ -7,6 +7,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String           @id @default(cuid())
+  email         String           @unique
+  username      String           @unique
+  passwordHash  String
+  role          String           @default("user")
+  avatar        String?
+  bio           String?
+  plugins       Plugin[]
+  agents        AgentConfig[]
+  reviews       SubmissionReview[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
 model Plugin {
   id           String    @id @default(cuid())
   name         String    @unique
@@ -27,7 +42,10 @@ model Plugin {
   rating       Float     @default(0)
   categoryId   String?
   category     Category? @relation(fields: [categoryId], references: [id])
-  published    Boolean   @default(false)
+  status       String    @default("pending")
+  userId       String?
+  user         User?     @relation(fields: [userId], references: [id])
+  reviews      SubmissionReview[]
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
@@ -54,7 +72,10 @@ model AgentConfig {
   rating       Float     @default(0)
   categoryId   String?
   category     Category? @relation(fields: [categoryId], references: [id])
-  published    Boolean   @default(false)
+  status       String    @default("pending")
+  userId       String?
+  user         User?     @relation(fields: [userId], references: [id])
+  reviews      SubmissionReview[]
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
@@ -65,4 +86,17 @@ model Category {
   slug   String        @unique
   plugins Plugin[]
   agents AgentConfig[]
+}
+
+model SubmissionReview {
+  id            String      @id @default(cuid())
+  pluginId      String?
+  plugin        Plugin?     @relation(fields: [pluginId], references: [id])
+  agentId       String?
+  agent         AgentConfig? @relation(fields: [agentId], references: [id])
+  reviewerId    String
+  reviewer      User        @relation(fields: [reviewerId], references: [id])
+  action        String      // "approved" | "rejected"
+  notes         String?
+  createdAt     DateTime    @default(now())
 }

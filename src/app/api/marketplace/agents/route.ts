@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { getAuthUser } from "@/lib/auth-middleware";
 
 const AgentInputSchema = z.object({
   name: z.string().min(1),
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
   const limit = Math.min(50, Math.max(1, parseInt(searchParams.get("limit") || "20")));
 
-  const where: Record<string, unknown> = { published: true };
+  const where: Record<string, unknown> = { status: "approved" };
   if (search) where.OR = [
     { name: { contains: search } },
     { description: { contains: search } },
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
       where,
       skip: (page - 1) * limit,
       take: limit,
-      include: { category: true },
+      include: { category: true, user: { select: { username: true } } },
       orderBy: { downloads: "desc" },
     }),
     prisma.agentConfig.count({ where }),
@@ -57,7 +58,7 @@ export async function GET(request: NextRequest) {
       description: a.description,
       provider: a.provider,
       model: a.model,
-      author: a.author,
+      author: a.user?.username || a.author,
       icon: a.icon,
       downloads: a.downloads,
       rating: a.rating,
@@ -78,12 +79,15 @@ export async function POST(request: NextRequest) {
     const data = AgentInputSchema.parse(body);
     const slug = data.name.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-");
 
+    const user = getAuthUser(request);
     const agent = await prisma.agentConfig.create({
       data: {
         ...data,
         slug,
         tools: JSON.stringify(data.tools || []),
         tags: JSON.stringify(data.tags || []),
+        status: "pending",
+        userId: user?.userId || null,
       },
     });
 

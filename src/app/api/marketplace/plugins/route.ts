@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { getAuthUser } from "@/lib/auth-middleware";
 
 const PluginInputSchema = z.object({
   name: z.string().min(1),
@@ -27,7 +28,7 @@ export async function GET(request: NextRequest) {
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
   const limit = Math.min(50, Math.max(1, parseInt(searchParams.get("limit") || "20")));
 
-  const where: Record<string, unknown> = { published: true };
+  const where: Record<string, unknown> = { status: "approved" };
   if (search) where.OR = [
     { name: { contains: search } },
     { description: { contains: search } },
@@ -40,7 +41,7 @@ export async function GET(request: NextRequest) {
       where,
       skip: (page - 1) * limit,
       take: limit,
-      include: { category: true },
+      include: { category: true, user: { select: { username: true } } },
       orderBy: { downloads: "desc" },
     }),
     prisma.plugin.count({ where }),
@@ -54,7 +55,7 @@ export async function GET(request: NextRequest) {
       version: p.version,
       description: p.description,
       kind: p.kind,
-      author: p.author,
+      author: p.user?.username || p.author,
       icon: p.icon,
       downloads: p.downloads,
       rating: p.rating,
@@ -74,11 +75,14 @@ export async function POST(request: NextRequest) {
     const data = PluginInputSchema.parse(body);
     const slug = data.name.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-");
 
+    const user = getAuthUser(request);
     const plugin = await prisma.plugin.create({
       data: {
         ...data,
         slug,
         capabilities: JSON.stringify(data.capabilities || []),
+        status: "pending",
+        userId: user?.userId || null,
       },
     });
 

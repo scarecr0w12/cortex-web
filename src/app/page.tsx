@@ -7,8 +7,8 @@ import { CtaSection } from "@/components/landing/CtaSection";
 
 export default async function HomePage() {
   const [pluginCount, agentCount, downloadAgg, gh] = await Promise.all([
-    prisma.plugin.count({ where: { published: true } }),
-    prisma.agentConfig.count({ where: { published: true } }),
+    prisma.plugin.count({ where: { status: "approved" } }),
+    prisma.agentConfig.count({ where: { status: "approved" } }),
     prisma.plugin.aggregate({ _sum: { downloads: true } }),
     getGitHubStats(),
   ]);

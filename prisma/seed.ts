@@ -73,7 +73,7 @@ async function main() {
     await prisma.plugin.upsert({
       where: { slug: p.slug },
       update: {},
-      create: { ...p, published: true, downloads: 0, rating: 0 },
+      create: { ...p, status: "approved", downloads: 0, rating: 0 },
     });
   }
 
@@ -120,8 +120,17 @@ async function main() {
     await prisma.agentConfig.upsert({
       where: { slug: a.slug },
       update: {},
-      create: { ...a, published: true, downloads: 0, rating: 0 },
+      create: { ...a, status: "approved", downloads: 0, rating: 0 },
     });
+  }
+
+  const adminExists = await prisma.user.findUnique({ where: { email: "admin@cortexprism.io" } });
+  if (!adminExists) {
+    const hash = "$2b$12$uLMC.1/n48Wfsgpo8M/Pa.KWVdds1M4CjISd7qvoAgrR9Mm3g5miq";
+    await prisma.user.create({
+      data: { email: "admin@cortexprism.io", username: "admin", passwordHash: hash, role: "admin" },
+    });
+    console.log("Admin user created (admin@cortexprism.io / admin12345)");
   }
 
   console.log("Seed data created — all download/rating counters start at 0");

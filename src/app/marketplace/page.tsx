@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 
 export default async function MarketplacePage() {
   const [pluginCount, agentCount] = await Promise.all([
-    prisma.plugin.count({ where: { published: true } }),
-    prisma.agentConfig.count({ where: { published: true } }),
+    prisma.plugin.count({ where: { status: "approved" } }),
+    prisma.agentConfig.count({ where: { status: "approved" } }),
   ]);
 
   return (
