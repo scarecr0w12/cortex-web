@@ -24,6 +24,7 @@ async function getRecentCommits(owner: string, repo: string, limit = 10): Promis
     const res = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/commits?per_page=${limit}`,
       {
+        cache: "no-store",
         headers: { Accept: "application/vnd.github.v3+json", "User-Agent": "cortexprism-web" },
       }
     );
@@ -46,7 +47,7 @@ async function getChangelogMD(repo: string): Promise<string | null> {
   try {
     const res = await fetch(
       `https://raw.githubusercontent.com/${repo}/main/CHANGELOG.md`,
-      { next: { revalidate: 300 } }
+      { cache: "no-store" }
     );
     if (!res.ok) return null;
     return await res.text();
