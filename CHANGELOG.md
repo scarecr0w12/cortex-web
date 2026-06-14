@@ -2,13 +2,13 @@
 
 All notable changes to the CortexPrism website will be documented in this file.
 
-## [1.0.0] — 2026-06-14
+## [0.0.1] — 2026-06-14
 
 ### Added
 - Initial public release of the CortexPrism website
 - Landing page with hero, stats bar, feature grid, and CTA
 - Features overview page with 11 detailed feature cards
-- Changelog page with release history from v0.0.1 through v1.0.0
+- Changelog page with release history
 - Contribute page with development setup guide
 - Getting Started documentation (quickstart, installation, first run, configuration)
 - CLI Reference documentation for all cortex subcommands
