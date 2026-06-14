@@ -1,0 +1,52 @@
+# Installation
+
+Detailed installation guide for CortexPrism.
+
+## System Requirements
+
+- **OS**: Linux, macOS, or Windows (via WSL2)
+- **Runtime**: Deno v2.0+
+- **Memory**: 4GB RAM minimum (8GB+ recommended)
+- **Storage**: 500MB for the base installation
+
+## Install Deno
+
+```bash
+curl -fsSL https://deno.land/install.sh | sh
+```
+
+Or use your package manager:
+
+```bash
+# macOS (Homebrew)
+brew install deno
+
+# Linux (apt)
+curl -fsSL https://deno.land/install.sh | sh
+
+# Windows (Scoop)
+scoop install deno
+```
+
+## Clone and Setup
+
+```bash
+git clone https://github.com/scarecr0w12/cortex.git
+cd cortex
+deno task setup
+```
+
+## Docker Installation
+
+```bash
+docker pull cortexprism/cortex:latest
+docker run -it --rm -v ~/.cortex:/home/cortex/.cortex cortexprism/cortex:latest
+```
+
+## Verify Installation
+
+```bash
+cortex --version
+```
+
+You should see the version number printed to the console.

@@ -1,0 +1,12 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=file:./prisma/marketplace.db
+      - NEXT_PUBLIC_SITE_URL=https://cortexprism.io
+      - NEXT_PUBLIC_GITHUB_REPO=scarecr0w12/cortex
+    volumes:
+      - ./prisma:/app/prisma
+    restart: unless-stopped

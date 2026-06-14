@@ -1,0 +1,22 @@
+# Architecture Overview
+
+CortexPrism is built on a modular, event-driven architecture designed for extensibility and security.
+
+## High-Level Architecture
+
+The system consists of several core components that work together:
+
+- **Agent Loop**: The main execution loop that orchestrates LLM calls, tool use, and memory operations
+- **Memory System**: Five-tier memory architecture for different retention needs
+- **Security Parallax**: Defense-in-depth security model
+- **Model Router**: Intelligent routing between LLM providers
+- **Daemon Supervisor**: Background process management
+- **Plugin System**: Extensible plugin architecture
+
+## Data Flow
+
+1. User input enters through CLI, Web UI, or API
+2. Agent loop processes input with context from memory
+3. LLM provider generates response via the model router
+4. Tool calls are executed through the plugin system
+5. Results are stored in memory and returned to the user

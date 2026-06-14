@@ -1,0 +1,32 @@
+# Configuration
+
+Complete reference for the CortexPrism configuration system.
+
+## Config File Location
+
+The config file is at `~/.cortex/config.json` by default. You can override this with the `--config` flag or the `CORTEX_CONFIG` environment variable.
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `CORTEX_CONFIG` | Path to config file | `~/.cortex/config.json` |
+| `CORTEX_DATA_DIR` | Data directory | `~/.cortex/` |
+| `OPENAI_API_KEY` | OpenAI API key | - |
+| `ANTHROPIC_API_KEY` | Anthropic API key | - |
+| `GOOGLE_API_KEY` | Google AI API key | - |
+
+## Data Directory Structure
+
+```
+~/.cortex/
+├── config.json
+├── plugins.db
+├── memory/
+│   ├── working/
+│   ├── semantic/
+│   └── archival/
+├── vault/
+├── agents/
+└── logs/
+```

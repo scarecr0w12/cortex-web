@@ -1,0 +1,24 @@
+# Databases
+
+CortexPrism uses multiple database systems for different purposes.
+
+## Database Types
+
+| Database | Purpose | Technology |
+|----------|---------|------------|
+| Plugins DB | Plugin registry | SQLite |
+| Memory Store | Memory tiers | SQLite + Vector |
+| Vault | Encrypted secrets | SQLite (encrypted) |
+| Session Store | Session management | SQLite |
+
+## Configuration
+
+Database locations are configured in the data directory:
+
+```
+~/.cortex/
+├── plugins.db      # Plugin registry
+├── memory.db       # Memory store
+├── vault.db        # Encrypted vault
+└── sessions.db     # Session data
+```

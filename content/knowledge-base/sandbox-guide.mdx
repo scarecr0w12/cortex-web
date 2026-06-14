@@ -1,0 +1,33 @@
+# Sandbox Guide
+
+## Python Sandbox
+
+Execute Python scripts in an isolated sandbox:
+
+```bash
+cortex run --sandbox python --script script.py
+```
+
+The Python sandbox supports:
+- pip package installation
+- File I/O within the sandbox directory
+- Configurable timeouts (default: 30s)
+- Resource limits (memory, CPU)
+
+## WebAssembly Sandbox
+
+Run WebAssembly modules:
+
+```bash
+cortex run --sandbox wasm --module module.wasm
+```
+
+Supports WASI preview 1 and 2.
+
+## Security
+
+Sandboxes are isolated from the host system:
+- No access to the host filesystem
+- Network access can be restricted
+- Memory and CPU limits are enforced
+- Timeouts prevent runaway processes

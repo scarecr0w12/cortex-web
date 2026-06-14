@@ -1,0 +1,21 @@
+# Memory System
+
+CortexPrism features a sophisticated five-tier memory architecture.
+
+## Memory Tiers
+
+| Tier | Persistence | Use Case |
+|------|-------------|----------|
+| Ephemeral | Session only | Current conversation context |
+| Working | Task duration | Active task information |
+| Semantic | Long-term | Knowledge and facts |
+| Archival | Permanent | Compressed history |
+| Procedural | Permanent | Learned skills |
+
+## Memory Operations
+
+- `store`: Save information to a memory tier
+- `search`: Query memories across tiers
+- `recall`: Retrieve specific memories
+- `forget`: Remove memories
+- `compress`: Summarize and archive older memories

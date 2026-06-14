@@ -1,0 +1,19 @@
+# Best Practices
+
+## Agent Design
+
+- Give agents specific, focused system prompts rather than broad instructions
+- Configure appropriate temperature settings (lower for deterministic tasks, higher for creative ones)
+- Use the tools parameter to limit agent capabilities to what's needed
+
+## Memory Management
+
+- Use the semantic tier for long-term knowledge that should persist across sessions
+- Use the working tier for task-specific context
+- Regularly archive and compress old memories
+
+## Security
+
+- Store API keys and secrets in the vault, not in configuration files
+- Use approval gates for sensitive tool calls
+- Set up policy rules to limit what agents can access

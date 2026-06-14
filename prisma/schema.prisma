@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Plugin {
+  id           String    @id @default(cuid())
+  name         String    @unique
+  slug         String    @unique
+  version      String
+  description  String
+  kind         String
+  entryPoint   String
+  capabilities String
+  author       String?
+  authorUrl    String?
+  homepage     String?
+  repository   String?
+  license      String?
+  icon         String?
+  readme       String?
+  downloads    Int       @default(0)
+  rating       Float     @default(0)
+  categoryId   String?
+  category     Category? @relation(fields: [categoryId], references: [id])
+  published    Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model AgentConfig {
+  id           String    @id @default(cuid())
+  name         String    @unique
+  slug         String    @unique
+  version      String
+  description  String
+  provider     String?
+  model        String?
+  temperature  Float?
+  tools        String?
+  tags         String?
+  systemPrompt String?
+  soulContent  String?
+  author       String?
+  authorUrl    String?
+  repository   String?
+  icon         String?
+  readme       String?
+  downloads    Int       @default(0)
+  rating       Float     @default(0)
+  categoryId   String?
+  category     Category? @relation(fields: [categoryId], references: [id])
+  published    Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Category {
+  id     String        @id @default(cuid())
+  name   String        @unique
+  slug   String        @unique
+  plugins Plugin[]
+  agents AgentConfig[]
+}

@@ -1,0 +1,19 @@
+# Daemon Supervisor
+
+The daemon supervisor manages background processes and scheduled jobs.
+
+## Features
+
+- **Persistent Process**: Runs as a background daemon
+- **Job Scheduler**: CRON-like scheduling for recurring tasks
+- **Process Management**: Start, stop, and monitor background processes
+- **Health Checks**: Automatic health monitoring with restart policies
+
+## Usage
+
+```bash
+cortex daemon start    # Start the daemon
+cortex daemon stop     # Stop the daemon
+cortex daemon status   # Check daemon status
+cortex jobs add ...    # Add a scheduled job
+```

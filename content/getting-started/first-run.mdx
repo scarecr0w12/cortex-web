@@ -1,0 +1,39 @@
+# First Run
+
+Guide to your first CortexPrism session.
+
+## The Setup Wizard
+
+When you run `cortex` for the first time, the setup wizard will guide you through:
+
+1. **Provider configuration**: Add your API keys for LLM providers
+2. **Data directory**: Choose where to store your data (defaults to `~/.cortex/`)
+3. **Default model**: Set your preferred LLM model
+
+## Configuration File
+
+The configuration is stored at `~/.cortex/config.json`:
+
+```json
+{
+  "providers": {
+    "openai": { "apiKey": "sk-..." },
+    "anthropic": { "apiKey": "sk-ant-..." }
+  },
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-sonnet-4-20250514",
+  "dataDir": "~/.cortex"
+}
+```
+
+## Your First Chat
+
+```bash
+cortex chat
+```
+
+Type a message and the agent will respond. Try asking:
+
+- "What can you do?"
+- "Search the web for latest AI news"
+- "Run a Python script that calculates fibonacci"

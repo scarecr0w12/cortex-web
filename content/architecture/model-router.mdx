@@ -1,0 +1,22 @@
+# Model Router
+
+The model router provides intelligent LLM provider selection and management.
+
+## Features
+
+- **Multi-Provider**: Support for 12+ LLM providers including OpenAI, Anthropic, Google, Groq, and more
+- **Automatic Routing**: Route requests to the best provider based on task type, cost, and availability
+- **Failover**: Automatic fallback to alternative providers on errors
+- **Cost Optimization**: Route to cost-effective models for simple tasks
+
+## Configuration
+
+Configure routing rules in the agent configuration:
+
+```json
+{
+  "router": "cost-optimized",
+  "providers": ["anthropic", "openai", "google"],
+  "fallback": true
+}
+```

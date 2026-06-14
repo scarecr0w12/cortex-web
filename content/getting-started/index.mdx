@@ -1,0 +1,40 @@
+# Quickstart
+
+Get started with CortexPrism in under 5 minutes.
+
+## Prerequisites
+
+- [Deno](https://deno.land) v2.0 or later
+- An API key from one of the supported LLM providers
+
+## Installation
+
+```bash
+git clone https://github.com/scarecr0w12/cortex.git
+cd cortex
+deno task setup
+```
+
+## Configure a Provider
+
+Run the setup wizard:
+
+```bash
+cortex setup
+```
+
+This will guide you through configuring your first LLM provider. You can also manually edit the config file at `~/.cortex/config.json`.
+
+## Start Chatting
+
+```bash
+cortex chat
+```
+
+This starts an interactive chat session with the default provider. Use `/help` to see available commands.
+
+## Next Steps
+
+- Learn about the [CLI commands](/docs/cli)
+- Explore the [architecture](/docs/architecture)
+- Browse the [marketplace](/marketplace) for plugins and agents

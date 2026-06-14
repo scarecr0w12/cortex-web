@@ -1,0 +1,41 @@
+# Provider Guide
+
+## OpenAI
+
+```bash
+cortex setup --provider openai
+```
+
+Set `OPENAI_API_KEY` environment variable or enter it in the setup wizard.
+
+## Anthropic
+
+```bash
+cortex setup --provider anthropic
+```
+
+Set `ANTHROPIC_API_KEY` environment variable or enter it in the setup wizard.
+
+## Google AI
+
+```bash
+cortex setup --provider google
+```
+
+Set `GOOGLE_API_KEY` environment variable or enter it in the setup wizard.
+
+## Custom Providers
+
+For custom OpenAI-compatible endpoints, edit the config file directly:
+
+```json
+{
+  "providers": {
+    "custom": {
+      "apiKey": "your-key",
+      "baseUrl": "https://your-endpoint.com/v1",
+      "models": ["custom-model"]
+    }
+  }
+}
+```
