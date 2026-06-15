@@ -1,11 +1,29 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getGitHubStats } from "@/lib/github";
 import { Hero } from "@/components/landing/Hero";
 import { StatsBar } from "@/components/landing/StatsBar";
 import { FeatureGrid } from "@/components/landing/FeatureGrid";
 import { CtaSection } from "@/components/landing/CtaSection";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { generateSoftwareAppSchema, SITE_URL } from "@/lib/seo";
 import fs from "fs";
 import path from "path";
+
+export const metadata: Metadata = {
+  title: "CortexPrism — Open-Source Agentic Harness",
+  description:
+    "A single-process agentic harness system with multi-provider LLM support, 5-tier memory, parallax security, and a plugin marketplace. Install with one command and deploy AI agents with confidence.",
+  alternates: {
+    canonical: SITE_URL,
+  },
+  openGraph: {
+    title: "CortexPrism — Open-Source Agentic Harness",
+    description:
+      "A single-process agentic harness with 12+ LLM providers, 5-tier memory, parallax security, sandboxed code execution, and a plugin marketplace. MIT licensed.",
+    url: SITE_URL,
+  },
+};
 
 const CORTEX_VERSION_DEFAULT = "0.1.0";
 
@@ -42,6 +60,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <StructuredData data={generateSoftwareAppSchema()} />
       <Hero version={cortexVersion} />
       <StatsBar
         githubStars={gh.stargazers_count}

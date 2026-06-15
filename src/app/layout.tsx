@@ -4,6 +4,13 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AuthProvider } from "@/lib/AuthContext";
+import {
+  generateOrganizationSchema,
+  generateWebSiteSchema,
+  generateSoftwareAppSchema,
+  generateMetaBase,
+  SITE_URL,
+} from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: {
@@ -11,12 +18,67 @@ export const metadata: Metadata = {
     template: "%s — CortexPrism",
   },
   description:
-    "An open-source agentic harness system with multi-provider LLM support, 5-tier memory, parallax security, and a plugin marketplace.",
+    "CortexPrism is an open-source agentic harness system with multi-provider LLM support, 5-tier memory architecture, parallax security model, and a plugin marketplace. Deploy AI agents with confidence.",
+  keywords: [
+    "agentic harness",
+    "LLM orchestration",
+    "AI agent framework",
+    "multi-provider LLM",
+    "open-source AI",
+    "AI security",
+    "plugin marketplace",
+    "agentic AI platform",
+    "memory system",
+    "code execution sandbox",
+  ],
+  authors: [{ name: "CortexPrism" }],
+  creator: "CortexPrism",
+  publisher: "CortexPrism",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  ...generateMetaBase(),
   openGraph: {
     title: "CortexPrism — Open-Source Agentic Harness",
     description:
-      "An open-source agentic harness system with multi-provider LLM support, 5-tier memory, parallax security, and a plugin marketplace.",
+      "An open-source agentic harness system with multi-provider LLM support, 5-tier memory, parallax security, and a plugin marketplace. Deploy AI agents with confidence.",
     type: "website",
+    siteName: "CortexPrism",
+    locale: "en_US",
+    url: SITE_URL,
+    images: [
+      {
+        url: `${SITE_URL}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: "CortexPrism — Open-Source Agentic Harness",
+      },
+    ],
+  } as Metadata["openGraph"],
+  twitter: {
+    card: "summary_large_image",
+    site: "@CortexPrism",
+    creator: "@CortexPrism",
+    title: "CortexPrism — Open-Source Agentic Harness",
+    description:
+      "An open-source agentic harness system with multi-provider LLM support, 5-tier memory, parallax security, and a plugin marketplace.",
+    images: [`${SITE_URL}/og-image.png`],
+  } as Metadata["twitter"],
+  alternates: {
+    canonical: SITE_URL,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -30,9 +92,22 @@ _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
 `;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const orgSchema = generateOrganizationSchema();
+  const webSiteSchema = generateWebSiteSchema();
+  const softwareAppSchema = generateSoftwareAppSchema();
+
   return (
     <html lang="en" className="dark">
       <body className="min-h-screen flex flex-col">
+        <Script id="org-schema" type="application/ld+json" strategy="beforeInteractive">
+          {JSON.stringify(orgSchema)}
+        </Script>
+        <Script id="website-schema" type="application/ld+json" strategy="beforeInteractive">
+          {JSON.stringify(webSiteSchema)}
+        </Script>
+        <Script id="software-app-schema" type="application/ld+json" strategy="beforeInteractive">
+          {JSON.stringify(softwareAppSchema)}
+        </Script>
         <Script id="matomo-tag-manager" strategy="afterInteractive">
           {matomoScript}
         </Script>

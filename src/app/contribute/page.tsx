@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Bug, BookOpen, Puzzle, MessageCircle, ExternalLink } from "lucide-react";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Contribute",
-  description: "Learn how to contribute to the CortexPrism project",
+  title: "Contribute to CortexPrism — Open Source AI Agent Framework",
+  description:
+    "Contribute to the open-source CortexPrism project. Report issues, submit pull requests, develop plugins, or join the community. MIT licensed and community-driven.",
+  alternates: { canonical: `${SITE_URL}/contribute` },
+  openGraph: {
+    title: "Contribute to CortexPrism — Open Source AI Agent Framework",
+    description:
+      "Help build the future of agentic AI. Report bugs, submit PRs, develop plugins for the marketplace, or join the Discord community.",
+    url: `${SITE_URL}/contribute`,
+  },
 };
 
 const sections = [

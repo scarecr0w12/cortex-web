@@ -3,10 +3,19 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ArrowRight, Puzzle, Bot, BarChart3 } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Marketplace",
-  description: "Browse the CortexPrism plugin and agent marketplace",
+  title: "CortexPrism Marketplace — Plugins & Agent Configurations",
+  description:
+    "Browse the CortexPrism marketplace for plugins (ESM, MCP, WASM) and pre-configured agent profiles. Discover, install, and publish extensions for the open-source agentic harness.",
+  alternates: { canonical: `${SITE_URL}/marketplace` },
+  openGraph: {
+    title: "CortexPrism Marketplace — Plugins & Agent Configurations",
+    description:
+      "Discover plugins (ESM modules, MCP servers, WASM runtimes) and pre-configured agent profiles. Extend your agentic harness with community-built extensions.",
+    url: `${SITE_URL}/marketplace`,
+  },
 };
 
 export default async function MarketplacePage() {

@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getRepoMetadata } from "@/lib/github";
 import { PluginDetailView } from "@/components/marketplace/PluginDetail";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { generateBreadcrumbSchema, SITE_URL } from "@/lib/seo";
 
 interface Props {
   params: { id: string };
@@ -13,9 +15,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     where: { status: "approved", OR: [{ id: params.id }, { slug: params.id }] },
   });
   if (!plugin) return { title: "Plugin Not Found" };
+  const desc = plugin.description?.length
+    ? plugin.description.length > 160
+      ? plugin.description.slice(0, 157) + "..."
+      : plugin.description
+    : `Install ${plugin.name} v${plugin.version} — a ${plugin.kind.toUpperCase()} plugin for the CortexPrism agentic harness`;
   return {
-    title: `${plugin.name} — Plugin`,
-    description: plugin.description,
+    title: `${plugin.name} — CortexPrism Plugin`,
+    description: desc,
+    alternates: { canonical: `${SITE_URL}/marketplace/plugins/${plugin.slug}` },
+    openGraph: {
+      title: `${plugin.name} — CortexPrism Plugin`,
+      description: desc,
+      url: `${SITE_URL}/marketplace/plugins/${plugin.slug}`,
+      type: "article",
+    },
   };
 }
 
@@ -29,8 +43,16 @@ export default async function PluginDetailPage({ params }: Props) {
 
   const githubMeta = plugin.repository ? await getRepoMetadata(plugin.repository) : null;
 
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: SITE_URL },
+    { name: "Marketplace", url: `${SITE_URL}/marketplace` },
+    { name: "Plugins", url: `${SITE_URL}/marketplace/plugins` },
+    { name: plugin.name, url: `${SITE_URL}/marketplace/plugins/${plugin.slug}` },
+  ]);
+
   return (
     <div className="max-w-page-narrow mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
+      <StructuredData data={breadcrumbSchema} />
       <PluginDetailView
         plugin={{
           id: plugin.id,

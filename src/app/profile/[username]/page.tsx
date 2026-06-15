@@ -5,8 +5,10 @@ import { prisma } from "@/lib/prisma";
 
 import { DownloadCount } from "@/components/shared/DownloadCount";
 import { StarRating } from "@/components/shared/StarRating";
+import { ProfileActions } from "@/components/profile/ProfileActions";
 import { formatDate } from "@/lib/utils";
 import { Package, Bot, Globe, Calendar, User as UserIcon } from "lucide-react";
+import { SITE_URL } from "@/lib/seo";
 
 interface Props {
   params: { username: string };
@@ -16,8 +18,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const user = await prisma.user.findUnique({ where: { username: params.username } });
   if (!user) return { title: "User Not Found" };
   return {
-    title: `${user.username}'s Profile`,
-    description: user.bio || `View ${user.username}'s marketplace submissions`,
+    title: `${user.username} — CortexPrism Profile`,
+    description: user.bio || `View ${user.username}'s CortexPrism marketplace plugins and agent submissions`,
+    alternates: { canonical: `${SITE_URL}/profile/${user.username}` },
+    openGraph: {
+      title: `${user.username} — CortexPrism Profile`,
+      description: user.bio || `View ${user.username}'s marketplace plugins and agents`,
+      url: `${SITE_URL}/profile/${user.username}`,
+    },
   };
 }
 
@@ -58,8 +66,13 @@ export default async function UserProfilePage({ params }: Props) {
             )}
           </div>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-[#e2e2ea] mb-1">{user.username}</h1>
-            {user.bio && <p className="text-[#9090a8] mb-2">{user.bio}</p>}
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-[#e2e2ea] mb-1">{user.username}</h1>
+                {user.bio && <p className="text-[#9090a8] mb-2">{user.bio}</p>}
+              </div>
+              <ProfileActions username={user.username} />
+            </div>
             <div className="flex flex-wrap items-center gap-4 text-sm text-[#55556a]">
               <span className="flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5" />

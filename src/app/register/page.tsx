@@ -12,11 +12,16 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
     setLoading(true);
     setError("");
     try {
@@ -52,6 +57,11 @@ export default function RegisterPage() {
           <div>
             <label className="block text-sm text-[#9090a8] mb-1">Password (min 8 chars)</label>
             <input type="password" required minLength={8} value={password} onChange={e => setPassword(e.target.value)}
+              className="w-full px-3 py-2 bg-[#0a0a0f] border border-[rgba(255,255,255,0.07)] rounded-lg text-sm text-[#e2e2ea] focus:outline-none focus:border-indigo-500/50" />
+          </div>
+          <div>
+            <label className="block text-sm text-[#9090a8] mb-1">Confirm Password</label>
+            <input type="password" required minLength={8} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
               className="w-full px-3 py-2 bg-[#0a0a0f] border border-[rgba(255,255,255,0.07)] rounded-lg text-sm text-[#e2e2ea] focus:outline-none focus:border-indigo-500/50" />
           </div>
           {error && <p className="text-sm text-red-400">{error}</p>}

@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
 import { Shield, Lock, Eye, FileSearch, Server, Wrench } from "lucide-react";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Security",
-  description: "CortexPrism security model — Parallax defense-in-depth architecture",
+  title: "Security — Parallax Defense-in-Depth Architecture",
+  description:
+    "CortexPrism Parallax security model with 3-stage tool validation, AES-256-GCM encrypted vault, granular policy engine, sandboxed code execution, and full audit logging. Defense in depth for agentic AI.",
+  alternates: { canonical: `${SITE_URL}/security` },
+  openGraph: {
+    title: "Security — Parallax Defense-in-Depth Architecture",
+    description:
+      "3-stage tool validation gate, encrypted credential vault with AES-256-GCM, regex-based policy engine, containerized sandboxes, and Cortex Lens audit trail. Enterprise-grade security for AI agents.",
+    url: `${SITE_URL}/security`,
+  },
 };
 
 const layers = [

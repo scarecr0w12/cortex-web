@@ -15,6 +15,7 @@ interface AuthContextValue {
   loading: boolean;
   login: (token: string, user: AuthUser) => void;
   logout: () => void;
+  updateUser: (user: AuthUser) => void;
 }
 
 const AuthContext = createContext<AuthContextValue>({
@@ -22,6 +23,7 @@ const AuthContext = createContext<AuthContextValue>({
   loading: true,
   login: () => {},
   logout: () => {},
+  updateUser: () => {},
 });
 
 function getStoredUser(): AuthUser | null {
@@ -81,8 +83,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   }, []);
 
+  const updateUser = useCallback((userData: AuthUser) => {
+    localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

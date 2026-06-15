@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
 import { Terminal, Cpu, Package } from "lucide-react";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Install",
-  description: "Install CortexPrism — the open-source agentic harness",
+  title: "Install CortexPrism — One-Command Setup",
+  description:
+    "Install CortexPrism on Linux, macOS, or WSL with a single command. Includes Deno runtime setup, repository clone, and database initialization. Docker support available.",
+  alternates: { canonical: `${SITE_URL}/install` },
+  openGraph: {
+    title: "Install CortexPrism — One-Command Setup for AI Agent Harness",
+    description:
+      "curl -fsSL https://cortexprism.io/install.sh | bash — one command to get the agentic harness running. Full manual installation and Docker instructions included.",
+    url: `${SITE_URL}/install`,
+  },
 };
 
 export default function InstallPage() {

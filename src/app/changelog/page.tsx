@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
 import { GitBranch, GitCommit, ExternalLink, FileText } from "lucide-react";
 import { MdxContent } from "@/components/docs/MdxContent";
+import { SITE_URL } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Changelog",
-  description: "Release history for the CortexPrism project",
+  title: "CortexPrism Changelog — Release History & Commits",
+  description:
+    "Track CortexPrism releases, recent commits from the cortex engine and cortex-web, and full changelog history. Stay up to date with the latest features and fixes.",
+  alternates: { canonical: `${SITE_URL}/changelog` },
+  openGraph: {
+    title: "CortexPrism Changelog — Release History & Commits",
+    description:
+      "Recent commits from cortex engine and cortex-web repositories. Track changes, new features, bug fixes, and improvements in the open-source agentic harness.",
+    url: `${SITE_URL}/changelog`,
+  },
 };
 
 interface Commit {

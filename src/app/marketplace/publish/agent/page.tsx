@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
 import { PublishForm } from "@/components/marketplace/PublishForm";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Publish an Agent Configuration",
-  description: "Submit an agent configuration to the CortexPrism marketplace",
+  title: "Publish an Agent — CortexPrism Marketplace",
+  description:
+    "Submit a pre-configured agent profile to the CortexPrism marketplace. Share your specialized AI agent configurations with the community.",
+  alternates: { canonical: `${SITE_URL}/marketplace/publish/agent` },
+  openGraph: {
+    title: "Publish an Agent — CortexPrism Marketplace",
+    description:
+      "Share your agent configuration with the CortexPrism community. Submit specialized AI agent profiles for coding, analysis, and more.",
+    url: `${SITE_URL}/marketplace/publish/agent`,
+  },
 };
 
 export default function PublishAgentPage() {

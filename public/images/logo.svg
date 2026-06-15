@@ -1,12 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40">
-  <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6366f1"/>
-      <stop offset="100%" stop-color="#8b5cf6"/>
-    </linearGradient>
-  </defs>
-  <text x="0" y="30" font-family="Inter, sans-serif" font-size="28" font-weight="800" fill="#e2e2ea">
-    <tspan fill="url(#g)">✦</tspan>
-    <tspan dx="8">CortexPrism</tspan>
-  </text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 40">
+  <!-- Prism icon (28 × 30 px, vertically centred) -->
+  <!-- Left face: indigo -->
+  <polygon points="14,4 2,36 14,36" fill="#6366f1"/>
+  <!-- Right face: violet -->
+  <polygon points="14,4 14,36 26,36" fill="#8b5cf6"/>
+  <!-- Top highlight facet -->
+  <polygon points="14,4 21,18 7,18" fill="rgba(255,255,255,0.2)"/>
+  <!-- Refraction seam -->
+  <line x1="14" y1="4" x2="14" y2="36" stroke="rgba(255,255,255,0.25)" stroke-width="0.8"/>
+  <!-- Base line -->
+  <line x1="2" y1="36" x2="26" y2="36" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+  <!-- Wordmark -->
+  <text x="36" y="27" font-family="Inter, sans-serif" font-size="19" font-weight="800" fill="#e2e2ea">CortexPrism</text>
 </svg>

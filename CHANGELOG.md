@@ -2,6 +2,28 @@
 
 All notable changes to the CortexPrism website will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Comprehensive SEO improvements for improved natural search traffic
+  - `robots.txt` with crawl directives (disallows auth/admin pages, blocks GPTBot/CCBot)
+  - `sitemap.xml` with dynamic generation of all 80+ pages, docs, and marketplace items
+  - JSON-LD structured data: Organization, WebSite, SoftwareApplication, BreadcrumbList
+  - OpenGraph metadata with og:image, og:url, og:description on all pages
+  - Twitter Card metadata (summary_large_image) on all pages
+  - Canonical URLs across all public-facing pages
+  - Keyword-rich meta descriptions (135-160 chars) with target phrases
+  - Dynamic OpenGraph image generation via `next/og` ImageResponse
+  - SEO utility library (`src/lib/seo.ts`) with reusable functions and constants
+  - Enhanced root layout metadata with metadataBase, keywords array, robots directives
+  - Noindex on protected routes (login, register, dashboard, admin)
+  - Security headers (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy)
+  - Breadcrumb navigation with structured data for documentation pages
+  - Semantic HTML improvements with aria-labels on landing components
+  - Layout files with metadata for client-side routes (marketplace, openapi)
+  - Enhanced keyword density across landing pages (about, features, use-cases, security)
+  - Enhanced footer description with additional keywords
+
 ## [0.1.0] — 2026-06-15
 
 ### Added

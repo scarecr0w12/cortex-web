@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Shield, Zap, Globe, Github, Heart, Code2 } from "lucide-react";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "About",
-  description: "Learn about CortexPrism — the open-source agentic harness system",
+  title: "About CortexPrism — The Open-Source Agentic Harness",
+  description:
+    "Learn about CortexPrism — a single-process agentic harness written in TypeScript/Deno with 12+ LLM providers, 5-tier memory, parallax security, and an extensible plugin marketplace. MIT licensed.",
+  alternates: { canonical: `${SITE_URL}/about` },
+  openGraph: {
+    title: "About CortexPrism — The Open-Source Agentic Harness",
+    description:
+      "A single-process agentic harness in TypeScript/Deno. Multi-provider LLM support, 5-tier memory, parallax security, sandboxed execution, and plugin marketplace.",
+    url: `${SITE_URL}/about`,
+  },
 };
 
 export default function AboutPage() {

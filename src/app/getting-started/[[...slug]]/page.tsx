@@ -4,6 +4,8 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { MdxContent } from "@/components/docs/MdxContent";
 import { getContentBySlug, getContentSlugs } from "@/lib/markdown";
 import { TableOfContents } from "@/components/docs/TableOfContents";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { generateBreadcrumbSchema, SITE_URL } from "@/lib/seo";
 
 interface Props {
   params: { slug?: string[] };
@@ -17,8 +19,17 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = params.slug?.[0] || "index";
   const { frontmatter } = getContentBySlug("getting-started", slug);
+  const title = (frontmatter.title as string) || "Getting Started";
+  const desc = (frontmatter.description as string) || "Learn how to install, configure, and start using the CortexPrism agentic harness system";
   return {
-    title: (frontmatter.title as string) || "Getting Started",
+    title,
+    description: desc,
+    alternates: { canonical: `${SITE_URL}/getting-started/${slug === "index" ? "" : slug}` },
+    openGraph: {
+      title: `${title} — CortexPrism`,
+      description: desc,
+      url: `${SITE_URL}/getting-started/${slug === "index" ? "" : slug}`,
+    },
   };
 }
 
@@ -32,8 +43,22 @@ export default async function GettingStartedPage({ params }: Props) {
     notFound();
   }
 
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: SITE_URL },
+    { name: "Getting Started", url: `${SITE_URL}/getting-started` },
+    ...(slug !== "index"
+      ? [
+          {
+            name: slug.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase()),
+            url: `${SITE_URL}/getting-started/${slug}`,
+          },
+        ]
+      : []),
+  ]);
+
   return (
     <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 flex gap-8">
+      <StructuredData data={breadcrumbSchema} />
       <Sidebar />
       <article className="flex-1 min-w-0 max-w-page-content">
         <MdxContent content={content} />

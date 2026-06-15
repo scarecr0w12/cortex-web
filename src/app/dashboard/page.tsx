@@ -59,6 +59,7 @@ export default function DashboardPage() {
           {user.role === "admin" && (
             <Link href="/admin" className="text-sm text-indigo-400 hover:text-indigo-300">Admin Panel</Link>
           )}
+          <Link href="/dashboard/settings" className="text-sm text-indigo-400 hover:text-indigo-300">Account Settings</Link>
           <button onClick={logout} className="text-sm text-[#55556a] hover:text-[#e2e2ea]">Sign Out</button>
         </div>
       </div>

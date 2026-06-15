@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getRepoMetadata } from "@/lib/github";
 import { AgentDetailView } from "@/components/marketplace/AgentDetail";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { generateBreadcrumbSchema, SITE_URL } from "@/lib/seo";
 
 interface Props {
   params: { id: string };
@@ -13,9 +15,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     where: { status: "approved", OR: [{ id: params.id }, { slug: params.id }] },
   });
   if (!agent) return { title: "Agent Not Found" };
+  const desc = agent.description?.length
+    ? agent.description.length > 160
+      ? agent.description.slice(0, 157) + "..."
+      : agent.description
+    : `Use ${agent.name} — a pre-configured agent profile for the CortexPrism agentic harness`;
   return {
-    title: `${agent.name} — Agent`,
-    description: agent.description,
+    title: `${agent.name} — CortexPrism Agent`,
+    description: desc,
+    alternates: { canonical: `${SITE_URL}/marketplace/agents/${agent.slug}` },
+    openGraph: {
+      title: `${agent.name} — CortexPrism Agent`,
+      description: desc,
+      url: `${SITE_URL}/marketplace/agents/${agent.slug}`,
+      type: "article",
+    },
   };
 }
 
@@ -32,8 +46,16 @@ export default async function AgentDetailPage({ params }: Props) {
     githubMeta = await getRepoMetadata(agent.repository);
   }
 
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: SITE_URL },
+    { name: "Marketplace", url: `${SITE_URL}/marketplace` },
+    { name: "Agents", url: `${SITE_URL}/marketplace/agents` },
+    { name: agent.name, url: `${SITE_URL}/marketplace/agents/${agent.slug}` },
+  ]);
+
   return (
     <div className="max-w-page-narrow mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
+      <StructuredData data={breadcrumbSchema} />
       <AgentDetailView
         agent={{
           id: agent.id,

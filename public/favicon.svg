@@ -1,9 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6366f1"/>
-      <stop offset="100%" stop-color="#8b5cf6"/>
-    </linearGradient>
-  </defs>
-  <text x="16" y="24" text-anchor="middle" font-size="28" fill="url(#g)" font-weight="bold">✦</text>
+  <!-- Left prism face: indigo -->
+  <polygon points="16,2 2,30 16,30" fill="#6366f1"/>
+  <!-- Right prism face: violet -->
+  <polygon points="16,2 16,30 30,30" fill="#8b5cf6"/>
+  <!-- Top highlight facet -->
+  <polygon points="16,2 24,16 8,16" fill="rgba(255,255,255,0.2)"/>
+  <!-- Refraction seam -->
+  <line x1="16" y1="2" x2="16" y2="30" stroke="rgba(255,255,255,0.25)" stroke-width="0.8"/>
+  <!-- Base line -->
+  <line x1="2" y1="30" x2="30" y2="30" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
 </svg>

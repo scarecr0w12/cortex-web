@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Bot, Beaker, TestTube, GitBranch, Search, Shield } from "lucide-react";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Use Cases",
-  description: "Explore how CortexPrism can be used across different scenarios and industries",
+  title: "CortexPrism Use Cases — Personal AI, Dev, Research & More",
+  description:
+    "Explore how CortexPrism powers personal AI assistants, research workflows, code development and debugging, CI/CD automation, knowledge management, and secure enterprise agent deployments.",
+  alternates: { canonical: `${SITE_URL}/use-cases` },
+  openGraph: {
+    title: "CortexPrism Use Cases — Personal AI, Dev, Research & More",
+    description:
+      "From personal AI assistants to enterprise-grade secure deployments — see how CortexPrism adapts to any workflow. Research, development, CI/CD, and knowledge management.",
+    url: `${SITE_URL}/use-cases`,
+  },
 };
 
 const useCases = [

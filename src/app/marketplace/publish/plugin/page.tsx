@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
 import { PublishForm } from "@/components/marketplace/PublishForm";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Publish a Plugin",
-  description: "Submit a plugin to the CortexPrism marketplace",
+  title: "Publish a Plugin — CortexPrism Marketplace",
+  description:
+    "Submit your ESM module, MCP server, or WASM plugin to the CortexPrism marketplace. Share your extensions with the open-source agentic harness community.",
+  alternates: { canonical: `${SITE_URL}/marketplace/publish/plugin` },
+  openGraph: {
+    title: "Publish a Plugin — CortexPrism Marketplace",
+    description:
+      "Share your plugin with the CortexPrism community. Submit ESM modules, MCP servers, or WASM plugins to the marketplace.",
+    url: `${SITE_URL}/marketplace/publish/plugin`,
+  },
 };
 
 export default function PublishPluginPage() {

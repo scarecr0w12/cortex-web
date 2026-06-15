@@ -1,3 +1,4 @@
+import { NextRequest } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
@@ -29,9 +30,22 @@ export async function getUserFromToken(token: string) {
   if (!payload) return null;
   const user = await prisma.user.findUnique({
     where: { id: payload.userId },
-    select: { id: true, email: true, username: true, role: true, avatar: true, bio: true, createdAt: true },
+    select: { id: true, email: true, username: true, role: true, avatar: true, bio: true, website: true, createdAt: true },
   });
   return user;
+}
+
+export async function authenticateRequest(request: NextRequest) {
+  const authHeader = request.headers.get("authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    return { user: null, errorResponse: Response.json({ error: "Not authenticated" }, { status: 401 }) as Response };
+  }
+  const token = authHeader.slice(7);
+  const user = await getUserFromToken(token);
+  if (!user) {
+    return { user: null, errorResponse: Response.json({ error: "Invalid token" }, { status: 401 }) as Response };
+  }
+  return { user, errorResponse: null };
 }
 
 export function requireRole(role: "admin" | "user") {

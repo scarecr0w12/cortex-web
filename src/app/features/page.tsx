@@ -12,10 +12,19 @@ import {
   Bot,
   Share2,
 } from "lucide-react";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Features",
-  description: "Explore all features of CortexPrism — the open-source agentic harness system",
+  title: "CortexPrism Features — Agentic Harness Capabilities",
+  description:
+    "Explore all features of CortexPrism: interactive chat with 12+ LLM providers, 5-tier memory system, parallax security, sandboxed code execution, model router, daemon supervisor, plugin marketplace, and REST API.",
+  alternates: { canonical: `${SITE_URL}/features` },
+  openGraph: {
+    title: "CortexPrism Features — Agentic Harness Capabilities",
+    description:
+      "Multi-provider LLM chat, 5-tier memory, parallax security, sandboxed code execution, model routing, daemon supervisor, plugin system, and full REST API. All open source.",
+    url: `${SITE_URL}/features`,
+  },
 };
 
 const features = [

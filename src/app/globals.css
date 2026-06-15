@@ -41,4 +41,12 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Subtle dot-grid background for hero sections */
+  .hero-dot-grid {
+    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  }
 }
