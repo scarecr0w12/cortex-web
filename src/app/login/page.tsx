@@ -34,7 +34,8 @@ export default function LoginPage() {
   };
 
   const redirectUri = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== "undefined" ? window.location.origin : "");
-  const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID}&redirect_uri=${redirectUri}/api/auth/discord/callback&response_type=code&scope=identify`;
+  const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
+  const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}/api/auth/discord/callback&response_type=code&scope=identify`;
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
