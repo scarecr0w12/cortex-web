@@ -1,6 +1,9 @@
 // Load .env from project root (works for npx tsx directly, npm run dev uses --import preload)
 try { require("dotenv").config({ path: require("path").resolve(process.cwd() + "/../.env") }); } catch {}
 
+// Force absolute database path so the bot shares the same database as the web app
+try { process.env.DATABASE_URL = "file:" + require("path").resolve(process.cwd() + "/../prisma/marketplace.db"); } catch {}
+
 import { Client, Events, GatewayIntentBits, REST, Routes } from "discord.js";
 import { PrismaClient } from "@prisma/client";
 import { handleStats } from "./commands/stats";

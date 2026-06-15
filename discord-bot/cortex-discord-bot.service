@@ -8,6 +8,7 @@ User=root
 WorkingDirectory=/root/cortex-web/discord-bot
 Environment=NODE_ENV=production
 Environment=DOTENV_CONFIG_PATH=../.env
+Environment=DATABASE_URL=file:/root/cortex-web/prisma/marketplace.db
 ExecStart=/root/.nvm/versions/node/v24.15.0/bin/node /root/cortex-web/node_modules/.bin/tsx src/index.ts
 Restart=always
 RestartSec=10
