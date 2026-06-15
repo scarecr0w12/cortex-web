@@ -9,9 +9,21 @@ export const prisma = new PrismaClient();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.once(Events.ClientReady, (c) => {
+client.once(Events.ClientReady, async (c) => {
   console.log(`Bot logged in as ${c.user.tag}`);
+  await updateHeartbeat();
 });
+
+async function updateHeartbeat() {
+  try {
+    await prisma.setting.upsert({
+      where: { key: "discord_bot_heartbeat" },
+      update: { value: String(Date.now()) },
+      create: { key: "discord_bot_heartbeat", value: String(Date.now()) },
+    });
+  } catch {}
+  setTimeout(updateHeartbeat, 30000);
+}
 
 client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isChatInputCommand()) return;

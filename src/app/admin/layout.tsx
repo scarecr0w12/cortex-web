@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/AuthContext";
 import {
-  LayoutDashboard, Users, Shield, GitBranch, ClipboardList, Activity, Menu, X, ChevronRight, Search, Settings,
+  LayoutDashboard, Users, Shield, GitBranch, ClipboardList, Activity, Menu, X, ChevronRight, Search, Settings, MessageSquare,
 } from "lucide-react";
 
 const navItems = [
@@ -15,6 +15,7 @@ const navItems = [
   { href: "/admin/roles", label: "Roles & Permissions", icon: Shield },
   { href: "/admin/github", label: "GitHub Connections", icon: GitBranch },
   { href: "/admin/github/scanner", label: "Topic Scanner", icon: Search },
+  { href: "/admin/discord", label: "Discord Bot", icon: MessageSquare },
   { href: "/admin/settings", label: "Settings", icon: Settings },
   { href: "/admin/activity", label: "Activity Log", icon: Activity },
 ];
