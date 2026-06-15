@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import {
   Save, CheckCircle, XCircle, Eye, EyeOff, ExternalLink, RefreshCw, Send, MessageSquare,
-  Bot, Shield, Settings as SettingsIcon, Bell, Globe,
+  Bot, Shield, Settings as SettingsIcon, Bell, Globe, Play, Square, RotateCw, BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 
@@ -22,6 +22,9 @@ interface DiscordSettings {
   _env_discord_admin_ids: string;
   _bot_online: string;
   _bot_last_heartbeat: string | null;
+  _bot_started_at: string | null;
+  _bot_uptime_seconds: string | null;
+  _bot_command_counts: string | null;
 }
 
 export default function AdminDiscordPage() {
@@ -29,7 +32,7 @@ export default function AdminDiscordPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-  const [testingWebhook, setTestingWebhook] = useState(false);
+  const [controlling, setControlling] = useState<string | null>(null);
   const [formValues, setFormValues] = useState<Record<string, string>>({});
   const [showFields, setShowFields] = useState<Record<string, boolean>>({});
 
@@ -40,7 +43,7 @@ export default function AdminDiscordPage() {
 
   const showMsg = (type: "success" | "error", text: string) => {
     setMessage({ type, text });
-    setTimeout(() => setMessage(null), 4000);
+    setTimeout(() => setMessage(null), 5000);
   };
 
   const fetchSettings = async () => {
@@ -94,45 +97,22 @@ export default function AdminDiscordPage() {
     setSaving(null);
   };
 
-  const testWebhook = async () => {
+  const postAction = async (action: string) => {
     const headers = authHeaders();
     if (!headers.authorization) return;
-    setTestingWebhook(true);
+    setControlling(action);
     try {
       const res = await fetch("/api/admin/discord", {
         method: "POST", headers: { "Content-Type": "application/json", ...headers },
-        body: JSON.stringify({ action: "test-webhook" }),
+        body: JSON.stringify({ action }),
       });
       const data = await res.json();
-      showMsg(res.ok ? "success" : "error", res.ok ? "Webhook test sent!" : (data.error || "Test failed"));
+      showMsg(res.ok ? "success" : "error", data.message || data.error || (res.ok ? "Done" : "Failed"));
+      setTimeout(fetchSettings, 2000);
     } catch {
       showMsg("error", "Connection error");
     }
-    setTestingWebhook(false);
-  };
-
-  const pingBot = async () => {
-    const headers = authHeaders();
-    if (!headers.authorization) return;
-    try {
-      const res = await fetch("/api/admin/discord", {
-        method: "POST", headers: { "Content-Type": "application/json", ...headers },
-        body: JSON.stringify({ action: "ping-bot" }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        if (data.online) {
-          showMsg("success", "Bot is online (heartbeat " + data.secondsSinceHeartbeat + "s ago)");
-        } else {
-          showMsg("error", "Bot is offline" + (data.lastHeartbeat ? " (last seen " + data.lastHeartbeat + ")" : " (no heartbeat recorded)"));
-        }
-        fetchSettings();
-      } else {
-        showMsg("error", data.error || "Ping failed");
-      }
-    } catch {
-      showMsg("error", "Connection error");
-    }
+    setControlling(null);
   };
 
   const inputClass = "w-full px-3 py-2 bg-[#0a0a0f] border border-[rgba(255,255,255,0.07)] rounded-lg text-sm text-[#e2e2ea] focus:outline-none focus:border-indigo-500/50";
@@ -198,6 +178,28 @@ export default function AdminDiscordPage() {
     );
   }
 
+  function formatUptime(seconds: number): string {
+    const d = Math.floor(seconds / 86400);
+    const h = Math.floor((seconds % 86400) / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    const parts: string[] = [];
+    if (d > 0) parts.push(d + "d");
+    if (h > 0) parts.push(h + "h");
+    if (m > 0) parts.push(m + "m");
+    parts.push(s + "s");
+    return parts.join(" ");
+  }
+
+  const isOnline = settings?._bot_online === "true";
+  const uptimeSeconds = settings?._bot_uptime_seconds ? parseInt(settings._bot_uptime_seconds) : 0;
+  let commandCounts: Record<string, number> = {};
+  try {
+    if (settings?._bot_command_counts) {
+      commandCounts = JSON.parse(settings._bot_command_counts);
+    }
+  } catch {}
+
   if (loading) {
     return <div className="p-4 sm:p-6 lg:p-8"><div className="text-center py-12 text-[#55556a]">Loading...</div></div>;
   }
@@ -219,7 +221,7 @@ export default function AdminDiscordPage() {
       )}
 
       <div className="max-w-2xl space-y-6">
-        {/* Bot Status */}
+        {/* Bot Status + Control */}
         <div className="glass-card p-6">
           {sectionHeader(
             <Bot className="w-5 h-5 text-indigo-400" />,
@@ -229,30 +231,91 @@ export default function AdminDiscordPage() {
 
           <div className="flex items-center justify-between p-4 bg-[#111118] rounded-lg border border-[rgba(255,255,255,0.07)] mb-4">
             <div className="flex items-center gap-3">
-              <div className={"w-3 h-3 rounded-full " + (settings?._bot_online === "true" ? "bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]" : "bg-red-500")} />
+              <div className={"w-3 h-3 rounded-full " + (isOnline ? "bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]" : "bg-red-500")} />
               <div>
-                <p className="text-sm text-[#e2e2ea] font-medium">
-                  {settings?._bot_online === "true" ? "Online" : "Offline"}
-                </p>
+                <p className="text-sm text-[#e2e2ea] font-medium">{isOnline ? "Online" : "Offline"}</p>
                 <p className="text-xs text-[#55556a]">
                   {settings?._bot_last_heartbeat
                     ? "Last heartbeat: " + new Date(settings._bot_last_heartbeat).toLocaleString()
                     : "No heartbeat recorded"}
                 </p>
+                {isOnline && uptimeSeconds > 0 && (
+                  <p className="text-xs text-green-400 mt-0.5">Uptime: {formatUptime(uptimeSeconds)}</p>
+                )}
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={pingBot}>
-                <RefreshCw className="w-3.5 h-3.5 mr-1" /> Refresh
+              <Button variant="outline" size="sm" onClick={() => postAction("ping-bot")}>
+                <RefreshCw className={"w-3.5 h-3.5 mr-1 " + (controlling === "ping-bot" ? "animate-spin" : "")} /> Refresh
               </Button>
             </div>
           </div>
 
-          <div className="text-xs text-[#55556a] space-y-1">
-            <p>The bot updates its heartbeat every 30 seconds while running. If no heartbeat is received for 60 seconds, the bot is considered offline.</p>
-            <p>To start the bot: <code className="text-indigo-400">cd discord-bot && npx tsx src/index.ts</code></p>
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              size="sm"
+              onClick={() => postAction("start-bot")}
+              disabled={controlling === "start-bot" || isOnline}
+            >
+              <Play className="w-3.5 h-3.5 mr-1" /> {controlling === "start-bot" ? "Starting..." : "Start"}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => postAction("stop-bot")}
+              disabled={controlling === "stop-bot" || !isOnline}
+            >
+              <Square className="w-3.5 h-3.5 mr-1" /> {controlling === "stop-bot" ? "Stopping..." : "Stop"}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => postAction("restart-bot")}
+              disabled={controlling === "restart-bot"}
+            >
+              <RotateCw className={"w-3.5 h-3.5 mr-1 " + (controlling === "restart-bot" ? "animate-spin" : "")} /> Restart
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => postAction("register-commands")}
+              disabled={controlling === "register-commands"}
+            >
+              <MessageSquare className="w-3.5 h-3.5 mr-1" /> {controlling === "register-commands" ? "Registering..." : "Register Commands"}
+            </Button>
+          </div>
+
+          <div className="text-xs text-[#55556a] mt-3">
+            {isOnline
+              ? "Use Stop/Restart to control the systemd service. Register Commands deploys slash commands to Discord."
+              : "Use Start to launch the bot via systemd."}
           </div>
         </div>
+
+        {/* Command Usage */}
+        {Object.keys(commandCounts).length > 0 && (
+          <div className="glass-card p-6">
+            {sectionHeader(
+              <BarChart3 className="w-5 h-5 text-indigo-400" />,
+              "Command Usage",
+              "Slash command invocation counts since last bot start",
+            )}
+            <div className="space-y-1 text-sm">
+              {Object.entries(commandCounts)
+                .sort(([, a], [, b]) => b - a)
+                .map(([cmd, count]) => (
+                  <div key={cmd} className="flex items-center justify-between py-1.5 border-b border-[rgba(255,255,255,0.05)] last:border-0">
+                    <code className="text-indigo-400">/{cmd}</code>
+                    <span className="text-[#e2e2ea] font-medium">{count} use{count !== 1 ? "s" : ""}</span>
+                  </div>
+                ))}
+              <div className="flex items-center justify-between pt-2 text-xs text-[#55556a]">
+                <span>Total</span>
+                <span>{Object.values(commandCounts).reduce((a, b) => a + b, 0)} uses</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* OAuth Configuration */}
         <div className="glass-card p-6">
@@ -311,8 +374,8 @@ export default function AdminDiscordPage() {
             "https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks")}
           <div className="flex items-center justify-between p-3 bg-[#111118] rounded-lg border border-[rgba(255,255,255,0.07)]">
             <div className="flex items-center gap-2"><Send className="w-4 h-4 text-[#55556a]" /><span className="text-sm text-[#e2e2ea]">Test webhook</span></div>
-            <Button variant="outline" size="sm" onClick={testWebhook} disabled={testingWebhook}>
-              {testingWebhook ? "Sending..." : "Send Test"}
+            <Button variant="outline" size="sm" onClick={() => postAction("test-webhook")} disabled={controlling === "test-webhook"}>
+              {controlling === "test-webhook" ? "Sending..." : "Send Test"}
             </Button>
           </div>
           <div className="border-t border-[rgba(255,255,255,0.07)] pt-4 mt-4">
@@ -360,9 +423,6 @@ export default function AdminDiscordPage() {
               <code className="text-indigo-400">/review approve &lt;id&gt;</code><span>Approve a submission (admin only)</span>
               <code className="text-indigo-400">/review reject &lt;id&gt; &lt;reason&gt;</code><span>Reject a submission (admin only)</span>
             </div>
-            <p className="mt-3 text-xs text-[#55556a]">
-              Register commands: <code className="text-indigo-400">cd discord-bot && npx tsx src/deploy-commands.ts</code>
-            </p>
           </div>
         </div>
       </div>

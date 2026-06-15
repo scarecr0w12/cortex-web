@@ -15,8 +15,34 @@ export const prisma = new PrismaClient();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
+const BOT_START_TIME = Date.now();
+
+async function trackCommand(name: string) {
+  try {
+    const row = await prisma.setting.findUnique({ where: { key: "discord_bot_command_counts" } });
+    const counts: Record<string, number> = row?.value ? JSON.parse(row.value) : {};
+    counts[name] = (counts[name] || 0) + 1;
+    await prisma.setting.upsert({
+      where: { key: "discord_bot_command_counts" },
+      update: { value: JSON.stringify(counts) },
+      create: { key: "discord_bot_command_counts", value: JSON.stringify(counts) },
+    });
+  } catch {}
+}
+
+async function trackStartTime() {
+  try {
+    await prisma.setting.upsert({
+      where: { key: "discord_bot_started_at" },
+      update: { value: String(BOT_START_TIME) },
+      create: { key: "discord_bot_started_at", value: String(BOT_START_TIME) },
+    });
+  } catch {}
+}
+
 client.once(Events.ClientReady, async (c) => {
   console.log(`Bot logged in as ${c.user.tag}`);
+  await trackStartTime();
   await updateHeartbeat();
 });
 
@@ -49,6 +75,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         await handleReview(interaction);
         break;
     }
+    trackCommand(interaction.commandName);
   } catch (error) {
     console.error(`Error handling command ${interaction.commandName}:`, error);
     const reply = interaction.deferred

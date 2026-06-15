@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser, requireAdmin } from "@/lib/auth-middleware";
+import { execSync } from "child_process";
 
 const DISCORD_KEYS = [
   "discord_client_id",
@@ -34,6 +35,16 @@ async function getSettings() {
   const now = Date.now();
   result._bot_online = lastHeartbeat && now - lastHeartbeat < 60000 ? "true" : "false";
   result._bot_last_heartbeat = lastHeartbeat ? new Date(lastHeartbeat).toISOString() : null;
+
+  const startedAt = await prisma.setting.findUnique({ where: { key: "discord_bot_started_at" } });
+  result._bot_started_at = startedAt?.value || null;
+  if (result._bot_started_at) {
+    const elapsed = Math.floor((now - parseInt(result._bot_started_at)) / 1000);
+    result._bot_uptime_seconds = String(elapsed);
+  }
+
+  const cmdCounts = await prisma.setting.findUnique({ where: { key: "discord_bot_command_counts" } });
+  result._bot_command_counts = cmdCounts?.value || null;
 
   return result;
 }
@@ -83,6 +94,16 @@ export async function PUT(request: NextRequest) {
   }
 }
 
+function runSystemCtl(action: string): { success: boolean; message: string } {
+  try {
+    execSync(`systemctl ${action} cortex-discord-bot`, { timeout: 10000 });
+    return { success: true, message: `Bot ${action}ed successfully` };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Unknown error";
+    return { success: false, message: `Failed to ${action} bot: ${msg}` };
+  }
+}
+
 export async function POST(request: NextRequest) {
   const user = getAuthUser(request);
   if (!requireAdmin(user)) {
@@ -92,6 +113,40 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { action } = body;
+
+    if (action === "start-bot") {
+      const result = runSystemCtl("start");
+      return Response.json(result, { status: result.success ? 200 : 500 });
+    }
+
+    if (action === "stop-bot") {
+      const result = runSystemCtl("stop");
+      return Response.json(result, { status: result.success ? 200 : 500 });
+    }
+
+    if (action === "restart-bot") {
+      const result = runSystemCtl("restart");
+      return Response.json(result, { status: result.success ? 200 : 500 });
+    }
+
+    if (action === "register-commands") {
+      try {
+        const botToken = process.env.DISCORD_BOT_TOKEN ||
+          (await prisma.setting.findUnique({ where: { key: "discord_bot_token" } }))?.value;
+        if (!botToken) {
+          return Response.json({ error: "No bot token configured" }, { status: 400 });
+        }
+        execSync("npx tsx src/deploy-commands.ts", {
+          cwd: "/root/cortex-web/discord-bot",
+          timeout: 15000,
+          env: { ...process.env, DISCORD_BOT_TOKEN: botToken },
+        });
+        return Response.json({ success: true, message: "Commands registered successfully" });
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "Unknown error";
+        return Response.json({ error: "Failed to register commands: " + msg }, { status: 500 });
+      }
+    }
 
     if (action === "test-webhook") {
       const webhookUrl =
@@ -105,9 +160,7 @@ export async function POST(request: NextRequest) {
       const res = await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          content: "✅ Discord webhook test from CortexPrism admin panel",
-        }),
+        body: JSON.stringify({ content: "✅ Discord webhook test from CortexPrism admin panel" }),
       });
 
       if (res.ok) {
