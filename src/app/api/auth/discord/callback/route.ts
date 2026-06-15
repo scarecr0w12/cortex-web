@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { signToken } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 function generateUsername(base: string): string {
   const sanitized = base.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 20);
   return `${sanitized}_${Math.random().toString(36).slice(2, 8)}`;
