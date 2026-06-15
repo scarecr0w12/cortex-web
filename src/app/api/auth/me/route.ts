@@ -7,7 +7,7 @@ function formatUser(user: {
   id: string; email: string; username: string; displayName: string | null;
   role: string; avatar: string | null; bio: string | null; website: string | null;
   location: string | null; socialLinks: string | null; preferences: string | null;
-  emailVerified: boolean; createdAt: Date;
+  emailVerified: boolean; createdAt: Date; discordUsername: string | null;
 }) {
   return {
     id: user.id,
@@ -23,6 +23,7 @@ function formatUser(user: {
     preferences: user.preferences ? JSON.parse(user.preferences) : null,
     emailVerified: user.emailVerified,
     createdAt: user.createdAt.toISOString(),
+    discordUsername: user.discordUsername,
   };
 }
 
