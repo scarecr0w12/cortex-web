@@ -77,6 +77,7 @@ const sidebarSections: SidebarSection[] = [
       { href: "/docs/developer-guide/plugin-api", label: "Plugin API" },
       { href: "/docs/developer-guide/agent-development", label: "Agents" },
       { href: "/docs/developer-guide/publishing", label: "Publishing" },
+      { href: "/docs/developer-guide/submission-standards", label: "Submission Standards" },
       { href: "/docs/developer-guide/best-practices", label: "Best Practices" },
     ],
   },
