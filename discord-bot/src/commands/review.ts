@@ -95,12 +95,11 @@ export async function handleReview(interaction: ChatInputCommandInteraction) {
     const reviewerId = websiteUser?.id || interaction.user.id;
 
     if (action === "approve") {
-      const model = plugin ? prisma.plugin : prisma.agentConfig;
-      const type = plugin ? "plugin" : "agent";
-      await model.update({
-        where: { id },
-        data: { status: "approved" },
-      });
+      if (plugin) {
+        await prisma.plugin.update({ where: { id }, data: { status: "approved" } });
+      } else {
+        await prisma.agentConfig.update({ where: { id }, data: { status: "approved" } });
+      }
 
       await prisma.submissionReview.create({
         data: {
@@ -111,7 +110,7 @@ export async function handleReview(interaction: ChatInputCommandInteraction) {
         },
       });
 
-      await interaction.editReply({ content: `✅ ${type === "plugin" ? "Plugin" : "Agent"} \`${submission.name}\` has been approved.` });
+      await interaction.editReply({ content: `✅ ${plugin ? "Plugin" : "Agent"} \`${submission.name}\` has been approved.` });
     } else {
       const reason = interaction.options.get("reason")?.value as string;
       if (!reason) {
@@ -119,12 +118,11 @@ export async function handleReview(interaction: ChatInputCommandInteraction) {
         return;
       }
 
-      const model = plugin ? prisma.plugin : prisma.agentConfig;
-      const type = plugin ? "plugin" : "agent";
-      await model.update({
-        where: { id },
-        data: { status: "rejected" },
-      });
+      if (plugin) {
+        await prisma.plugin.update({ where: { id }, data: { status: "rejected" } });
+      } else {
+        await prisma.agentConfig.update({ where: { id }, data: { status: "rejected" } });
+      }
 
       await prisma.submissionReview.create({
         data: {
@@ -136,7 +134,7 @@ export async function handleReview(interaction: ChatInputCommandInteraction) {
         },
       });
 
-      await interaction.editReply({ content: `❌ ${type === "plugin" ? "Plugin" : "Agent"} \`${submission.name}\` has been rejected.\nReason: ${reason}` });
+      await interaction.editReply({ content: `❌ ${plugin ? "Plugin" : "Agent"} \`${submission.name}\` has been rejected.\nReason: ${reason}` });
     }
   }
 }
