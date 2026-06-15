@@ -8,35 +8,31 @@ datasource db {
 }
 
 model User {
-  id            String           @id @default(cuid())
-  email         String           @unique
-  username      String           @unique
-  displayName   String?
-  passwordHash  String
-  role          String           @default("user")
-  avatar        String?
-  bio           String?
-  website       String?
-  location      String?
-  socialLinks   String?          // JSON: { twitter?, github?, discord?, linkedin? }
-  preferences   String?          // JSON: { emailNotifications?, theme? }
-  emailVerified Boolean          @default(false)
-  githubId      String?          @unique
-  githubToken   String?
-  isActive      Boolean          @default(true)
-  roleId        String?
-  userRole      Role?            @relation(fields: [roleId], references: [id])
-  plugins       Plugin[]
-  agents        AgentConfig[]
-  reviews       SubmissionReview[]
-  ratings       UserRating[]
-  auditLogs     AuditLog[]
+  id              String           @id @default(cuid())
+  email           String           @unique
+  username        String           @unique
+  passwordHash    String
+  role            String           @default("user")
+  avatar          String?
+  bio             String?
+  website         String?
+  displayName     String?
+  location        String?
+  socialLinks     String?
+  preferences     String?
+  emailVerified   Boolean          @default(false)
+  isActive        Boolean          @default(true)
+  discordId       String?          @unique
+  discordUsername String?
+  plugins           Plugin[]
+  agents            AgentConfig[]
+  reviews           SubmissionReview[]
+  ratings           UserRating[]
+  auditLogs         AuditLog[]
   githubConnections GitHubConnection[]
-  topicScans    GitHubTopicScan[]
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-
-  @@map("User")
+  githubTopicScans  GitHubTopicScan[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 }
 
 model Permission {
@@ -59,7 +55,6 @@ model Role {
   createdAt   DateTime @default(now())
 
   permissions RolePermission[]
-  users       User[]
   @@map("Role")
 }
 

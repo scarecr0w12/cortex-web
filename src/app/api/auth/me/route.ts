@@ -42,6 +42,8 @@ const ProfileUpdateSchema = z.object({
     emailNotifications: z.boolean().optional(),
     theme: z.enum(["dark", "light", "system"]).optional(),
   }).optional(),
+  discordUsername: z.string().nullable().optional(),
+  discordId: z.string().nullable().optional(),
 });
 
 const AccountUpdateSchema = z.object({
@@ -77,6 +79,8 @@ export async function PUT(request: NextRequest) {
       if (data.bio !== undefined) updateData.bio = data.bio || null;
       if (data.website !== undefined) updateData.website = data.website || null;
       if (data.avatar !== undefined) updateData.avatar = data.avatar || null;
+      if (data.discordUsername !== undefined) updateData.discordUsername = data.discordUsername;
+      if (data.discordId !== undefined) updateData.discordId = data.discordId;
       if (data.location !== undefined) updateData.location = data.location || null;
 
       if (data.socialLinks !== undefined) {

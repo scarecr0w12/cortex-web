@@ -351,6 +351,22 @@ The build script produces a standalone `.next` directory with static assets and 
 systemctl restart cortexprism-web.service
 ```
 
+### Discord Bot
+
+The Discord bot is a standalone service in `discord-bot/`:
+
+```bash
+cd discord-bot
+npm install
+npx prisma generate --schema=../prisma/schema.prisma
+
+# Register slash commands (run once)
+npx tsx src/deploy-commands.ts
+
+# Start bot
+npx tsx src/index.ts
+```
+
 ### Docker
 
 ```bash
@@ -370,6 +386,13 @@ The `Dockerfile` uses multi-stage build with Next.js standalone output. The `doc
 | `NEXT_PUBLIC_SITE_URL` | `https://cortexprism.io` | Canonical site URL |
 | `NEXT_PUBLIC_GITHUB_REPO` | `CortexPrism/cortex` | GitHub repo for stats |
 | `NEXT_PUBLIC_CORTEX_VERSION` | (auto-detected) | Override displayed CortexPrism version |
+| `DISCORD_CLIENT_ID` | — | Discord OAuth app client ID |
+| `DISCORD_CLIENT_SECRET` | — | Discord OAuth app client secret |
+| `NEXT_PUBLIC_DISCORD_CLIENT_ID` | — | Discord OAuth app client ID (public) |
+| `DISCORD_BOT_TOKEN` | — | Discord bot token for slash commands |
+| `DISCORD_GUILD_ID` | — | Guild ID for guild-specific command registration |
+| `DISCORD_SUBMISSION_WEBHOOK_URL` | — | Webhook URL for marketplace submission notifications |
+| `DISCORD_ADMIN_IDS` | — | Comma-separated Discord user IDs with bot admin access |
 
 ---
 

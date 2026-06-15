@@ -2,12 +2,18 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser, requireAdmin } from "@/lib/auth-middleware";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const user = getAuthUser(request);
+  if (!requireAdmin(user)) {
+    return Response.json({ error: "Admin access required" }, { status: 403 });
+  }
+
   const settings = await prisma.setting.findMany({ orderBy: { key: "asc" } });
   const result: Record<string, string | null> = {};
   for (const s of settings) {
     result[s.key] = s.value;
   }
+  result._env_github_token = process.env.GITHUB_TOKEN ? "set" : "not set";
   return Response.json({ settings: result });
 }
 

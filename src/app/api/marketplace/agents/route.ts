@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { getAuthUser } from "@/lib/auth-middleware";
+import { sendSubmissionWebhook } from "@/lib/discord-webhook";
 
 const AgentInputSchema = z.object({
   name: z.string().min(1),
@@ -94,6 +95,8 @@ export async function POST(request: NextRequest) {
         userId: user?.userId || null,
       },
     });
+
+    sendSubmissionWebhook("agent", agent.name, user?.userId || "anonymous", agent.status, agent.id);
 
     return Response.json(agent, { status: 201 });
   } catch (error) {

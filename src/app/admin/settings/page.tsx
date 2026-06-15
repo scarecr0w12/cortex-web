@@ -12,34 +12,43 @@ export default function AdminSettingsPage() {
   const [showToken, setShowToken] = useState(false);
   const [tokenValue, setTokenValue] = useState("");
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const authHeaders = () => {
+    const t = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    return t ? { authorization: `Bearer ${t}` } : {};
+  };
 
   useEffect(() => {
-    if (!token) return;
-    fetch("/api/admin/settings", { headers: { authorization: `Bearer ${token}` } })
-      .then(r => r.json())
-      .then(data => {
+    const headers = authHeaders();
+    if (!headers.authorization) { setLoading(false); return; }
+    fetch("/api/admin/settings", { headers })
+      .then(async r => {
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
         setSettings(data.settings || {});
         setTokenValue(data.settings?.github_token || "");
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((e) => { setMessage({ type: "error", text: "Failed to load: " + e.message }); setLoading(false); });
   }, []);
 
   const saveToken = async () => {
-    if (!token) return;
+    const headers = authHeaders();
+    if (!headers.authorization) return;
     setSaving(true);
     setMessage(null);
     const res = await fetch("/api/admin/settings", {
       method: "PUT",
-      headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
+      headers: { "Content-Type": "application/json", ...headers },
       body: JSON.stringify({ key: "github_token", value: tokenValue || null }),
     });
+    const data = await res.json().catch(() => ({}));
     if (res.ok) {
       setSettings(prev => ({ ...prev, github_token: tokenValue }));
       setMessage({ type: "success", text: "GitHub token saved" });
+    } else if (res.status === 403) {
+      setMessage({ type: "error", text: "Session expired — log out and log back in, then try again" });
     } else {
-      setMessage({ type: "error", text: "Failed to save token" });
+      setMessage({ type: "error", text: data.error || `Failed (HTTP ${res.status})` });
     }
     setSaving(false);
     setTimeout(() => setMessage(null), 4000);
@@ -151,8 +160,8 @@ export default function AdminSettingsPage() {
               </div>
               <div className="flex items-center justify-between py-2 border-b border-[rgba(255,255,255,0.05)]">
                 <span className="text-[#9090a8]">Environment Variable (GITHUB_TOKEN)</span>
-                <span className="text-[#55556a]">
-                  {typeof window !== "undefined" ? "Runtime only" : "Checking..."}
+                <span className={settings._env_github_token === "set" ? "text-green-400" : "text-red-400"}>
+                  {settings._env_github_token === "set" ? "Configured" : "Not set"}
                 </span>
               </div>
             </div>

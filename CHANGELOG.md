@@ -2,6 +2,36 @@
 
 All notable changes to the CortexPrism website will be documented in this file.
 
+## [0.4.0] — 2026-06-15
+
+### Added
+- Discord OAuth login — "Sign in with Discord" button on login page with full OAuth flow
+  - `GET /api/auth/discord/callback` — exchanges Discord code, creates/authenticates user, returns HTML page that stores JWT in localStorage
+  - New users created from Discord with generated username, no password (sign in via Discord only)
+  - `discordId` and `discordUsername` fields on User model
+- Discord account linking in Settings → Security tab
+  - `POST /api/auth/discord/link` — links Discord to existing account (requires auth)
+  - `DELETE /api/auth/discord/link` — unlinks Discord account
+  - Cryptographic state validation prevents CSRF on OAuth linking
+- Standalone Discord bot service (`discord-bot/`)
+  - Bot entry point with slash command registration and interaction handling
+  - `/stats` — marketplace statistics (total plugins, agents, pending counts)
+  - `/plugin search <query>` / `/plugin info <name|id>` — marketplace plugin search and details
+  - `/agent search <query>` / `/agent info <name|id>` — marketplace agent search and details
+  - `/review list|approve|reject` — admin moderation commands with role verification
+  - Prisma integration with shared database schema
+  - Dockerfile for containerized deployment
+- Submission webhook notifications via `DISCORD_SUBMISSION_WEBHOOK_URL`
+  - Fire-and-forget Discord embed on plugin and agent submissions
+  - Includes type, name, author, status, and admin review link
+- `discordUsername` field exposed in AuthContext and auth API responses
+- Cryptographic OAuth state verification for account linking flow
+
+### Changed
+- `src/lib/auth.ts` — `getUserFromToken` select expanded to include `discordUsername` and all profile fields
+- `src/app/api/auth/me/route.ts` — PUT handler supports `discordId`/`discordUsername` fields for unlinking
+- `src/lib/AuthContext.tsx` — `AuthUser` interface now includes optional `discordUsername`
+
 ## [0.3.0] — 2026-06-15
 
 ### Added

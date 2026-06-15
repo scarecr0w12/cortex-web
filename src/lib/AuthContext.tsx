@@ -17,6 +17,7 @@ export interface AuthUser {
   preferences: Record<string, unknown> | null;
   emailVerified: boolean;
   createdAt: string;
+  discordUsername?: string;
 }
 
 interface AuthContextValue {
