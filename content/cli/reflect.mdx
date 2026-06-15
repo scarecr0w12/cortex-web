@@ -1,21 +1,50 @@
 # `cortex reflect`
 
-The `cortex reflect` command manages reflect operations in CortexPrism.
+Inspect and consolidate LLM self-assessment reflection patterns. After each turn, CortexPrism performs a meta-cognitive self-evaluation to assess response quality and extract reusable patterns.
 
 ## Usage
 
 ```bash
-cortex reflect [options]
+cortex reflect list                  # Show stored reflection patterns
+cortex reflect consolidate           # Run LLM meta-pattern extraction
 ```
 
-## Options
+## Subcommands
 
-| Option | Description |
-|--------|-------------|
-| `--help` | Show help for this command |
+| Subcommand | Description |
+|------------|-------------|
+| `list` | Display all stored reflection patterns from past sessions |
+| `consolidate` | Run LLM-driven meta-pattern extraction across stored reflections |
+
+## Reflection System
+
+After each agent turn, the system performs:
+
+1. **Confidence assessment** — LLM self-evaluates response quality
+2. **Pattern extraction** — Identifies recurring themes and behaviors
+3. **Pattern storage** — Saved to `reflection_memory` table (T5 tier)
+4. **Consolidation** — Batch meta-pattern extraction across stored reflections
+
+Reflection is fire-and-forget — the agent loop does not wait for reflection to complete before returning the response to the user.
+
+## Configuration
+
+Reflection can be enabled/disabled in config:
+
+```json
+{
+  "agent": {
+    "enableReflection": true
+  }
+}
+```
 
 ## Examples
 
 ```bash
-cortex reflect --help
+# View all stored reflection patterns
+cortex reflect list
+
+# Run meta-pattern consolidation
+cortex reflect consolidate
 ```

@@ -1,21 +1,87 @@
 # `cortex serve`
 
-The `cortex serve` command manages serve operations in CortexPrism.
+Start the built-in HTTP server with REST API endpoints and WebSocket support for real-time streaming chat. Also serves the CortexPrism web UI dashboard.
 
 ## Usage
 
 ```bash
-cortex serve [options]
+cortex serve                         # http://127.0.0.1:3000 (foreground)
+cortex serve --port 8080 --host 0.0.0.0
+cortex serve -d                      # Run in the background (daemon mode)
+cortex serve -d -r                   # Restart background server on the same port
+cortex serve -s                      # Stop background server
 ```
 
 ## Options
 
 | Option | Description |
 |--------|-------------|
+| `--port, -p` | HTTP server port (default: 3000) |
+| `--host, -h` | Bind address (default: 127.0.0.1) |
+| `-d` | Run server in background (daemon mode) |
+| `-r` | Restart an existing background server (use with `-d`) |
+| `-s` | Stop a running background server |
 | `--help` | Show help for this command |
+
+## REST API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/health` | Health check |
+| GET | `/api/sessions?limit=20` | List recent sessions |
+| GET | `/api/sessions/:id` | Get session details |
+| GET | `/api/sessions/:id/events` | Get session events |
+| GET | `/api/sessions/:id/messages` | Get session messages |
+| POST | `/api/sessions/:id/resume` | Resume a session |
+| DELETE | `/api/sessions/:id` | Delete a session |
+| GET | `/api/jobs?status=pending` | List jobs by status |
+| GET | `/api/memory/search?q=<query>` | Search memory |
+
+## WebSocket Protocol
+
+Connect to `ws://<host>:<port>/ws` for real-time streaming chat.
+
+**Client → Server messages:**
+```json
+{ "type": "chat", "message": "...", "sessionId": "sess_..." }
+{ "type": "ping" }
+{ "type": "new_session" }
+{ "type": "select_agent", "agentId": "..." }
+```
+
+**Server → Client messages:**
+```json
+{ "type": "connected" }
+{ "type": "session", "sessionId": "sess_..." }
+{ "type": "start" }
+{ "type": "chunk", "delta": "..." }
+{ "type": "done", "tokensIn": 100, "tokensOut": 50, "costUsd": 0.001, "durationMs": 800 }
+{ "type": "error", "error": "..." }
+{ "type": "pong" }
+```
+
+## Web UI Dashboard
+
+The built-in web UI provides four main tabs:
+- **Chat** — WebSocket-powered streaming chat interface
+- **Lens** — Full activity audit timeline of all sessions, tool calls, and policy decisions
+- **Memory** — Search and browse memory entries across all tiers
+- **Jobs** — View scheduled job status and history
+
+Session resume is supported: including an existing `sessionId` in a `chat` message reopens the per-session database and loads previous history.
 
 ## Examples
 
 ```bash
-cortex serve --help
+# Start server on default port in foreground
+cortex serve
+
+# Start on a custom port in background
+cortex serve --port 8080 --host 0.0.0.0 -d
+
+# Restart a background server
+cortex serve -d -r
+
+# Stop the background server
+cortex serve -s
 ```

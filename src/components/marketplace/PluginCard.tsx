@@ -3,6 +3,7 @@ import { Badge } from "@/components/shared/Badge";
 import { DownloadCount } from "@/components/shared/DownloadCount";
 import { StarRating } from "@/components/shared/StarRating";
 import { cn } from "@/lib/utils";
+import { Github, Star } from "lucide-react";
 
 interface PluginCardProps {
   plugin: {
@@ -17,6 +18,9 @@ interface PluginCardProps {
     rating: number;
     category: string | null;
     icon: string | null;
+    license: string | null;
+    repository: string | null;
+    githubStars: number;
   };
 }
 
@@ -95,16 +99,34 @@ export function PluginCard({ plugin }: PluginCardProps) {
               <span className="text-xs text-[#55556a] truncate">{plugin.author || "Unknown"}</span>
               {plugin.category && (
                 <>
-                  <span className="text-[#333]">·</span>
+                  <span className="text-[#333]">&middot;</span>
                   <span className="text-xs text-[#55556a] truncate">{plugin.category}</span>
+                </>
+              )}
+              {plugin.license && (
+                <>
+                  <span className="text-[#333]">&middot;</span>
+                  <span className="text-xs text-[#55556a] truncate">{plugin.license}</span>
                 </>
               )}
             </div>
             <div className="flex items-center gap-3 shrink-0">
+              {plugin.githubStars > 0 && (
+                <span className="flex items-center gap-1 text-xs text-[#55556a]">
+                  <Star className="w-3 h-3 text-yellow-400" />
+                  {plugin.githubStars}
+                </span>
+              )}
               <StarRating rating={plugin.rating} />
               <DownloadCount count={plugin.downloads} />
             </div>
           </div>
+
+          {plugin.repository && (
+            <div className="absolute top-3 right-12 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Github className="w-4 h-4 text-[#55556a]" />
+            </div>
+          )}
         </div>
       </div>
     </Link>

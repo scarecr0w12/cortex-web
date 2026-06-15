@@ -1,17 +1,68 @@
 # Frequently Asked Questions
 
-## What is CortexPrism?
+## General
 
-CortexPrism is an open-source agentic harness system that provides a runtime for building, deploying, and managing AI agents. It supports multiple LLM providers, features a five-tier memory system, and includes a comprehensive security model.
+### What is CortexPrism?
 
-## Do I need a GPU?
+CortexPrism is an open-source agentic harness system written in TypeScript/Deno. It provides a runtime for building, deploying, and managing AI agents with support for 12+ LLM providers, a 5-tier memory system, sandboxed code execution, and a defense-in-depth security model.
 
-No, CortexPrism runs entirely on CPU. LLM calls are made through provider APIs, so you only need a network connection.
+### What is an "agentic harness"?
 
-## What providers are supported?
+An agentic harness is a runtime system that hosts, orchestrates, and empowers AI agents. It manages the full lifecycle of agent interactions including LLM calls, tool execution, memory persistence, security validation, and user interfaces.
 
-OpenAI, Anthropic, Google AI, Groq, Azure OpenAI, AWS Bedrock, Together AI, Fireworks, Mistral AI, Perplexity, DeepSeek, and more.
+### Do I need a GPU?
 
-## Can I use it offline?
+No. CortexPrism runs entirely on CPU. All LLM calls are made through provider APIs — you only need a network connection.
 
-CortexPrism requires network access for LLM API calls. However, the memory system and plugin management work offline.
+### Is it free and open source?
+
+Yes. CortexPrism is released under the MIT License. The source code is available on [GitHub](https://github.com/CortexPrism/cortex).
+
+### What are the system requirements?
+
+- **OS**: Linux, macOS, or Windows (via WSL2)
+- **Runtime**: Deno v2.0+
+- **Memory**: 4GB RAM minimum (8GB+ recommended)
+- **Storage**: 500MB for base installation
+- **Optional**: Docker for sandboxed code execution
+
+## LLM Providers
+
+### What providers are supported?
+
+12+ providers are supported: Anthropic Claude, OpenAI, Google Gemini, Mistral AI, Groq, DeepSeek, OpenRouter, xAI (Grok), Together AI, AWS Bedrock, Cohere, and Ollama (local).
+
+### Can I switch providers mid-session?
+
+Yes. Use the `/model` slash command inside a chat session to switch models, or start a new session with `--model` or `--provider` flags.
+
+### Can I use multiple providers at once?
+
+Yes. The CascadeRouter can be configured to try cheaper models first and escalate to more capable ones when confidence is low.
+
+### Can I use CortexPrism offline?
+
+CortexPrism requires network access for LLM API calls. However, you can run local models via Ollama for fully offline operation. The memory system, plugin management, and tool execution work offline.
+
+## Memory
+
+### How does the memory system work?
+
+CortexPrism uses a 5-tier memory system with hybrid retrieval combining FTS5 keyword search and cosine vector similarity, scored with exponential time decay. Memories are automatically retrieved and injected into the agent's context.
+
+### Is my data private?
+
+Memory data is stored locally in SQLite databases on your machine. The Vault uses AES-256-GCM encryption for sensitive credentials. No memory data is sent to external services except the LLM provider API calls.
+
+## Security
+
+### How does the Parallax security model work?
+
+Every tool call passes through a 3-stage validator: tool name check, shell command pattern check, and domain allow/deny rules. All decisions are logged to the Cortex Lens audit trail.
+
+### What dangerous commands are blocked by default?
+
+- `rm -rf /` and variants
+- Shell fork bomb patterns
+- Direct disk writes (`dd` to block devices)
+- World-writable root permissions (`chmod 777 /`)

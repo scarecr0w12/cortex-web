@@ -1,0 +1,229 @@
+# Security Guidelines
+
+Security hardening and operational security recommendations for CortexPrism deployments.
+
+## Overview
+
+CortexPrism's Parallax security model provides defense-in-depth protection. This guide covers how to configure and operate CortexPrism securely.
+
+## Parallax Security Model
+
+```
+User Input → Policy Engine → Validator → Execution → Lens Audit
+                │
+                ├── Tool Name Check
+                ├── Command Pattern Check
+                └── Domain Allow/Deny Rules
+```
+
+Every tool call passes through three validation stages before execution. All decisions are logged to the Lens audit trail.
+
+## Configuration Security
+
+### API Keys
+
+Never store API keys in plaintext configuration files on shared systems:
+
+```bash
+# Good: environment variables
+export ANTHROPIC_API_KEY="sk-ant-..."
+export OPENAI_API_KEY="sk-..."
+
+# Better: vault
+export CORTEX_VAULT_KEY="strong-passphrase"
+cortex vault store "anthropic-key" --service anthropic
+cortex vault store "openai-key" --service openai
+```
+
+### Vault Encryption
+
+The vault uses AES-256-GCM encryption with PBKDF2 key derivation:
+
+- **Encryption**: AES-256-GCM (authenticated encryption)
+- **Key derivation**: PBKDF2 with 600,000 iterations
+- **Key source**: `CORTEX_VAULT_KEY` environment variable
+- **Storage**: Encrypted SQLite database (`vault.db`)
+- **Access logging**: All vault access is logged to Lens
+
+```bash
+# Set vault passphrase
+export CORTEX_VAULT_KEY="your-strong-passphrase-min-20-chars!!"
+
+# Store a credential
+cortex vault store "db-password" --service production-db
+
+# List stored services
+cortex vault list
+
+# Retrieve (logged to audit trail)
+cortex vault get "db-password"
+```
+
+## Policy Rules
+
+### Default Deny
+
+The policy engine uses a default-deny approach. Only explicitly allowed operations are permitted.
+
+```bash
+# List current policies
+cortex policy list
+
+# Add a deny rule for dangerous commands
+cortex policy add deny --pattern "rm -rf /"
+
+# Add an allow rule for a specific domain
+cortex policy add allow --pattern "fetch:https://api.example.com/*"
+
+# Remove a policy
+cortex policy remove <policy-id>
+```
+
+### Rule Evaluation Order
+
+1. Explicit deny rules (checked first)
+2. Explicit allow rules
+3. Default action (deny)
+
+### Recommended Rules
+
+```bash
+# Block dangerous operations
+cortex policy add deny --pattern "rm -rf /"
+cortex policy add deny --pattern ":(){ :|:& };:"  # Fork bomb
+cortex policy add deny --pattern "dd if=/dev/zero of=/dev/sd*"
+cortex policy add deny --pattern "chmod 777 /"
+cortex policy add deny --pattern "> /dev/sd*"
+
+# Allow safe operations
+cortex policy add allow --pattern "fetch:https://*.example.com/*"
+cortex policy add allow --pattern "read:$HOME/*"
+cortex policy add allow --pattern "write:$HOME/tmp/*"
+```
+
+## Network Security
+
+### Server Mode
+
+When running `cortex serve`, secure the HTTP server:
+
+```bash
+# Bind to localhost only (default)
+cortex serve --host 127.0.0.1
+
+# Use a reverse proxy for public access (recommended)
+# nginx configuration:
+```
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name cortex.example.com;
+
+    ssl_certificate /etc/ssl/certs/cortex.crt;
+    ssl_certificate_key /etc/ssl/private/cortex.key;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+### API Authentication
+
+Enable API authentication in production:
+
+```json
+{
+  "server": {
+    "port": 3000,
+    "host": "127.0.0.1",
+    "auth": {
+      "required": true,
+      "jwtSecret": "your-secure-secret-change-in-production"
+    }
+  }
+}
+```
+
+## Sandbox Security
+
+### Docker Sandbox
+
+The Docker sandbox provides strong isolation:
+
+```
+┌─────────────────────┐
+│  Docker Container   │
+│  ───────────────    │
+│  No network access  │
+│  256MB memory limit │
+│  0.5 CPU cores      │
+│  64 PIDs max        │
+│  no-new-privileges  │
+│  Ephemeral filesystem│
+└─────────────────────┘
+```
+
+### Subprocess Mode
+
+When Docker is unavailable, subprocess mode provides weaker isolation:
+
+```bash
+# Warn when falling back to subprocess
+cortex run script.py  # Logs warning if Docker unavailable
+
+# Force sandbox mode
+cortex run script.py --sandbox-only  # Fails if Docker unavailable
+```
+
+## Audit Logging (Cortex Lens)
+
+All security events are logged to the Lens database:
+
+```bash
+# View recent audit events
+cortex lens tail
+
+# Search audit log
+cortex lens search "tool:shell"
+
+# Export audit log
+cortex lens export --format json > audit-export.json
+
+# Check for policy violations
+cortex lens search "action:deny"
+```
+
+## Operational Security Checklist
+
+- [ ] API keys stored in vault or environment variables, not config files
+- [ ] Vault passphrase is strong (20+ characters) and stored securely
+- [ ] Policy rules reviewed and tested
+- [ ] Server bound to localhost or behind a reverse proxy
+- [ ] Docker sandbox enabled for code execution
+- [ ] Lens audit logging enabled and reviewed regularly
+- [ ] Plugin permissions reviewed before installation
+- [ ] Data directory permissions restricted (`chmod 700 ~/.cortex`)
+- [ ] Regular backups of data directory configured
+- [ ] CortexPrism version kept up to date
+
+## Incident Response
+
+If you suspect a security incident:
+
+1. **Isolate**: Stop all CortexPrism processes
+   ```bash
+   cortex daemon stop
+   cortex serve -s
+   ```
+2. **Audit**: Export and review Lens audit log
+   ```bash
+   cortex lens export --format json > incident-$(date +%s).json
+   ```
+3. **Contain**: Review and tighten policy rules
+4. **Analyze**: Check vault access logs and plugin activity
+5. **Recover**: Restore from clean backup if needed
+6. **Report**: Open a [GitHub security issue](https://github.com/CortexPrism/cortex/security)

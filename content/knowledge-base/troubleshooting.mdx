@@ -8,7 +8,15 @@
 Error: No API key found for provider "openai"
 ```
 
-**Solution**: Run `cortex setup` to configure your API keys, or set the `OPENAI_API_KEY` environment variable.
+**Solution**: Run `cortex setup` to configure your API key, or set the corresponding environment variable (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc.).
+
+### API Key Not Set for Provider
+
+```
+Error: Provider "openai" has no apiKey set
+```
+
+**Solution**: Edit `~/.cortex/config.json` and add the `apiKey` field for the provider, or set the environment variable.
 
 ### Plugin Not Found
 
@@ -16,7 +24,10 @@ Error: No API key found for provider "openai"
 Error: Plugin "python-executor" not found
 ```
 
-**Solution**: Install the plugin first: `cortex plugin install marketplace:cortexprism.io/plugins/python-executor`
+**Solution**: Install the plugin first:
+```bash
+cortex plugin install marketplace:cortexprism.io/plugins/python-executor
+```
 
 ### Database Locked
 
@@ -24,4 +35,65 @@ Error: Plugin "python-executor" not found
 Error: SQLITE_BUSY: database is locked
 ```
 
-**Solution**: Close other CortexPrism processes and try again. If the issue persists, delete the lock file at `~/.cortex/plugins.db-journal`.
+**Solution**: Close other CortexPrism processes and try again. If the issue persists, check for stale lock files:
+```bash
+ls -la ~/.cortex/data/*-journal
+```
+
+### Sandbox: Docker Not Available
+
+```
+Error: Docker is not available. Falling back to subprocess mode.
+```
+
+**Solution**: This is a warning, not an error — subprocess fallback works. Install Docker for sandbox isolation:
+```bash
+# Ubuntu/Debian
+sudo apt install docker.io
+
+# macOS
+brew install --cask docker
+```
+
+### Sandbox: Command Timeout
+
+```
+Error: Sandbox execution timed out after 30 seconds
+```
+
+**Solution**: Optimize your code to run faster, or increase the timeout in the configuration. The sandbox has a default 30-second timeout with 64KB output limit.
+
+### Port Already in Use
+
+```
+Error: Address in use (os error 98)
+```
+
+**Solution**: Either stop the existing server (`cortex serve -s`) or use a different port (`cortex serve --port 8080`).
+
+### Vault: CORTEX_VAULT_KEY Not Set
+
+```
+Error: CORTEX_VAULT_KEY environment variable is not set
+```
+
+**Solution**: Set the passphrase before using vault commands:
+```bash
+export CORTEX_VAULT_KEY="your-strong-passphrase"
+```
+
+## Debugging
+
+Enable verbose logging to get more details:
+
+```bash
+cortex --verbose chat
+```
+
+Check the Cortex Lens audit log for security events and tool calls via the web UI at `http://localhost:3000`.
+
+## Getting Help
+
+- Open an issue on [GitHub](https://github.com/CortexPrism/cortex/issues)
+- Check the [Architecture Docs](/docs/architecture) for system understanding
+- Review [Design Docs](https://github.com/CortexPrism/cortex/tree/main/docs/design) for detailed specifications

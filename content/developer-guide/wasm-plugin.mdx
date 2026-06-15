@@ -1,0 +1,218 @@
+# WASM Plugin Development
+
+WASM (WebAssembly) plugins compile to `.wasm` bytecode and run in a sandboxed runtime. They offer the highest performance and strongest security isolation, making them ideal for CPU-intensive or security-sensitive operations.
+
+## Overview
+
+WASM plugins export functions using the WASM ABI that the CortexPrism WASM runtime can call. The runtime handles memory management, type marshalling, and sandboxing.
+
+## Supported Languages
+
+| Language | Toolchain | Status |
+|----------|-----------|--------|
+| Rust | `wasm-pack` / `wasm32-wasi` | Recommended |
+| Go | `GOOS=wasip1 GOARCH=wasm` | Supported |
+| C/C++ | `clang` with `wasm32-wasi` target | Supported |
+| AssemblyScript | `as-compiler` | Supported |
+| Zig | `zig build-exe -target wasm32-wasi` | Supported |
+
+## Rust WASM Plugin (Recommended)
+
+### Setup
+
+```bash
+cargo new --lib my-wasm-plugin
+cd my-wasm-plugin
+```
+
+Add to `Cargo.toml`:
+
+```toml
+[package]
+name = "my-wasm-plugin"
+version = "1.0.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+cortexprism-wasm-sdk = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.release]
+opt-level = "s"
+lto = true
+```
+
+### Implementing Capabilities
+
+```rust
+use cortexprism_wasm_sdk::{register_capability, CapabilityContext};
+use serde::{Deserialize, Serialize};
+
+#[derive(Deserialize)]
+struct TransformInput {
+    text: String,
+    mode: String,
+}
+
+#[derive(Serialize)]
+struct TransformOutput {
+    result: String,
+    length: usize,
+    hash: u64,
+}
+
+fn transform_text(input: TransformInput, _ctx: CapabilityContext) -> TransformOutput {
+    let result = match input.mode.as_str() {
+        "reverse" => input.text.chars().rev().collect(),
+        "uppercase" => input.text.to_uppercase(),
+        "lowercase" => input.text.to_lowercycle(),
+        "rot13" => input.text.chars().map(rot13_char).collect(),
+        _ => input.text,
+    };
+
+    TransformOutput {
+        length: result.len(),
+        hash: simple_hash(&result),
+        result,
+    }
+}
+
+register_capability!("transform", transform_text);
+
+fn simple_hash(s: &str) -> u64 {
+    s.bytes().fold(0u64, |acc, b| acc.wrapping_mul(31).wrapping_add(b as u64))
+}
+```
+
+### Building
+
+```bash
+cargo build --release --target wasm32-wasi
+```
+
+The output is at `target/wasm32-wasi/release/my_wasm_plugin.wasm`.
+
+## Plugin Manifest
+
+```json
+{
+  "name": "text-processor",
+  "version": "1.0.0",
+  "type": "wasm",
+  "entryPoint": "text_processor.wasm",
+  "description": "High-performance text transformation plugin",
+  "wasm": {
+    "memoryPages": 10,
+    "maxMemoryPages": 50,
+    "allocator": "wasi"
+  }
+}
+```
+
+## Go WASM Plugin
+
+```go
+package main
+
+import (
+    "strings"
+    "unicode/utf8"
+)
+
+//export transform
+func transform(ptr uint32, len uint32) uint32 {
+    input := readMemory(ptr, len)
+    result := strings.ToUpper(input)
+    return writeMemory(result)
+}
+
+//export count_tokens
+func countTokens(ptr uint32, len uint32) uint32 {
+    input := readMemory(ptr, len)
+    count := utf8.RuneCountInString(input) / 4
+    if count < 1 {
+        count = 1
+    }
+    return count
+}
+
+func main() {}
+```
+
+Build:
+```bash
+GOOS=wasip1 GOARCH=wasm go build -o plugin.wasm main.go
+```
+
+## Capability ABI
+
+Each exported WASM function follows this signature convention:
+
+```wasm
+(func (param i32 i32) (result i32))
+```
+
+- **Input pointer** (`i32`): Pointer to JSON-encoded input arguments in shared memory
+- **Input length** (`i32`): Length of the input buffer
+- **Return value** (`i32`): Pointer to JSON-encoded result in shared memory
+
+The runtime handles memory allocation and deallocation.
+
+## Memory Model
+
+- WASM plugins operate on a linear memory space
+- The runtime allocates an initial number of pages (64KB each)
+- The plugin can request additional pages up to the configured maximum
+- String data is passed through shared memory using the WASI allocator or a custom allocator
+- Memory is cleared between capability calls for isolation
+
+## Performance Characteristics
+
+| Operation | ESM | WASM |
+|-----------|-----|------|
+| Cold start | ~10ms | ~1ms |
+| Text processing (1MB) | ~50ms | ~5ms |
+| JSON parse (100KB) | ~2ms | ~0.3ms |
+| Memory overhead | ~30MB | ~5MB |
+
+## Security
+
+- WASM runs in a sandboxed runtime with no access to the host system
+- Memory isolation: each call gets a fresh memory space
+- Resource limits: configurable memory pages and execution time
+- No network access by default (can be enabled via permissions)
+- System call filtering via WASI preview 1
+
+## Testing
+
+```typescript
+import { testWasmPlugin } from "@cortexprism/plugin-sdk/testing";
+
+const plugin = await testWasmPlugin("text_processor.wasm");
+
+const result = await plugin.call("transform", {
+  text: "hello world",
+  mode: "uppercase",
+});
+
+console.assert(result.result === "HELLO WORLD");
+```
+
+## Debugging
+
+Enable WASM runtime logging:
+
+```bash
+cortex --verbose plugin call text-processor transform '{"text":"hello","mode":"reverse"}'
+```
+
+For Rust plugins, use `wasm32-wasi` debugging tools:
+
+```bash
+wasm2wat plugin.wasm | less    # Inspect the WASM module
+wasmtime run plugin.wasm       # Test outside CortexPrism
+```

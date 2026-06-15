@@ -178,10 +178,10 @@ const features = [
 
 export default function FeaturesPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+    <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 md:py-20">
       <div className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">Features</h1>
-        <p className="mt-4 text-lg text-[#9090a8] max-w-2xl mx-auto">
+        <p className="mt-4 text-lg text-[#9090a8] max-w-4xl mx-auto">
           Everything you need to build, deploy, and manage agentic AI applications.
         </p>
       </div>

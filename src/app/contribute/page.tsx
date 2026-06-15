@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Bug, BookOpen, Puzzle, ExternalLink } from "lucide-react";
+import { Bug, BookOpen, Puzzle, MessageCircle, ExternalLink } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Contribute",
@@ -14,6 +14,13 @@ const sections = [
     description: "Found a bug or have a feature request? Open an issue on GitHub with a clear description, reproduction steps, and expected behavior.",
     link: "https://github.com/CortexPrism/cortex/issues",
     label: "Open an Issue",
+  },
+  {
+    icon: MessageCircle,
+    title: "Join the Community",
+    description: "Chat with developers and users on Discord. Get help, share ideas, discuss features, and stay up to date with the latest development.",
+    link: "https://discord.gg/y7DkaEbPQC",
+    label: "Join Discord",
   },
   {
     icon: BookOpen,
@@ -33,7 +40,7 @@ const sections = [
 
 export default function ContributePage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+    <div className="max-w-page-narrow mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 md:py-20">
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">Contribute</h1>
         <p className="mt-4 text-lg text-[#9090a8]">
@@ -52,7 +59,7 @@ export default function ContributePage() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6 mb-16">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
         {sections.map((section) => (
           <div key={section.title} className="glass-card-hover p-6">
             <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 mb-4">

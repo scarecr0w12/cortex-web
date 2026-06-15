@@ -63,13 +63,13 @@ const features = [
 export function FeatureGrid() {
   return (
     <section className="py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-[#e2e2ea]">
             Everything you need to build{" "}
             <span className="gradient-text">agentic applications</span>
           </h2>
-          <p className="mt-4 text-lg text-[#9090a8] max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-[#9090a8] max-w-4xl mx-auto">
             A comprehensive toolset for building, deploying, and managing AI agents.
           </p>
         </div>

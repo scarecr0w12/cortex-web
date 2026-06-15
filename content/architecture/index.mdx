@@ -1,22 +1,63 @@
 # Architecture Overview
 
-CortexPrism is built on a modular, event-driven architecture designed for extensibility and security.
+CortexPrism is a single-process agentic harness written in TypeScript/Deno. It exposes a CLI, a REST API + WebSocket server, and a web UI. All state is persisted in SQLite databases using WAL mode via `@libsql/client`.
 
 ## High-Level Architecture
 
-The system consists of several core components that work together:
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         CortexPrism                             │
+│                                                                 │
+│   CLI (cortex chat / run / serve / ...)                         │
+│          │                                                      │
+│          ▼                                                      │
+│   ┌─────────────────────────────────────────────┐              │
+│   │              agent/loop.ts                  │              │
+│   │  userMessage → [memory inject] → LLM call   │              │
+│   │  → [tool parse] → [validator] → [execute]   │              │
+│   │  → [re-prompt loop] → response              │              │
+│   │  → [episodic write] → [reflection]          │              │
+│   └─────────────────────────────────────────────┘              │
+│          │                                                      │
+│   ┌──────┼──────────────────────────────────────┐              │
+│   │      │         Subsystems                   │              │
+│   │  memory/   tools/   sandbox/   security/    │              │
+│   │  llm/      server/  scheduler/              │              │
+│   └──────────────────────────────────────────────┘             │
+│                                                                 │
+│   SQLite databases (WAL mode)                                   │
+│   cortex.db · memory.db · lens.db · vault.db · sess_*.db       │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-- **Agent Loop**: The main execution loop that orchestrates LLM calls, tool use, and memory operations
-- **Memory System**: Five-tier memory architecture for different retention needs
-- **Security Parallax**: Defense-in-depth security model
-- **Model Router**: Intelligent routing between LLM providers
-- **Daemon Supervisor**: Background process management
-- **Plugin System**: Extensible plugin architecture
+## Core Components
+
+| Component | Description |
+|-----------|-------------|
+| **Agent Loop** | Core reasoning + tool loop that orchestrates LLM calls, tool execution, memory operations, and reflection |
+| **Memory System** | 5-tier memory with hybrid FTS5 keyword + vector embedding retrieval and exponential decay scoring |
+| **LLM Layer** | 12+ provider implementations with unified `LLMProvider` interface and CascadeRouter |
+| **Tool System** | Extensible tool registry with built-in tools for file I/O, shell, web search, and code execution |
+| **Security (Parallax)** | 3-stage policy validation gate with encrypted vault, regex deny rules, and full audit logging |
+| **Sandbox** | Docker container sandbox (subprocess fallback) with resource limits and auto-fix loop |
+| **Daemon Supervisor** | Background process manager for validator, executor, and scheduler daemons with auto-restart |
+| **HTTP Server** | Built-in web server with REST API, WebSocket streaming, and web UI dashboard |
+| **Scheduler** | SQLite-persisted cron job scheduler with retry |
 
 ## Data Flow
 
 1. User input enters through CLI, Web UI, or API
 2. Agent loop processes input with context from memory
 3. LLM provider generates response via the model router
-4. Tool calls are executed through the plugin system
+4. Tool calls are executed through the Parallax security gate
 5. Results are stored in memory and returned to the user
+
+## Core subsystems
+
+- [Agent Loop](/docs/architecture/agent-loop) — Core execution engine
+- [Memory System](/docs/architecture/memory-system) — 5-tier memory architecture
+- [Security Parallax](/docs/architecture/security-parallax) — Defense-in-depth security model
+- [Model Router](/docs/architecture/model-router) — Intelligent LLM provider routing
+- [Daemon Supervisor](/docs/architecture/daemon-supervisor) — Background process management
+- [Plugin System](/docs/architecture/plugin-system) — Plugin architecture
+- [Databases](/docs/architecture/databases) — SQLite database schemas

@@ -4,27 +4,59 @@ Guide to your first CortexPrism session.
 
 ## The Setup Wizard
 
-When you run `cortex` for the first time, the setup wizard will guide you through:
+When you run `cortex` for the first time (or `cortex setup`), the setup wizard will prompt you for:
 
-1. **Provider configuration**: Add your API keys for LLM providers
-2. **Data directory**: Choose where to store your data (defaults to `~/.cortex/`)
-3. **Default model**: Set your preferred LLM model
+1. **LLM Provider** — Choose from 12+ providers: Anthropic, OpenAI, Google, Mistral, Groq, DeepSeek, OpenRouter, xAI, Together AI, AWS Bedrock, Cohere, Ollama
+2. **API Key** — Enter the API key for your chosen provider
+3. **Model Selection** — Choose your default model (e.g., `claude-sonnet-4-20250514`, `gpt-4o`, `gemini-2.0-flash`)
+4. **Data Directory** — Where to store data (defaults to `~/.cortex/`)
 
 ## Configuration File
 
-The configuration is stored at `~/.cortex/config.json`:
+After setup, your configuration is stored at `~/.cortex/config.json`:
 
 ```json
 {
-  "providers": {
-    "openai": { "apiKey": "sk-..." },
-    "anthropic": { "apiKey": "sk-ant-..." }
-  },
+  "version": 1,
   "defaultProvider": "anthropic",
-  "defaultModel": "claude-sonnet-4-20250514",
-  "dataDir": "~/.cortex"
+  "providers": {
+    "anthropic": {
+      "kind": "anthropic",
+      "model": "claude-sonnet-4-20250514",
+      "apiKey": "sk-ant-..."
+    }
+  },
+  "agent": {
+    "name": "Cortex",
+    "maxTurns": 50,
+    "streamOutput": true
+  },
+  "router": {
+    "enabled": false,
+    "confidenceThreshold": 0.7,
+    "cascade": []
+  }
 }
 ```
+
+## Data Directory
+
+Default: `~/.cortex/data/`
+
+Override:
+```bash
+CORTEX_DATA_DIR=/data/cortex cortex chat
+```
+
+The data directory contains:
+| File | Contents |
+|------|----------|
+| `cortex.db` | Core: sessions, jobs, policy rules |
+| `memory.db` | 5-tier memory: episodic, semantic, reflection |
+| `lens.db` | Audit log: all events, tool calls, policy checks |
+| `vault.db` | Encrypted credentials |
+| `plugins.db` | Plugin registry |
+| `sess_*.db` | Per-session message history |
 
 ## Your First Chat
 
@@ -32,8 +64,33 @@ The configuration is stored at `~/.cortex/config.json`:
 cortex chat
 ```
 
-Type a message and the agent will respond. Try asking:
+On first chat, the system:
+1. Starts background daemons (validator, executor, scheduler)
+2. Initializes the chat session
+3. Injects any relevant memory into context
+4. Connects to your configured LLM provider
 
-- "What can you do?"
-- "Search the web for latest AI news"
-- "Run a Python script that calculates fibonacci"
+Type a message and the agent will respond. Try these:
+
+- `"What can you do?"` — Learn about agent capabilities
+- `"Search the web for latest AI news"` — Web search via DuckDuckGo
+- `"Run a Python script that calculates fibonacci"` — Sandboxed code execution
+- `"Read the file ~/.cortex/config.json"` — File reading via tool
+- `"Remember that I use VS Code"` — Store a fact in memory
+
+## What Happens Behind the Scenes
+
+```
+Your message
+  → Agent retrieves relevant memories
+  → Builds prompt with context
+  → Sends to LLM provider
+  → LLM responds (may request tool calls)
+  → Tool calls are validated by Parallax security
+  → Approved tools execute (file read, web search, code run)
+  → Results fed back to LLM for final response
+  → Response streamed back to you
+  → Session history saved to SQLite
+  → Episodic memory written (async)
+  → Reflection performed (async)
+```

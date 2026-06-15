@@ -1,19 +1,64 @@
 # Daemon Supervisor
 
-The daemon supervisor manages background processes and scheduled jobs.
+The daemon supervisor manages three background processes required for tool security and job scheduling. It provides automatic crash recovery with exponential backoff.
 
-## Features
+## Architecture
 
-- **Persistent Process**: Runs as a background daemon
-- **Job Scheduler**: CRON-like scheduling for recurring tasks
-- **Process Management**: Start, stop, and monitor background processes
-- **Health Checks**: Automatic health monitoring with restart policies
+```
+cortex daemon start / chat / serve auto-start
+         │
+         ▼
+  supervisor-process.ts
+         │
+         ├── validator-process.ts   ← IPC socket: approves/rejects tool intents
+         │     policy check → allow/deny → logged to Lens
+         │
+         ├── executor-process.ts    ← IPC socket: executes approved tool calls
+         │     file read/write, shell commands, directory listing
+         │
+         └── scheduler-process.ts   ← DB polling: runs cron jobs every 30s
+               memory consolidation, scheduled commands
+```
+
+## Managed Processes
+
+| Process | Socket | Permissions | Description |
+|---------|--------|-------------|-------------|
+| **Validator** | `/tmp/cortex/validator.sock` | Read/write/net/env/sys | Policy checks for tool intents |
+| **Executor** | `/tmp/cortex/executor.sock` | Read/write/run/net/env/sys | Executes approved tool calls |
+| **Scheduler** | `/tmp/cortex/scheduler.sock` | Read/write/run/net/env/sys | Polls DB for due jobs every 30s |
+
+## Supervision Loop
+
+- Each child is spawned via `Deno.Command` with scoped `--allow-*` permissions (principle of least privilege)
+- On crash (non-zero exit), supervisor waits `min(2^n × 1s, 30s)` then restarts
+- On clean exit (zero exit), process is not restarted (intentional shutdown)
+- `SIGINT` / `SIGTERM` triggers cascading shutdown of all children
+
+## IPC Protocol
+
+All daemons communicate via Unix domain sockets:
+
+```
+/tmp/cortex/validator.sock
+/tmp/cortex/executor.sock
+/tmp/cortex/scheduler.sock
+```
+
+- Messages are JSON-line format
+- Connection-per-message model
+- Heartbeat pings check liveness
+
+## Auto-Start
+
+`cortex chat` and `cortex serve` call `ensureDaemons()` which pings the validator socket and starts the supervisor if needed. The web server can also run in background via `cortex serve -d`.
 
 ## Usage
 
 ```bash
-cortex daemon start    # Start the daemon
-cortex daemon stop     # Stop the daemon
-cortex daemon status   # Check daemon status
-cortex jobs add ...    # Add a scheduled job
+cortex daemon start       # Start supervisor + all daemons in background
+cortex daemon stop        # Stop all daemon processes
+cortex daemon restart     # Stop, wait 1s, then start
+cortex daemon run         # Run supervisor in foreground (for systemd/tmux)
+cortex daemon status      # Show running/stopped status
 ```

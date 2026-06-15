@@ -14,6 +14,7 @@ const sectionMap: Record<string, string> = {
   architecture: "architecture",
   "knowledge-base": "knowledge-base",
   "design-docs": "design-docs",
+  "developer-guide": "developer-guide",
 };
 
 export async function generateStaticParams() {
@@ -37,9 +38,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function DocsPage({ params }: Props) {
   if (!params.slug?.length) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex gap-8">
+      <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 flex gap-8">
         <Sidebar />
-        <article className="flex-1 min-w-0 max-w-3xl">
+        <article className="flex-1 min-w-0 max-w-page-content">
           <h1 className="text-3xl font-bold text-[#e2e2ea] mb-6">Documentation</h1>
           <p className="text-[#9090a8]">
             Browse the documentation using the sidebar. Select a topic to get started.
@@ -62,9 +63,9 @@ export default async function DocsPage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex gap-8">
+    <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 flex gap-8">
       <Sidebar />
-      <article className="flex-1 min-w-0 max-w-3xl">
+      <article className="flex-1 min-w-0 max-w-page-content">
         <MdxContent content={content} />
       </article>
       <TableOfContents />

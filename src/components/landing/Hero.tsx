@@ -1,15 +1,19 @@
 import Link from "next/link";
 import { ArrowRight, Github } from "lucide-react";
 
-export function Hero() {
+interface HeroProps {
+  version: string;
+}
+
+export function Hero({ version }: HeroProps) {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 via-transparent to-transparent pointer-events-none" />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 md:pt-28 md:pb-32">
+      <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 pt-20 pb-24 md:pt-28 md:pb-32">
         <div className="text-center max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 text-sm rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            v0.1.0 — Pre-release
+            v{version} — Pre-release
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight">
@@ -19,7 +23,7 @@ export function Hero() {
             <span className="text-[#e2e2ea]">for Modern AI</span>
           </h1>
 
-          <p className="mt-6 text-lg md:text-xl text-[#9090a8] max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-6 text-lg md:text-xl text-[#9090a8] max-w-4xl mx-auto leading-relaxed">
             A powerful, secure, and extensible runtime for building agentic applications.
             Chat with 12+ LLM providers, execute code in sandboxes, manage memory, and
             orchestrate complex workflows.
@@ -48,6 +52,26 @@ export function Hero() {
               <Github className="w-5 h-5" />
               View on GitHub
             </a>
+          </div>
+
+          <div className="mt-10 max-w-2xl mx-auto">
+            <div className="glass-card p-1">
+              <div className="bg-[#0a0a0f] rounded-xl p-4 border border-[rgba(255,255,255,0.05)]">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-2 h-2 rounded-full bg-red-500/80" />
+                  <div className="w-2 h-2 rounded-full bg-yellow-500/80" />
+                  <div className="w-2 h-2 rounded-full bg-green-500/80" />
+                  <span className="ml-2 text-xs text-[#55556a] font-mono">one-line install</span>
+                </div>
+                <pre className="text-sm font-mono text-center select-all">
+                  <code>
+                    <span className="text-[#55556a]">$ </span>
+                    <span className="text-green-400">curl -fsSL https://cortexprism.io/install.sh</span>
+                    <span className="text-[#e2e2ea]"> | bash</span>
+                  </code>
+                </pre>
+              </div>
+            </div>
           </div>
         </div>
 

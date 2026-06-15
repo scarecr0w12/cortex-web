@@ -11,7 +11,8 @@ interface Plugin {
   id: string; name: string; slug: string; version: string;
   description: string; kind: string; author: string | null;
   icon: string | null; downloads: number; rating: number;
-  category: string | null; createdAt: string;
+  category: string | null; license: string | null;
+  repository: string | null; githubStars: number; createdAt: string;
 }
 
 interface PluginResponse {
@@ -59,7 +60,7 @@ export default function PluginListingPage() {
   const kinds = ["esm", "mcp", "wasm"];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[#e2e2ea] mb-2">Plugins</h1>
         <p className="text-[#9090a8]">Extend CortexPrism with powerful plugins.</p>

@@ -1,0 +1,222 @@
+# ESM Plugin Development
+
+ESM (ECMAScript Module) plugins are JavaScript/TypeScript modules that export capabilities as async functions. They are the easiest plugin type to develop and the most common in the CortexPrism ecosystem.
+
+## Project Structure
+
+```
+my-plugin/
+├── mod.ts              # Plugin entry point (default export)
+├── capabilities/       # Optional: split capabilities into modules
+│   ├── search.ts
+│   └── format.ts
+├── test/               # Tests
+├── README.md
+└── manifest.json       # Plugin manifest (auto-generated or manual)
+```
+
+## Entry Point Conventions
+
+The plugin **must** have a default export that is either:
+
+1. A **plugin definition object** (recommended):
+```typescript
+export default {
+  name: "my-plugin",
+  version: "1.0.0",
+  capabilities: { /* ... */ },
+};
+```
+
+2. A **factory function** (for async initialization):
+```typescript
+export default async function createPlugin() {
+  const client = await connectToService();
+  return {
+    name: "service-connector",
+    version: "1.0.0",
+    capabilities: {
+      async query(input: string) {
+        return client.query(input);
+      },
+    },
+  };
+}
+```
+
+## Defining Capabilities
+
+Capabilities are async functions that the agent tool system can invoke. Each capability receives a context object with permissions and utilities.
+
+```typescript
+import { definePlugin, type CapabilityContext } from "@cortexprism/plugin-sdk";
+
+export default definePlugin({
+  name: "code-analyzer",
+  version: "1.1.0",
+  description: "Analyze source code for metrics and issues",
+
+  capabilities: {
+    async countLines(
+      filePath: string,
+      ctx: CapabilityContext
+    ): Promise<{ total: number; code: number; comments: number }> {
+      // ctx.sandbox.readFile is gated by the Parallax policy
+      const content = await ctx.sandbox.readFile(filePath);
+      const lines = content.split("\n");
+      return {
+        total: lines.length,
+        code: lines.filter((l) => l.trim() && !l.trim().startsWith("//")).length,
+        comments: lines.filter((l) => l.trim().startsWith("//")).length,
+      };
+    },
+
+    async detectLanguage(code: string): Promise<string> {
+      // Pure computation, no sandbox access needed
+      if (code.includes("fn ") || code.includes("let mut")) return "rust";
+      if (code.includes("def ") || code.includes("import ")) return "python";
+      if (code.includes("function ") || code.includes("=>")) return "javascript";
+      return "unknown";
+    },
+  },
+});
+```
+
+## CapabilityContext
+
+Each capability receives a context object that provides:
+
+| Property | Description |
+|----------|-------------|
+| `ctx.sandbox` | Sandboxed file system and network access |
+| `ctx.log` | Structured logger scoped to the plugin |
+| `ctx.memory` | Read access to the agent's episodic/semantic memory |
+| `ctx.config` | Plugin-specific configuration from the agent config |
+| `ctx.abortSignal` | Signal for timeout/cancellation |
+
+## SDK Usage
+
+The `@cortexprism/plugin-sdk` package provides:
+
+```typescript
+import {
+  definePlugin,        // Type-safe plugin definition helper
+  CapabilityContext,   // Type for the context argument
+  z,                   // Zod validation (capability input schemas)
+  HttpError,           // Error class for HTTP-like errors
+  PermissionError,     // Error for policy denial
+} from "@cortexprism/plugin-sdk";
+```
+
+Install with:
+
+```bash
+npm install @cortexprism/plugin-sdk
+# or via JSR
+deno add @cortexprism/plugin-sdk
+```
+
+## Input Validation
+
+Use Zod schemas for capability input validation:
+
+```typescript
+import { definePlugin, z } from "@cortexprism/plugin-sdk";
+
+const SearchInput = z.object({
+  query: z.string().min(1).max(500),
+  limit: z.number().int().min(1).max(100).default(10),
+  source: z.enum(["web", "news", "academic"]).default("web"),
+});
+
+export default definePlugin({
+  name: "advanced-search",
+  version: "1.0.0",
+  capabilities: {
+    async search(raw: unknown) {
+      const input = SearchInput.parse(raw);
+      const results = await searchEngine(input.query, input.source, input.limit);
+      return results;
+    },
+  },
+});
+```
+
+## Error Handling
+
+Always throw typed errors so the agent can handle them gracefully:
+
+```typescript
+import { PluginError, PermissionError } from "@cortexprism/plugin-sdk";
+
+export default definePlugin({
+  name: "file-ops",
+  version: "1.0.0",
+  capabilities: {
+    async readFile(path: string, ctx: CapabilityContext) {
+      if (!path.startsWith("/allowed/path/")) {
+        throw new PermissionError(`Access denied: ${path}`);
+      }
+      try {
+        return await ctx.sandbox.readFile(path);
+      } catch (err) {
+        throw new PluginError(`Failed to read file: ${err.message}`, err);
+      }
+    },
+  },
+});
+```
+
+## Testing
+
+Test plugins with the CortexPrism test harness:
+
+```typescript
+import { testPlugin } from "@cortexprism/plugin-sdk/testing";
+import myPlugin from "./mod.ts";
+
+const harness = await testPlugin(myPlugin);
+
+// Test a capability
+const result = await harness.call("countLines", "test/fixture.ts");
+console.assert(result.total > 0);
+
+// Test with custom context
+const withConfig = await testPlugin(myPlugin, {
+  config: { maxLines: 100 },
+});
+```
+
+## Bundling for Distribution
+
+The plugin manager can load plugins from:
+
+1. **Local directory**: `cortex plugin install ./path/to/plugin`
+2. **npm package**: `cortex plugin install npm:@scope/my-plugin`
+3. **JSR package**: `cortex plugin install jsr:@scope/my-plugin`
+4. **Marketplace**: `cortex plugin install marketplace:my-plugin`
+5. **Single file URL**: `cortex plugin install https://example.com/plugin.js`
+
+For distribution, bundle to a single ESM file:
+
+```bash
+deno bundle mod.ts dist/plugin.js
+```
+
+## Permissions Declaration
+
+Declare the permissions your plugin needs in the manifest:
+
+```json
+{
+  "name": "network-scanner",
+  "version": "1.0.0",
+  "permissions": {
+    "network": ["fetch:https://api.example.com"],
+    "filesystem": ["read:/tmp"],
+    "env": ["MY_API_KEY"]
+  }
+}
+```
+
+The Parallax policy engine enforces these permissions at runtime.

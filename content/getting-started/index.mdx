@@ -5,15 +5,18 @@ Get started with CortexPrism in under 5 minutes.
 ## Prerequisites
 
 - [Deno](https://deno.land) v2.0 or later
-- An API key from one of the supported LLM providers
+- An API key from one of the [supported LLM providers](/docs/knowledge-base/provider-guide)
+- Docker (optional, for sandbox isolation — subprocess fallback available)
 
 ## Installation
 
 ```bash
-git clone https://github.com/scarecr0w12/cortex.git
+git clone https://github.com/CortexPrism/cortex.git
 cd cortex
 deno task setup
 ```
+
+This installs dependencies and initializes all databases.
 
 ## Configure a Provider
 
@@ -23,7 +26,13 @@ Run the setup wizard:
 cortex setup
 ```
 
-This will guide you through configuring your first LLM provider. You can also manually edit the config file at `~/.cortex/config.json`.
+This will guide you through configuring your first LLM provider. You'll be prompted to:
+1. Select a provider (Anthropic, OpenAI, Google, Groq, etc.)
+2. Enter your API key
+3. Choose a default model
+4. Set a data directory
+
+You can also manually edit `~/.cortex/config.json`.
 
 ## Start Chatting
 
@@ -31,10 +40,20 @@ This will guide you through configuring your first LLM provider. You can also ma
 cortex chat
 ```
 
-This starts an interactive chat session with the default provider. Use `/help` to see available commands.
+This starts an interactive streaming chat session with the default provider. The agent automatically starts background daemons for tool validation and execution.
+
+### Try these commands:
+
+- `"What can you do?"` — See available capabilities
+- `"Search the web for latest AI news"` — Web search via DuckDuckGo
+- `"Run a Python script that calculates fibonacci"` — Sandboxed code execution
+- `"Remember that my project is called Project X"` — Stores to semantic memory
 
 ## Next Steps
 
-- Learn about the [CLI commands](/docs/cli)
-- Explore the [architecture](/docs/architecture)
-- Browse the [marketplace](/marketplace) for plugins and agents
+- [Detailed Installation Guide](/getting-started/installation) — System requirements and Docker setup
+- [First Run Guide](/getting-started/first-run) — Understanding the setup wizard, config file, and first session
+- [Configuration Reference](/getting-started/configuration) — Full configuration options, environment variables
+- [CLI Commands](/docs/cli) — Full command reference
+- [Architecture Overview](/docs/architecture) — Understand how CortexPrism works
+- [Browse Marketplace](/marketplace) — Discover plugins and agents

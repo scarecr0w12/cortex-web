@@ -1,6 +1,6 @@
 # CLI Reference
 
-CortexPrism provides a comprehensive command-line interface for interacting with the agentic system.
+CortexPrism provides a comprehensive command-line interface for interacting with the agentic system. All commands are invoked through the `cortex` binary.
 
 ## Usage
 
@@ -10,24 +10,35 @@ cortex <command> [options]
 
 ## Global Options
 
-| Option | Description |
-|--------|-------------|
-| `--config, -c` | Path to config file |
-| `--data-dir, -d` | Data directory path |
-| `--verbose, -v` | Enable verbose logging |
-| `--help, -h` | Show help |
-| `--version, -V` | Show version |
+| Option | Environment Variable | Description |
+|--------|---------------------|-------------|
+| `--config, -c` | `CORTEX_CONFIG` | Path to config file (default: `~/.cortex/config.json`) |
+| `--data-dir` | `CORTEX_DATA_DIR` | Data directory path (default: `~/.cortex/`) |
+| `--verbose, -v` | — | Enable verbose logging |
+| `--help, -h` | — | Show help |
+| `--version, -V` | — | Show version |
 
 ## Available Commands
 
-- `cortex chat` — Start an interactive chat session
-- `cortex serve` — Start the HTTP API server
-- `cortex daemon` — Manage the background daemon
-- `cortex run` — Execute scripts and commands
-- `cortex memory` — Memory system management
-- `cortex reflect` — Agent reflection and self-analysis
-- `cortex vault` — Encrypted secrets management
-- `cortex policy` — Security policy management
-- `cortex jobs` — Scheduled job management
-- `cortex sessions` — Session management
-- `cortex setup` — Initial setup wizard
+| Command | Description |
+|---------|-------------|
+| [`cortex chat`](/docs/cli/chat) | Interactive streaming chat session with LLM providers |
+| [`cortex serve`](/docs/cli/serve) | Start the HTTP + WebSocket server with web UI |
+| [`cortex daemon`](/docs/cli/daemon) | Manage background daemon processes (validator, executor, scheduler) |
+| [`cortex stop`](/docs/cli/daemon) | Stop server, daemons, or both |
+| [`cortex run`](/docs/cli/run) | Execute code files in sandboxed or direct subprocess mode |
+| [`cortex memory`](/docs/cli/memory) | Search and manage the 5-tier memory system |
+| [`cortex reflect`](/docs/cli/reflect) | Inspect and consolidate reflection patterns |
+| [`cortex vault`](/docs/cli/vault) | Encrypted credential vault (AES-256-GCM) |
+| [`cortex policy`](/docs/cli/policy) | Security policy rule management |
+| [`cortex jobs`](/docs/cli/jobs) | Manage scheduled cron jobs |
+| [`cortex sessions`](/docs/cli/sessions) | List and manage chat sessions |
+| [`cortex setup`](/docs/cli/setup) | First-run setup wizard |
+| [`cortex migrate`](/docs/cli/setup) | Initialize or migrate all databases |
+| `cortex soul` | Agent soul/persona management |
+| `cortex discord` | Discord bot integration |
+| `cortex plugins` | Plugin management |
+| `cortex marketplace` | Marketplace interaction |
+| `cortex import` | Import data from other sources |
+| `cortex agent` | Agent configuration management |
+| `cortex service` | Micro-service mode management |

@@ -1,19 +1,65 @@
 # Plugin System
 
-CortexPrism supports three types of plugins: ESM modules, MCP servers, and WebAssembly modules.
+CortexPrism supports three types of plugins: ESM modules, MCP (Model Context Protocol) servers, and WebAssembly modules. The plugin system is designed for extensibility and isolation.
 
 ## Plugin Types
 
-| Type | Description | Use Case |
-|------|-------------|----------|
-| ESM | JavaScript/TypeScript modules | General-purpose plugins |
-| MCP | Model Context Protocol servers | Tool providers |
-| WASM | WebAssembly modules | Performance-critical tasks |
+| Type | Technology | Use Case |
+|------|-----------|----------|
+| **ESM** | JavaScript/TypeScript modules | General-purpose plugins, extending agent capabilities |
+| **MCP** | Model Context Protocol servers | Tool providers following the MCP standard |
+| **WASM** | WebAssembly modules | Performance-critical tasks, cross-language support |
 
 ## Plugin Lifecycle
 
-1. **Install**: Download and register the plugin
-2. **Enable**: Activate the plugin in the current session
-3. **Use**: Call plugin capabilities through the tool system
-4. **Disable**: Deactivate without uninstalling
-5. **Uninstall**: Remove the plugin entirely
+```
+1. Install   → Download and register the plugin in plugins.db
+2. Enable    → Activate the plugin for use in sessions
+3. Use       → Call plugin capabilities through the tool system
+4. Disable   → Deactivate without uninstalling
+5. Uninstall → Remove the plugin entirely from registry
+```
+
+## Plugin Registry
+
+Plugins are registered in `plugins.db` (SQLite) with:
+
+- Name and version
+- Plugin type (ESM/MCP/WASM)
+- Author and description
+- Permissions required
+- Dependencies
+- Download count (for marketplace tracking)
+
+## Isolation
+
+- Plugins run in isolated sandboxes with restricted permissions
+- Resource limits are enforced per plugin
+- The policy engine controls what each plugin can access
+
+## Marketplace
+
+Plugins can be published to and discovered through the [CortexPrism Marketplace](/marketplace). The marketplace provides:
+
+- Plugin discovery and search
+- Version management
+- Dependency resolution
+- Download tracking
+- User ratings and reviews
+
+## CLI Management
+
+```bash
+# Install a plugin from the marketplace
+cortex plugin install marketplace:cortexprism.io/plugins/python-executor
+
+# List installed plugins
+cortex plugins list
+
+# Enable/disable a plugin
+cortex plugins enable <name>
+cortex plugins disable <name>
+
+# Remove a plugin
+cortex plugins uninstall <name>
+```

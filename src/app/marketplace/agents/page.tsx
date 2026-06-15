@@ -11,7 +11,8 @@ interface Agent {
   id: string; name: string; slug: string; version: string;
   description: string; provider: string | null; model: string | null;
   author: string | null; icon: string | null; downloads: number;
-  rating: number; tags: string[]; category: string | null; createdAt: string;
+  rating: number; tags: string[]; category: string | null;
+  repository: string | null; githubStars: number; createdAt: string;
 }
 
 interface AgentResponse {
@@ -64,7 +65,7 @@ export default function AgentListingPage() {
   }, [debouncedSearch, selectedCategory, selectedProvider, page]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[#e2e2ea] mb-2">Agents</h1>
         <p className="text-[#9090a8]">Pre-configured agent configurations for various tasks and domains.</p>

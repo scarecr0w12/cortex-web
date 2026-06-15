@@ -2,12 +2,22 @@ import Link from "next/link";
 
 const footerLinks = [
   {
+    title: "Product",
+    links: [
+      { href: "/features", label: "Features" },
+      { href: "/use-cases", label: "Use Cases" },
+      { href: "/security", label: "Security" },
+      { href: "/about", label: "About" },
+    ],
+  },
+  {
     title: "Docs",
     links: [
       { href: "/getting-started", label: "Getting Started" },
       { href: "/docs/cli", label: "CLI Reference" },
       { href: "/docs/architecture", label: "Architecture" },
       { href: "/docs/knowledge-base", label: "Knowledge Base" },
+      { href: "/docs/developer-guide", label: "Developer Guide" },
       { href: "/docs/design-docs", label: "Design Docs" },
     ],
   },
@@ -20,25 +30,31 @@ const footerLinks = [
       { href: "/marketplace/publish/plugin", label: "Publish Plugin" },
     ],
   },
-  {
-    title: "Community",
-    links: [
-      { href: "/contribute", label: "Contribute" },
-      { href: "/changelog", label: "Changelog" },
-      { href: "/openapi", label: "API Docs" },
-      {
-        href: "https://github.com/CortexPrism/cortex",
-        label: "GitHub",
-        external: true,
-      },
-    ],
-  },
+    {
+      title: "Community",
+      links: [
+        { href: "/contribute", label: "Contribute" },
+        { href: "/changelog", label: "Changelog" },
+        { href: "/openapi", label: "API Docs" },
+        { href: "/docs/developer-guide/publishing", label: "Publish" },
+        {
+          href: "https://discord.gg/y7DkaEbPQC",
+          label: "Discord",
+          external: true,
+        },
+        {
+          href: "https://github.com/CortexPrism/cortex",
+          label: "GitHub",
+          external: true,
+        },
+      ],
+    },
 ];
 
 export function Footer() {
   return (
     <footer className="border-t border-[rgba(255,255,255,0.07)] bg-[#0a0a0f]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
@@ -88,6 +104,15 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-4 text-sm text-[#55556a]">
             <span>Powered by Deno</span>
+            <span>·</span>
+            <a
+              href="https://discord.gg/y7DkaEbPQC"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-indigo-400 transition-colors"
+            >
+              Discord
+            </a>
             <span>·</span>
             <a
               href="https://github.com/CortexPrism/cortex"

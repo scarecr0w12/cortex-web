@@ -1,21 +1,78 @@
 # `cortex run`
 
-The `cortex run` command manages run operations in CortexPrism.
+Execute code files in sandboxed environments with resource limits, or as direct subprocesses. Supports auto-fix loop for failed executions.
 
 ## Usage
 
 ```bash
-cortex run [options]
+cortex run <file>                    # Run in sandbox (auto-detect language)
+cortex run script.py --no-sandbox    # Run as direct subprocess
+cortex run script.py --fix           # Enable LLM auto-fix loop on failure
+cortex run script.py --fix --max-fix 6  # Up to 6 fix attempts
 ```
 
 ## Options
 
 | Option | Description |
 |--------|-------------|
+| `--no-sandbox` | Run as direct subprocess instead of Docker sandbox |
+| `--fix` | Enable LLM auto-fix loop when code fails |
+| `--max-fix` | Maximum number of fix attempts (default: 4) |
 | `--help` | Show help for this command |
+
+## Supported Languages
+
+| Language | Extension | Sandbox Image |
+|----------|-----------|---------------|
+| Python | `.py` | `python:3.12-slim` |
+| JavaScript | `.js` | `node:22-slim` |
+| TypeScript | `.ts` | `node:22-slim` |
+| Bash | `.sh` | `ubuntu:24.04` |
+| Ruby | `.rb` | `ruby:3.3-slim` |
+| Go | `.go` | `golang:1.23-bookworm` |
+| Rust | `.rs` | `rust:1.78-slim` |
+
+## Docker Sandbox
+
+When running in sandbox mode, Docker containers are created with:
+
+| Constraint | Value |
+|------------|-------|
+| Network | `--network=none` (no network access) |
+| Memory | 256MB limit |
+| CPU | 0.5 cores |
+| Process limit | 64 PIDs |
+| Security | `no-new-privileges` |
+| Timeout | 30 seconds |
+| Max output | 64KB |
+
+Subprocess fallback is used when `docker info` fails.
+
+## Auto-Fix Loop
+
+When `--fix` is enabled:
+
+```
+runInSandbox(code)
+  → exit != 0?
+     → LLM: "Fix this error: <stderr>\n\nCode:\n<code>"
+     → extract fixed code from LLM response
+     → runInSandbox(fixedCode)
+     → repeat up to maxRounds
+```
 
 ## Examples
 
 ```bash
-cortex run --help
+# Run a Python script in Docker sandbox
+cortex run analyze.py
+
+# Run a shell script as direct subprocess
+cortex run deploy.sh --no-sandbox
+
+# Run with auto-fix enabled
+cortex run buggy-code.py --fix
+
+# Run with aggressive auto-fix
+cortex run complex.js --fix --max-fix 8
 ```

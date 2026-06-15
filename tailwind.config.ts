@@ -29,6 +29,11 @@ const config: Config = {
         sans: ["Inter", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
+      maxWidth: {
+        page: "90rem",
+        "page-narrow": "80rem",
+        "page-content": "64rem",
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "accent-gradient":

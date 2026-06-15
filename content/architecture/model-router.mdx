@@ -1,22 +1,76 @@
-# Model Router
+# Model Router (RouteLLM)
 
-The model router provides intelligent LLM provider selection and management.
+The model router provides intelligent LLM provider selection through a cascading confidence-based routing system. It automatically escalates to more capable models when the current model's confidence is low.
 
-## Features
+## CascadeRouter
 
-- **Multi-Provider**: Support for 12+ LLM providers including OpenAI, Anthropic, Google, Groq, and more
-- **Automatic Routing**: Route requests to the best provider based on task type, cost, and availability
-- **Failover**: Automatic fallback to alternative providers on errors
-- **Cost Optimization**: Route to cost-effective models for simple tasks
+`CascadeRouter` wraps multiple providers in a cascade chain. On each call:
+
+```
+1. Tries first provider in cascade (cheapest)
+2. Calls estimateConfidence(text) — heuristic based on hedging language
+3. If confidence < threshold → tries next provider in cascade
+4. Returns last result if all providers exhausted
+```
+
+This cost-optimized approach ensures simple queries use cheaper models while complex reasoning escalates to more capable ones.
 
 ## Configuration
 
-Configure routing rules in the agent configuration:
-
 ```json
 {
-  "router": "cost-optimized",
-  "providers": ["anthropic", "openai", "google"],
-  "fallback": true
+  "router": {
+    "enabled": true,
+    "confidenceThreshold": 0.7,
+    "cascade": [
+      { "provider": "ollama", "model": "llama3.2:3b" },
+      { "provider": "ollama", "model": "llama3.1:8b" },
+      { "provider": "anthropic", "model": "claude-sonnet-4-20250514" }
+    ]
+  }
 }
 ```
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `enabled` | false | Enable or disable the router |
+| `confidenceThreshold` | 0.7 | Minimum confidence score to accept a response (0.0–1.0) |
+| `cascade` | [] | Ordered list of provider+model pairs to try |
+
+## Supported Providers
+
+| Provider | Kind | Default Model |
+|----------|------|---------------|
+| Anthropic | `anthropic` | `claude-sonnet-4-20250514` |
+| OpenAI | `openai` | `gpt-4o` |
+| Google Gemini | `google` | `gemini-2.0-flash` |
+| Mistral | `mistral` | `mistral-large-latest` |
+| Groq | `groq` | `llama-3.3-70b-versatile` |
+| DeepSeek | `deepseek` | `deepseek-chat` |
+| OpenRouter | `openrouter` | routes to 200+ models |
+| xAI (Grok) | `xai` | `grok-2-latest` |
+| Together AI | `together` | `Llama-3.3-70B-Instruct-Turbo` |
+| AWS Bedrock | `bedrock` | Claude/Llama/Titan |
+| Cohere | `cohere` | `command-r-plus` |
+| Ollama | `ollama` | `llama3.2` (local) |
+
+## Provider Interface
+
+All providers implement the `LLMProvider` interface:
+
+```typescript
+interface LLMProvider {
+  readonly name: string;
+  readonly defaultModel: string;
+  complete(options: CompletionOptions): Promise<CompletionResult>;
+  stream(options: CompletionOptions): AsyncIterable<CompletionChunk>;
+}
+```
+
+## Features
+
+- **Multi-Provider**: 12+ LLM providers through a unified interface
+- **Cascading Router**: Cheapest model first, escalate on low confidence
+- **Failover**: Automatic fallback to next provider on errors
+- **Cost Optimization**: Route simple queries to cheaper/ local models
+- **Streaming**: All providers support streaming responses

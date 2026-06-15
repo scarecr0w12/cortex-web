@@ -1,11 +1,87 @@
-# Security Parallax Model
+# Parallax Security Model
 
-The parallax security model provides defense in depth through multiple independent security layers.
+The Parallax security model provides defense in depth through three-stage policy validation, encrypted credential storage, and comprehensive audit logging.
 
-## Security Layers
+## Three-Stage Validation Gate
 
-1. **Vault**: Encrypted storage for secrets and credentials with AES-256-GCM encryption
-2. **Policy Engine**: Granular allow/deny rules for operations and resource access
-3. **Approval Workflows**: Configurable approval gates for sensitive operations
-4. **Sandboxing**: Isolated execution environments for plugins and code
-5. **Audit Logging**: Comprehensive logging of all security-relevant events
+Every tool call passes through a 3-stage validator before execution:
+
+```
+Agent emits <tool_call>
+  → 1. checkPolicy('tool', toolName)      — is this tool allowed?
+  → 2. checkPolicy('shell', command)      — is the shell command safe?
+  → 3. checkPolicy('domain', hostname)    — is the domain allowed?
+  → DENY → error returned to agent (no execution)
+  → ALLOW → tool.execute() runs
+  → Lens: policy_check + tool_call events logged
+```
+
+Stage 2 only applies to `shell` and `code_exec` tools. Stage 3 only applies to `web_search` with extracted URLs.
+
+## Policy Engine
+
+```
+checkPolicy(kind, value):
+  for rule in rules WHERE kind = ? ORDER BY priority ASC:
+    if regex(rule.pattern).test(value):
+      return { allowed: rule.effect === 'allow', reason: rule.reason }
+  return { allowed: true, reason: 'default allow' }
+```
+
+Rules are evaluated by priority (ASC — lower number = higher precedence). If no rule matches, the default is **allow**.
+
+### Default Deny Rules
+
+Seeded on first database migration:
+
+| Pattern | Blocks |
+|---------|--------|
+| `rm\s+-rf\s+/` | Recursive root delete |
+| `:\(\)\{.*\}` | Fork bomb patterns |
+| `dd\s+if=.*of=/dev/` | Direct disk writes |
+| `chmod\s+777\s+/` | World-writable root |
+
+## Credential Vault
+
+AES-256-GCM encrypted storage for sensitive credentials:
+
+```
+vaultStore(name, value):
+  passphrase = Deno.env.get('CORTEX_VAULT_KEY')
+  key = PBKDF2(passphrase, salt='cortex-vault-salt-v1', 100000, SHA-256) → AES-256 key
+  iv = crypto.getRandomValues(12 bytes)
+  ciphertext = AES-GCM-256.encrypt(iv, key, value)
+  store(iv || ciphertext) in vault_entries
+
+vaultGet(name):
+  buf = vault_entries[name].encrypted_data
+  iv = buf[0:12]; cipher = buf[12:]
+  plaintext = AES-GCM-256.decrypt(iv, key, cipher)
+  vault_access_log.insert(...)  — Full audit trail
+  return plaintext
+```
+
+- Passphrase is **never** stored — only held in environment variable `CORTEX_VAULT_KEY` at runtime
+- All access is logged to `vault_access_log` with timestamps
+- PBKDF2 with 100,000 iterations of SHA-256 for key derivation
+
+## Security Layers Summary
+
+| Layer | Description |
+|-------|-------------|
+| Vault | Encrypted storage for secrets and credentials (AES-256-GCM) |
+| Policy Engine | Granular allow/deny regex rules with priority ordering |
+| Approval Gates | Configurable approval workflows for sensitive operations |
+| Sandboxing | Isolated Docker containers for code execution with resource limits |
+| Audit Logging | Comprehensive logging of all security-relevant events in Lens |
+| Default Deny | Pre-seeded rules blocking known dangerous patterns |
+
+## Audit Trail (Cortex Lens)
+
+All security decisions are logged:
+
+- Every policy check (allowed/denied with reason)
+- Every tool call (tool name, arguments, timestamp)
+- Every vault access (credential name, access time)
+- Session events (create, resume, close)
+- LLM calls (provider, model, token usage, cost)

@@ -1,24 +1,76 @@
 # Databases
 
-CortexPrism uses multiple database systems for different purposes.
+CortexPrism uses multiple SQLite databases, each serving a specific purpose. All databases use WAL mode via `@libsql/client` for concurrent read/write performance.
 
-## Database Types
+## Database Overview
 
-| Database | Purpose | Technology |
-|----------|---------|------------|
-| Plugins DB | Plugin registry | SQLite |
-| Memory Store | Memory tiers | SQLite + Vector |
-| Vault | Encrypted secrets | SQLite (encrypted) |
-| Session Store | Session management | SQLite |
+| Database | File | Contents | Migrations |
+|----------|------|----------|------------|
+| Core | `cortex.db` | Sessions, turns, jobs, policy rules | 001, 007, 009 |
+| Memory | `memory.db` | 5-tier memory, FTS5, embeddings | 002, 008 |
+| Lens | `lens.db` | Audit events (all system activity) | 003 |
+| Vault | `vault.db` | Encrypted credentials + access log | 004 |
+| Plugins | `plugins.db` | Plugin registry | 005 |
+| Session | `sess_*.db` | Per-session message history | 006 |
 
-## Configuration
+## Migration History
 
-Database locations are configured in the data directory:
+| Migration | Database | Description |
+|-----------|----------|-------------|
+| 001_core.sql | cortex.db | Core schema: sessions, turns, jobs |
+| 002_memory.sql | memory.db | 5-tier memory tables + FTS5 virtual tables |
+| 003_lens.sql | lens.db | Lens audit events table |
+| 004_vault.sql | vault.db | Vault entries + access log |
+| 005_plugins.sql | plugins.db | Plugin registry |
+| 006_session.sql | sess_*.db | Per-session message store |
+| 007_jobs_v2.sql | cortex.db | Job scheduler columns |
+| 008_memory_embeddings.sql | memory.db | Embedding + decay columns |
+| 009_policy.sql | cortex.db | Policy rules + default deny seeds |
+
+## Data Directory Structure
 
 ```
 ~/.cortex/
-├── plugins.db      # Plugin registry
-├── memory.db       # Memory store
-├── vault.db        # Encrypted vault
-└── sessions.db     # Session data
+├── config.json
+├── data/
+│   ├── cortex.db
+│   ├── memory.db
+│   ├── lens.db
+│   ├── vault.db
+│   ├── plugins.db
+│   └── sess_*.db          (one per chat session)
+```
+
+## Key Schemas
+
+### Memory (memory.db)
+
+| Table | Purpose |
+|-------|---------|
+| `episodic_memory` | Turn summaries of user+agent exchanges |
+| `semantic_memory` | Injected facts and knowledge |
+| `reflection_memory` | LLM-extracted behavior patterns |
+| `episodic_memory_fts` | FTS5 virtual table for keyword search |
+| `semantic_memory_fts` | FTS5 virtual table for keyword search |
+
+### Lens (lens.db)
+
+| Table | Purpose |
+|-------|---------|
+| `lens_events` | All system events: LLM calls, tool calls, policy checks, session actions |
+
+### Vault (vault.db)
+
+| Table | Purpose |
+|-------|---------|
+| `vault_entries` | Encrypted credential storage (name, encrypted_data, service) |
+| `vault_access_log` | Audit trail of all credential access |
+
+## Configuration
+
+Database locations are configured via the data directory (default: `~/.cortex/`):
+
+```bash
+# Override data directory
+CORTEX_DATA_DIR=/data/cortex cortex chat
 ```

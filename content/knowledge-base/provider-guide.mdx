@@ -1,41 +1,172 @@
 # Provider Guide
 
-## OpenAI
+Step-by-step setup guides for all supported LLM providers.
+
+## Anthropic Claude
 
 ```bash
-cortex setup --provider openai
+# 1. Get your API key from https://console.anthropic.com
+# 2. Configure in config.json:
 ```
-
-Set `OPENAI_API_KEY` environment variable or enter it in the setup wizard.
-
-## Anthropic
-
-```bash
-cortex setup --provider anthropic
-```
-
-Set `ANTHROPIC_API_KEY` environment variable or enter it in the setup wizard.
-
-## Google AI
-
-```bash
-cortex setup --provider google
-```
-
-Set `GOOGLE_API_KEY` environment variable or enter it in the setup wizard.
-
-## Custom Providers
-
-For custom OpenAI-compatible endpoints, edit the config file directly:
 
 ```json
 {
-  "providers": {
-    "custom": {
-      "apiKey": "your-key",
-      "baseUrl": "https://your-endpoint.com/v1",
-      "models": ["custom-model"]
-    }
-  }
+  "anthropic": { "kind": "anthropic", "model": "claude-sonnet-4-20250514", "apiKey": "sk-ant-..." }
 }
 ```
+
+Recommended models: `claude-sonnet-4-20250514`, `claude-haiku-4-5`, `claude-opus-4-5`
+
+## OpenAI
+
+```bash
+# 1. Get your API key from https://platform.openai.com/api-keys
+# 2. Configure:
+```
+
+```json
+{
+  "openai": { "kind": "openai", "model": "gpt-4o", "apiKey": "sk-..." }
+}
+```
+
+Recommended models: `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`
+
+## Google Gemini
+
+```bash
+# 1. Get your API key from https://aistudio.google.com/apikey
+# 2. Configure:
+```
+
+```json
+{
+  "google": { "kind": "google", "model": "gemini-2.0-flash", "apiKey": "..." }
+}
+```
+
+Recommended models: `gemini-2.0-flash`, `gemini-2.5-pro`
+
+## Mistral AI
+
+```bash
+# 1. Get your API key from https://console.mistral.ai
+# 2. Configure:
+```
+
+```json
+{
+  "mistral": { "kind": "mistral", "model": "mistral-large-latest", "apiKey": "..." }
+}
+```
+
+## Groq
+
+```bash
+# 1. Get your API key from https://console.groq.com
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "groq": { "kind": "groq", "model": "llama-3.3-70b-versatile", "apiKey": "gsk_..." }
+}
+```
+
+## DeepSeek
+
+```bash
+# 1. Get your API key from https://platform.deepseek.com
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "deepseek": { "kind": "deepseek", "model": "deepseek-chat", "apiKey": "sk-..." }
+}
+```
+
+## OpenRouter
+
+```bash
+# 1. Get your API key from https://openrouter.ai/keys
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "openrouter": { "kind": "openrouter", "model": "openai/gpt-4o", "apiKey": "..." }
+}
+```
+
+OpenRouter gives access to 200+ models from various providers.
+
+## xAI (Grok)
+
+```bash
+# 1. Get your API key from https://x.ai/api
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "xai": { "kind": "xai", "model": "grok-2-latest", "apiKey": "..." }
+}
+```
+
+## Together AI
+
+```bash
+# 1. Get your API key from https://api.together.ai/settings/api-keys
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "together": { "kind": "together", "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo", "apiKey": "..." }
+}
+```
+
+## AWS Bedrock
+
+```bash
+# 1. Set up AWS credentials with Bedrock access
+# 2. Configure:
+```
+
+```json
+{
+  "bedrock": { "kind": "bedrock", "model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "apiKey": "AKIA...", "secretKey": "...", "baseUrl": "us-east-1" }
+}
+```
+
+## Cohere
+
+```bash
+# 1. Get your API key from https://dashboard.cohere.com/api-keys
+# 2. Configure:
+```
+
+```json
+{
+  "cohere": { "kind": "cohere", "model": "command-r-plus", "apiKey": "..." }
+}
+```
+
+## Ollama (Local)
+
+```bash
+# 1. Install Ollama from https://ollama.com
+# 2. Pull a model:
+ollama pull llama3.2
+
+# 3. Configure:
+```
+
+```json
+{
+  "ollama": { "kind": "ollama", "model": "llama3.2", "baseUrl": "http://localhost:11434" }
+}
+```
+
+Ollama runs entirely locally — no API key needed.

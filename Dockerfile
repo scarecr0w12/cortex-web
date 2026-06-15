@@ -30,4 +30,4 @@ COPY --from=deps /app/node_modules ./node_modules
 USER nextjs
 EXPOSE 3000
 ENV PORT=3000
-CMD ["node", "server.js"]
+CMD npx prisma db push --skip-generate 2>/dev/null && node server.js

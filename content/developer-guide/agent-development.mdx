@@ -1,0 +1,207 @@
+# Agent Development
+
+This guide covers creating custom agent configurations, defining agent personas (souls), and building specialized agents for specific use cases.
+
+## Agent Configuration
+
+Agents are defined using JSON configuration files that specify the model, behavior, tools, and personality.
+
+### Basic Agent Config
+
+```json
+{
+  "name": "code-reviewer",
+  "version": "1.0.0",
+  "provider": "anthropic",
+  "model": "claude-sonnet-4-20250514",
+  "temperature": 0.3,
+  "systemPrompt": "You are a senior code reviewer. Analyze code for bugs, security issues, and style violations. Suggest improvements.",
+  "tools": ["read_file", "search_code", "git_diff"],
+  "maxTurns": 50,
+  "streamOutput": true
+}
+```
+
+### Using soul (Persona) Configuration
+
+The `soul` field defines the agent's personality, behavior patterns, and constraints:
+
+```json
+{
+  "name": "research-assistant",
+  "version": "1.0.0",
+  "provider": "openai",
+  "model": "gpt-4o",
+  "temperature": 0.7,
+  "soul": {
+    "persona": "A thoughtful research assistant with expertise in academic literature review. You cite sources carefully and acknowledge uncertainty.",
+    "constraints": [
+      "Always cite sources when making factual claims",
+      "Distinguish between established facts and speculation",
+      "Suggest further reading when appropriate"
+    ],
+    "voice": "professional",
+    "memory": {
+      "tiers": ["episodic", "semantic"],
+      "retrieval": { "limit": 10, "minScore": 0.5 }
+    }
+  },
+  "tools": ["web_search", "read_file", "memory_search"]
+}
+```
+
+## Using Agents Locally
+
+```bash
+# Import from marketplace
+cortex agent import marketplace:research-assistant
+
+# Use in chat
+cortex chat --agent research-assistant
+
+# Or specify inline
+cortex chat --provider openai --model gpt-4o --system-prompt "You are a helpful coding assistant"
+```
+
+## Publishing Agents
+
+Agents can be published to the marketplace for others to use:
+
+1. Create your agent configuration
+2. Test it locally: `cortex chat --agent my-agent`
+3. Publish via the [Publish Agent](/marketplace/publish/agent) page
+
+## Agent Tools
+
+Agents can use built-in tools and plugin-provided tools:
+
+### Built-in Tools
+
+| Tool | Description |
+|------|-------------|
+| `web_search` | Search the web via DuckDuckGo |
+| `read_file` | Read files from the filesystem |
+| `write_file` | Write files to the filesystem |
+| `shell` | Execute shell commands |
+| `code_exec` | Run code in sandbox |
+| `memory_search` | Search the memory system |
+| `memory_store` | Store information in memory |
+| `fetch_url` | Fetch content from URLs |
+
+### Plugin Tools
+
+Any plugin capability is automatically available as a tool to agents. Install a plugin and reference its capabilities:
+
+```json
+{
+  "name": "data-analyst",
+  "version": "1.0.0",
+  "tools": ["code_exec", "plugin:csv-analyzer/analyze", "plugin:chart-generator/generate"]
+}
+```
+
+## Agent Best Practices
+
+### System Prompt Design
+
+```markdown
+You are a [role] with expertise in [domain].
+
+## Behavioral Guidelines
+- [Guideline 1]
+- [Guideline 2]
+
+## Constraints
+- [Constraint 1]
+- [Constraint 2]
+
+## Output Format
+- [Format preferences]
+
+## Tools Available
+- [Tool 1]: [Brief description]
+- [Tool 2]: [Brief description]
+```
+
+### Temperature Settings
+
+| Use Case | Temperature |
+|----------|-------------|
+| Code generation | 0.2 - 0.4 |
+| Analysis/review | 0.3 - 0.5 |
+| Creative writing | 0.7 - 0.9 |
+| Research | 0.5 - 0.7 |
+| Data extraction | 0.1 - 0.3 |
+
+### Memory Configuration
+
+```json
+{
+  "soul": {
+    "memory": {
+      "tiers": ["episodic", "semantic"],
+      "retrieval": {
+        "limit": 5,
+        "minScore": 0.3,
+        "recencyWeight": 0.4,
+        "relevanceWeight": 0.6
+      }
+    }
+  }
+}
+```
+
+## Example: Security Auditor Agent
+
+```json
+{
+  "name": "security-auditor",
+  "version": "1.0.0",
+  "provider": "anthropic",
+  "model": "claude-sonnet-4-20250514",
+  "temperature": 0.2,
+  "soul": {
+    "persona": "Expert security auditor with OWASP, CWE, and NIST knowledge. Methodical and thorough.",
+    "constraints": [
+      "Always prioritize critical vulnerabilities",
+      "Provide remediation steps for each finding",
+      "Distinguish between theoretical and practical risks",
+      "Never execute potentially destructive commands"
+    ]
+  },
+  "tools": ["read_file", "shell", "web_search", "plugin:dependency-scanner/scan"],
+  "systemPrompt": "You perform security audits on codebases. For each finding, provide: severity, description, affected lines, and remediation."
+}
+```
+
+## Example: Personal Assistant Agent
+
+```json
+{
+  "name": "personal-assistant",
+  "version": "1.0.0",
+  "provider": "openai",
+  "model": "gpt-4o",
+  "temperature": 0.7,
+  "soul": {
+    "persona": "Helpful, efficient personal assistant. Proactive and organized.",
+    "voice": "friendly",
+    "memory": {
+      "tiers": ["episodic", "semantic", "reflection"],
+      "retrieval": { "limit": 15 }
+    }
+  },
+  "tools": ["web_search", "memory_search", "memory_store", "code_exec", "read_file", "write_file"]
+}
+```
+
+## Managing Agents via CLI
+
+```bash
+cortex agent list                         # List configured agents
+cortex agent import <source>              # Import an agent from marketplace or file
+cortex agent export <name>                # Export agent to JSON
+cortex agent remove <name>                # Remove an agent
+cortex chat --agent <name>                # Chat with a specific agent
+cortex chat --list-agents                 # List available agents
+```

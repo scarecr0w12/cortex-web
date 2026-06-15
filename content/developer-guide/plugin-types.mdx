@@ -1,0 +1,111 @@
+# Plugin Types
+
+CortexPrism supports three distinct plugin architectures, each suited for different use cases. All three follow the same lifecycle and security model but differ in runtime, isolation, and capability exposure.
+
+## Comparison
+
+| Aspect | ESM | MCP | WASM |
+|--------|-----|-----|------|
+| **Runtime** | Deno/Node.js sandbox | Separate process (stdio/HTTP) | WebAssembly runtime |
+| **Language** | TypeScript, JavaScript | Any language (stdin/stdout JSON) | Rust, C, C++, Go, AssemblyScript |
+| **Performance** | Medium | Low (IPC overhead) | High |
+| **Isolation** | Process-level sandbox | Process-level | Sandboxed runtime |
+| **State** | In-memory, per-session | Persistent process | Stateless |
+| **Network** | Restricted by policy | Configurable | None by default |
+| **Best for** | General-purpose tools | Complex services, external APIs | CPU-intensive, cross-language |
+
+## ESM Plugins
+
+ESM (ECMAScript Module) plugins are the most common and flexible type. They are written in TypeScript or JavaScript and run in a sandboxed Deno/Node.js subprocess with restricted permissions.
+
+**Use when:**
+- You want the fastest development cycle
+- Your plugin performs data processing, file operations, or API calls
+- You need to share code easily via npm/JSR
+
+**Example capability:**
+```typescript
+export default definePlugin({
+  name: "data-processor",
+  version: "1.0.0",
+  capabilities: {
+    async analyzeCSV(path: string): Promise<AnalysisResult> {
+      const content = await Deno.readTextFile(path);
+      // process CSV data
+      return { rows: content.split("\n").length, columns: inferColumns(content) };
+    },
+  },
+});
+```
+
+## MCP Plugins
+
+MCP (Model Context Protocol) plugins implement the [Model Context Protocol](https://modelcontextprotocol.io) standard. They run as separate processes communicating via JSON-RPC over stdin/stdout or HTTP.
+
+**Use when:**
+- Your plugin wraps an existing MCP server
+- You need long-running stateful services
+- Your plugin requires specific runtime dependencies
+- You want language-agnostic implementation (Python, Go, Rust, etc.)
+
+**Example MCP tool definition:**
+```json
+{
+  "name": "git-mcp-server",
+  "version": "1.0.0",
+  "type": "mcp",
+  "entryPoint": "npx @modelcontextprotocol/server-git",
+  "capabilities": {
+    "tools": ["git_status", "git_log", "git_diff", "git_commit"]
+  }
+}
+```
+
+## WASM Plugins
+
+WASM (WebAssembly) plugins compile to `.wasm` bytecode and run in a sandboxed WebAssembly runtime. They offer the highest performance and strongest security guarantees.
+
+**Use when:**
+- Performance is critical (data transformation, encoding, parsing)
+- You want to write in Rust, Go, C, or C++
+- Your plugin handles sensitive data (stronger sandboxing)
+- The plugin is stateless and deterministic
+
+**Example Rust plugin:**
+```rust
+#[no_mangle]
+pub extern "C" fn process_data(input_ptr: *const u8, input_len: usize) -> i32 {
+    let input = unsafe { std::slice::from_raw_parts(input_ptr, input_len) };
+    let result = transform(input);
+    // Write result to shared memory, return pointer
+    result as i32
+}
+```
+
+## Choosing the Right Type
+
+| Scenario | Recommended Type |
+|----------|-----------------|
+| Quick Prototyping | ESM |
+| Data Processing | ESM or WASM |
+| External API Integration | MCP |
+| CPU-intensive Computation | WASM |
+| Existing CLI Tool Wrapper | MCP |
+| Language-agnostic Service | MCP |
+| Security-sensitive Crypto | WASM |
+| File System Operations | ESM |
+
+## Type Mixing
+
+A single plugin entry in the registry can declare multiple capability entry points of different types. The plugin manager dispatches each capability to the appropriate runtime.
+
+```json
+{
+  "name": "hybrid-plugin",
+  "capabilities": {
+    "fastTransform": { "type": "wasm", "entry": "transform.wasm" },
+    "webSearch": { "type": "esm", "entry": "web-search.js" },
+    "gitOps": { "type": "mcp", "entry": "npx @mcp/git" }
+  }
+}
+```

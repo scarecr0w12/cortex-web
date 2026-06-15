@@ -1,21 +1,66 @@
 # `cortex memory`
 
-The `cortex memory` command manages memory operations in CortexPrism.
+Search and manage the 5-tier memory system. CortexPrism uses a hybrid retrieval approach combining FTS5 keyword search with cosine vector similarity, scored with exponential decay.
 
 ## Usage
 
 ```bash
-cortex memory [options]
+cortex memory search "<query>"       # Keyword + vector search (hybrid)
+cortex memory search "<query>" --semantic  # Vector-only search
+cortex memory add "<fact>"           # Add a semantic fact
 ```
+
+## Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `search` | Search memory with hybrid retrieval |
+| `add` | Add a new semantic memory entry |
 
 ## Options
 
 | Option | Description |
 |--------|-------------|
+| `--semantic` | Use vector-only search (requires embedding provider) |
+| `--tier` | Filter results by memory tier |
+| `--limit` | Maximum results to return (default: 10) |
 | `--help` | Show help for this command |
+
+## Memory Tiers
+
+| Tier | Persistence | Content |
+|------|-------------|---------|
+| Episodic (T2) | Session | Turn summaries of user+agent exchanges |
+| Semantic (T3) | Long-term | Injected facts and knowledge |
+| Reflection (T5) | Permanent | LLM-extracted behavior patterns |
+
+## Retrieval Algorithm
+
+```
+Query
+  → FTS5 keyword search (episodic + semantic tables)
+  → cosine vector similarity (via embedding provider)
+  → merge + re-score: score × 2^(-age_days / half_life_days)
+  → sort descending → top-K results
+```
+
+## Embedding Providers
+
+| Provider | Model | Requirement |
+|----------|-------|-------------|
+| OllamaEmbedder | Configurable via Ollama | Ollama running locally |
+| OpenAIEmbedder | `text-embedding-3-small` | OpenAI API key required |
+| StubEmbedder | Deterministic hash | No external service needed (default) |
 
 ## Examples
 
 ```bash
-cortex memory --help
+# Hybrid search (keyword + vector)
+cortex memory search "project deployment config"
+
+# Vector-only semantic search
+cortex memory search "deployment config" --semantic
+
+# Add a fact to semantic memory
+cortex memory add "CortexPrism uses SQLite WAL mode for all databases"
 ```

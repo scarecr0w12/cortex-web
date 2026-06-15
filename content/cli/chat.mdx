@@ -1,21 +1,87 @@
 # `cortex chat`
 
-The `cortex chat` command manages chat operations in CortexPrism.
+Start an interactive streaming chat session with any supported LLM provider. This is the primary interface for interacting with the CortexPrism agent.
 
 ## Usage
 
 ```bash
 cortex chat [options]
+cortex chat --model gpt-4o           # Override model
+cortex chat --resume sess_abc123     # Resume an existing session
+cortex chat -s sess_abc123           # Resume (short flag)
+cortex chat --no-stream              # Disable streaming output
+cortex chat --provider anthropic     # Select provider
+cortex chat --tools all              # Enable all tools
+cortex chat --router cost-optimized  # Use model router
 ```
 
 ## Options
 
 | Option | Description |
 |--------|-------------|
+| `--model, -m` | Override the default model for this session |
+| `--provider, -p` | Select a specific provider |
+| `--resume, -s` | Resume an existing session by ID |
+| `--no-stream` | Disable streaming output (print complete response at once) |
+| `--tools` | Enable tool access (`all` or comma-separated list) |
+| `--router` | Use the model router with a specific strategy |
 | `--help` | Show help for this command |
+
+## Slash Commands
+
+Inside the chat session, the following slash commands are available:
+
+| Command | Description |
+|---------|-------------|
+| `/exit` | Quit the session |
+| `/help` | Show available slash commands |
+| `/clear` | Clear the terminal screen |
+| `/model <name>` | Switch models mid-session |
+| `/tokens` | Show token usage for current session |
+
+## Tool Integration
+
+When tools are enabled, the agent can:
+- **Read files** using `file_read` tool
+- **Execute shell commands** with approval gates
+- **Search the web** via DuckDuckGo
+- **Execute code** in sandboxed environments
+
+## Session Persistence
+
+Each chat session creates a per-session SQLite database (`sess_*.db`) that stores full message history. Sessions can be resumed later using `--resume` or the interactive session browser via `cortex sessions`.
+
+## Agent Loop Flow
+
+```
+User types message
+  → memory retrieval (FTS5 + vector search)
+  → memory injection into system prompt
+  → LLM call (stream or complete)
+  → parse tool calls from response
+  → validate through Parallax security
+  → execute approved tools
+  → re-prompt LLM with results
+  → persist response to session history
+  → write episodic memory summary (async)
+  → per-turn reflection (async, if enabled)
+```
 
 ## Examples
 
 ```bash
-cortex chat --help
+# Start a basic chat session with default provider
+cortex chat
+
+# Use a specific model
+cortex chat --model claude-sonnet-4-20250514
+
+# Resume a previous session
+cortex chat --resume sess_a1b2c3d4
+
+# Use the cost-optimized model router
+cortex chat --router cost-optimized
+
+# Chat with all tools enabled
+cortex chat --tools all
 ```

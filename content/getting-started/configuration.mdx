@@ -4,29 +4,103 @@ Complete reference for the CortexPrism configuration system.
 
 ## Config File Location
 
-The config file is at `~/.cortex/config.json` by default. You can override this with the `--config` flag or the `CORTEX_CONFIG` environment variable.
+Default: `~/.cortex/config.json`
+
+Override with:
+- `--config` / `-c` flag
+- `CORTEX_CONFIG` environment variable
+
+## Full Configuration Schema
+
+```json
+{
+  "version": 1,
+  "defaultProvider": "anthropic",
+  "providers": {
+    "anthropic":  { "kind": "anthropic",  "model": "claude-sonnet-4-20250514",          "apiKey": "sk-..." },
+    "openai":     { "kind": "openai",     "model": "gpt-4o",                            "apiKey": "sk-..." },
+    "google":     { "kind": "google",     "model": "gemini-2.0-flash",                  "apiKey": "..." },
+    "mistral":    { "kind": "mistral",    "model": "mistral-large-latest",              "apiKey": "..." },
+    "groq":       { "kind": "groq",       "model": "llama-3.3-70b-versatile",           "apiKey": "gsk_..." },
+    "deepseek":   { "kind": "deepseek",   "model": "deepseek-chat",                     "apiKey": "sk-..." },
+    "openrouter": { "kind": "openrouter", "model": "openai/gpt-4o",                     "apiKey": "..." },
+    "xai":        { "kind": "xai",        "model": "grok-2-latest",                     "apiKey": "..." },
+    "together":   { "kind": "together",   "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo", "apiKey": "..." },
+    "bedrock":    { "kind": "bedrock",    "model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "apiKey": "AKIA...", "secretKey": "...", "baseUrl": "us-east-1" },
+    "cohere":     { "kind": "cohere",     "model": "command-r-plus",                    "apiKey": "..." },
+    "ollama":     { "kind": "ollama",     "model": "llama3.2",                          "baseUrl": "http://localhost:11434" }
+  },
+  "agent": {
+    "name": "Cortex",
+    "maxTurns": 50,
+    "streamOutput": true,
+    "enableReflection": true
+  },
+  "router": {
+    "enabled": false,
+    "confidenceThreshold": 0.7,
+    "cascade": [
+      { "provider": "ollama", "model": "llama3.2:3b" },
+      { "provider": "ollama", "model": "llama3.1:8b" },
+      { "provider": "anthropic", "model": "claude-sonnet-4-20250514" }
+    ]
+  }
+}
+```
 
 ## Environment Variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `CORTEX_CONFIG` | Path to config file | `~/.cortex/config.json` |
-| `CORTEX_DATA_DIR` | Data directory | `~/.cortex/` |
-| `OPENAI_API_KEY` | OpenAI API key | - |
-| `ANTHROPIC_API_KEY` | Anthropic API key | - |
-| `GOOGLE_API_KEY` | Google AI API key | - |
+| `CORTEX_DATA_DIR` | Data directory path | `~/.cortex/` |
+| `CORTEX_VAULT_KEY` | Vault encryption passphrase | — |
+| `OPENAI_API_KEY` | OpenAI API key | — |
+| `ANTHROPIC_API_KEY` | Anthropic API key | — |
+| `GOOGLE_API_KEY` | Google AI API key | — |
 
 ## Data Directory Structure
 
 ```
 ~/.cortex/
 ├── config.json
-├── plugins.db
-├── memory/
-│   ├── working/
-│   ├── semantic/
-│   └── archival/
-├── vault/
-├── agents/
-└── logs/
+└── data/
+    ├── cortex.db        → Core: sessions, jobs, policy rules
+    ├── memory.db         → 5-tier memory + FTS5 + embeddings
+    ├── lens.db           → Audit log
+    ├── vault.db          → Encrypted credentials
+    ├── plugins.db        → Plugin registry
+    └── sess_*.db         → Per-session message history
+```
+
+## Provider Configuration Details
+
+### OpenAI-Compatible Providers
+
+Providers like Groq, DeepSeek, OpenRouter, xAI, and Together AI use the `openai` compatible API format with custom `baseUrl`:
+
+```json
+{
+  "groq": { "kind": "openai", "model": "llama-3.3-70b-versatile", "apiKey": "gsk_...", "baseUrl": "https://api.groq.com/openai/v1" }
+}
+```
+
+### AWS Bedrock
+
+Bedrock requires `secretKey` in addition to `apiKey`, with `baseUrl` set to the AWS region:
+
+```json
+{
+  "bedrock": { "kind": "bedrock", "model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "apiKey": "AKIA...", "secretKey": "...", "baseUrl": "us-east-1" }
+}
+```
+
+### Ollama (Local)
+
+Ollama runs locally and doesn't need an API key, just a `baseUrl` pointing to the Ollama server:
+
+```json
+{
+  "ollama": { "kind": "ollama", "model": "llama3.2", "baseUrl": "http://localhost:11434" }
+}
 ```

@@ -1,0 +1,75 @@
+# Developer Guide
+
+This guide covers everything you need to build, publish, and maintain plugins and agents for the CortexPrism ecosystem. Whether you are extending the system with custom capabilities or building agents for specific use cases, you are in the right place.
+
+## Sections
+
+| Guide | Description |
+|-------|-------------|
+| [Plugin Types](/docs/developer-guide/plugin-types) | Overview of ESM, MCP, and WASM plugin architectures |
+| [ESM Plugins](/docs/developer-guide/esm-plugin) | Building JavaScript/TypeScript ESM plugins |
+| [MCP Plugins](/docs/developer-guide/mcp-plugin) | Building Model Context Protocol server plugins |
+| [WASM Plugins](/docs/developer-guide/wasm-plugin) | Building WebAssembly plugins |
+| [Plugin API Reference](/docs/developer-guide/plugin-api) | Complete plugin capability and lifecycle API |
+| [Agent Development](/docs/developer-guide/agent-development) | Creating and customizing agent configurations |
+| [Publishing](/docs/developer-guide/publishing) | Publishing plugins and agents to the marketplace |
+| [Best Practices](/docs/developer-guide/best-practices) | Guidelines and recommendations for plugin development |
+
+## Quick Start
+
+The fastest way to start developing a plugin:
+
+```bash
+# Create a new ESM plugin
+mkdir my-plugin
+cd my-plugin
+npm init -y
+npm install @cortexprism/plugin-sdk
+```
+
+```typescript
+import { definePlugin } from "@cortexprism/plugin-sdk";
+
+export default definePlugin({
+  name: "my-plugin",
+  version: "1.0.0",
+  capabilities: {
+    async greet(name: string): Promise<string> {
+      return `Hello, ${name}!`;
+    },
+  },
+});
+```
+
+Install your plugin locally to test:
+
+```bash
+cortex plugin install ./my-plugin
+```
+
+## System Requirements
+
+- **Runtime**: Deno v2.0+ or Node.js v20+ (for ESM plugins)
+- **CortexPrism**: v0.1.0+
+- **Rust toolchain** (only for WASM plugins)
+- **Docker** (optional, for MCP plugin testing)
+
+## Key Concepts
+
+- **Plugin**: A self-contained module that adds capabilities to the agent tool system
+- **Capability**: A single function exposed by a plugin that the agent can invoke
+- **Manifest**: Metadata describing the plugin (name, version, capabilities, permissions)
+- **Sandbox**: Isolated execution environment for plugins with resource limits
+- **Marketplace**: Central registry for discovering and distributing plugins
+
+## Architecture Overview
+
+```
+Agent Loop
+  → Tool Registry
+    → Plugin Manager
+      → Plugin Sandbox (isolated)
+        → ESM Runtime / MCP Process / WASM Runtime
+```
+
+Each plugin type runs in its own sandboxed environment with resource limits enforced by the Parallax security layer.

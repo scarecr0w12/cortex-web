@@ -1,0 +1,170 @@
+# Migration Guide
+
+This guide covers upgrading between CortexPrism versions and migrating data between installations.
+
+## Version Compatibility
+
+| From | To | Migration Required |
+|------|----|--------------------|
+| 0.0.x | 0.1.x | Database migration (`cortex migrate`) |
+| 0.1.x | 0.2.x | Config format update |
+| 0.2.x | 1.0.0 | Full migration (see below) |
+
+## Checking Your Version
+
+```bash
+cortex --version
+```
+
+## Upgrading CortexPrism
+
+### Source Install
+
+```bash
+cd ~/cortex
+git pull origin main
+deno task setup    # Runs migrations and dependency updates
+```
+
+### Docker Install
+
+```bash
+docker pull cortexprism/cortex:latest
+docker stop cortex-server
+docker rm cortex-server
+# Re-create with your docker run command
+```
+
+## Database Migrations
+
+CortexPrism uses SQLite with automatic migration support:
+
+```bash
+# Run all pending migrations
+cortex migrate
+
+# Check migration status
+cortex migrate --status
+
+# Dry run (see what would be applied)
+cortex migrate --dry-run
+```
+
+### Manual Migration
+
+If automatic migration fails, you can run migrations manually:
+
+```bash
+# Backup first
+cp ~/.cortex/data/cortex.db ~/.cortex/data/cortex.db.backup
+
+# Run specific migration
+cortex migrate --to v2
+```
+
+## Data Directory Migration
+
+To move your CortexPrism data to a new location:
+
+```bash
+# Stop all cortex processes
+cortex daemon stop
+cortex serve -s
+
+# Copy data
+cp -r ~/.cortex /new/location/.cortex
+
+# Set new data directory
+export CORTEX_DATA_DIR=/new/location/.cortex
+
+# Start using new location
+cortex daemon start
+```
+
+## Config Migration
+
+When config format changes between versions:
+
+```bash
+# Backup existing config
+cp ~/.cortex/config.json ~/.cortex/config.json.backup
+
+# Run setup wizard to regenerate
+cortex setup
+
+# Or manually update config:
+cortex config migrate
+```
+
+## Plugin Migration
+
+When upgrading CortexPrism, plugins may need updates:
+
+```bash
+# Check plugin compatibility
+cortex plugin list --check-compatibility
+
+# Reinstall plugins for new version
+cortex plugin reinstall --all
+
+# Update a specific plugin
+cortex plugin update my-plugin
+```
+
+## Rolling Back
+
+If an upgrade causes issues:
+
+```bash
+# Restore database backup
+cp ~/.cortex/data/cortex.db.backup ~/.cortex/data/cortex.db
+
+# Revert to previous version
+git checkout <previous-tag>
+deno task setup
+
+# Reinstall compatible plugins
+cortex plugin reinstall --all
+```
+
+## Migrating from Other Tools
+
+### From OpenAI Agents SDK
+
+CortexPrism supports importing configurations from the OpenAI Agents SDK:
+
+```bash
+cortex import openai-agents --config agent_config.json
+```
+
+### From LangChain
+
+```bash
+cortex import langchain --config chain_config.json
+```
+
+### From Custom Setup
+
+If you have an existing tool configuration, you can wrap it as a CortexPrism plugin:
+
+```bash
+cortex plugin install ./my-existing-tool --adapt
+```
+
+The adapter mode generates a compatibility layer between your tool and the plugin system.
+
+## Pre-Migration Checklist
+
+1. **Back up databases** — `cp ~/.cortex/data/*.db ~/backup/`
+2. **Export plugin list** — `cortex plugin list --format json > plugins.json`
+3. **Export config** — `cp ~/.cortex/config.json config.backup.json`
+4. **Check disk space** — Ensure enough space for migration
+5. **Review changelog** — Check breaking changes in the [Changelog](/changelog)
+
+## Post-Migration Checklist
+
+1. **Verify version** — `cortex --version`
+2. **Test chat** — `cortex chat --no-stream "Hello"`
+3. **Check plugins** — `cortex plugin list`
+4. **Verify data** — `cortex memory search "test"` (if you had memory)
+5. **Check logs** — Review Lens audit log for errors

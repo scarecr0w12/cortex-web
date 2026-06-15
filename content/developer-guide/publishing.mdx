@@ -1,0 +1,157 @@
+# Publishing to the Marketplace
+
+This guide covers how to publish your plugins and agents to the CortexPrism Marketplace for distribution to all users.
+
+## Account Setup
+
+Before publishing, you need a marketplace account:
+
+1. Navigate to the [Register](/register) page
+2. Create an account with your email and username
+3. Verify your email address
+
+## Publishing a Plugin
+
+### Step 1: Prepare Your Plugin
+
+Ensure your plugin has a complete manifest and is tested:
+
+```bash
+# Test locally
+cortex plugin install ./my-plugin
+cortex plugin call my-plugin my-capability '{"input": "test"}'
+
+# Ensure it works in a chat session
+cortex chat --plugin my-plugin
+```
+
+### Step 2: Submit via Web UI
+
+1. Go to the [Publish Plugin](/marketplace/publish/plugin) page
+2. Fill in the required fields:
+   - **Basic Info**: Name, version, description
+   - **Plugin Details**: Type (ESM/MCP/WASM), entry point, capabilities
+   - **Author & Links**: Author name, website, repository, license
+   - **Media**: Icon, screenshots
+   - **Tags**: Add relevant tags for discoverability
+3. Submit for review
+
+### Step 3: Submit via API (Automated)
+
+For CI/CD pipelines, use the API directly:
+
+```bash
+# Authenticate
+TOKEN=$(curl -s -X POST https://cortexprism.io/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"user@example.com","password":"your-password"}' \
+  | jq -r '.token')
+
+# Submit plugin
+curl -X POST https://cortexprism.io/api/marketplace/plugins \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "my-plugin",
+    "version": "1.0.0",
+    "description": "Does awesome things",
+    "kind": "esm",
+    "entryPoint": "mod.ts",
+    "capabilities": "{\"transform\":{\"input\":\"any\",\"output\":\"any\"}}",
+    "tags": ["text", "processing"],
+    "repository": "https://github.com/user/my-plugin",
+    "license": "MIT"
+  }'
+```
+
+### Step 4: Review Process
+
+After submission:
+1. Status is set to **pending**
+2. An admin reviews your submission
+3. You receive notification of approval or rejection
+4. If approved, your plugin is live on the marketplace
+
+Check submission status on your [Dashboard](/dashboard).
+
+## Publishing an Agent
+
+Similar to plugins, but with agent-specific fields:
+
+1. Go to the [Publish Agent](/marketplace/publish/agent) page
+2. Provide:
+   - **Basic Info**: Name, version, description
+   - **Agent Config**: Provider, model, temperature, system prompt
+   - **Tools**: List of tool capabilities the agent uses
+   - **Soul**: Optional personality/soul configuration
+   - **Tags**: For discoverability
+3. Submit for review
+
+## Plugin Requirements
+
+| Requirement | Details |
+|-------------|---------|
+| **Naming** | kebab-case, unique across marketplace |
+| **Version** | Valid semver (e.g., `1.0.0`, `2.3.1`) |
+| **Entry point** | Must be accessible and valid |
+| **Capabilities** | At least one capability defined |
+| **License** | SPDX identifier required (MIT, Apache-2.0, etc.) |
+| **README** | Recommended: usage instructions |
+| **Icon** | Recommended: 256x256 PNG or SVG |
+
+## Version Management
+
+Update your plugin by submitting a new version:
+
+```bash
+curl -X PUT https://cortexprism.io/api/marketplace/plugins/my-plugin \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "version": "1.1.0",
+    "description": "Added new capabilities",
+    "entryPoint": "mod.ts",
+    "capabilities": "..."
+  }'
+```
+
+Each published version is stored in the version history. Users can see the changelog and update their local installations.
+
+## Marketplace API
+
+The marketplace exposes a full REST API for programmatic access:
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/marketplace/plugins` | GET | List plugins with search/filter/pagination |
+| `/api/marketplace/plugins` | POST | Submit a new plugin |
+| `/api/marketplace/plugins/:id` | GET | Get plugin details |
+| `/api/marketplace/plugins/:id` | PUT | Update plugin |
+| `/api/marketplace/plugins/:id/download` | GET | Download plugin manifest |
+| `/api/marketplace/plugins/:id/reviews` | GET | List reviews |
+| `/api/marketplace/plugins/:id/reviews` | POST | Submit a review |
+
+See the [OpenAPI docs](/openapi) for the complete specification.
+
+## Best Practices for Publishing
+
+1. **Write a clear description**: Explain what your plugin does and how to use it
+2. **Add tags**: Use relevant tags for search discoverability
+3. **Include a README**: Provide detailed usage instructions within the plugin
+4. **Use screenshots**: Show the plugin in action
+5. **Version carefully**: Follow semantic versioning
+6. **Respond to reviews**: Engage with user feedback
+7. **Keep dependencies minimal**: Faster install, fewer conflicts
+8. **Test on multiple platforms**: Linux, macOS, Windows (WSL2)
+9. **Add a license**: Clearly state usage terms
+10. **Link to source**: If open source, link the repository
+
+## CLI Publishing (Future)
+
+Plugin developers will also be able to publish directly from the CLI:
+
+```bash
+cortex marketplace publish ./my-plugin
+```
+
+This command is in development and will be available in a future release.

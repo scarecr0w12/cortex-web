@@ -1,11 +1,25 @@
 # `cortex daemon`
 
-The `cortex daemon` command manages daemon operations in CortexPrism.
+Manage the background daemon supervisor and its child processes. The daemon system provides persistent process management for tool validation, execution, and job scheduling.
+
+## Managed Processes
+
+The supervisor manages three daemon processes:
+
+| Process | Socket | Description |
+|---------|--------|-------------|
+| **Validator** | `/tmp/cortex/validator.sock` | Approves/rejects tool intents via security policy checks |
+| **Executor** | `/tmp/cortex/executor.sock` | Executes approved tool calls (file ops, shell commands, directory listing) |
+| **Scheduler** | `/tmp/cortex/scheduler.sock` | Runs cron jobs and periodic memory consolidation |
 
 ## Usage
 
 ```bash
-cortex daemon [options]
+cortex daemon start                  # Start supervisor + all daemons in background
+cortex daemon stop                   # Stop all daemon processes
+cortex daemon restart                # Restart all daemon processes
+cortex daemon run                    # Run supervisor in foreground (for systemd/tmux)
+cortex daemon status                 # Show running/stopped status for each daemon
 ```
 
 ## Options
@@ -14,8 +28,54 @@ cortex daemon [options]
 |--------|-------------|
 | `--help` | Show help for this command |
 
+## Auto-Start Behavior
+
+`cortex chat` and `cortex serve` automatically call `ensureDaemons()` which pings the validator socket and starts the supervisor if needed.
+
+## Supervision Loop
+
+- Each child is spawned via `Deno.Command` with scoped `--allow-*` permissions
+- On crash (non-zero exit), supervisor waits `min(2^n × 1s, 30s)` then restarts with exponential backoff
+- On clean exit (zero exit), process is not restarted
+- `SIGINT`/`SIGTERM` triggers cascading shutdown of all children
+
+## IPC Protocol
+
+All daemons communicate via Unix domain sockets:
+
+```
+/tmp/cortex/validator.sock
+/tmp/cortex/executor.sock
+/tmp/cortex/scheduler.sock
+```
+
+Messages are JSON-line format, connection-per-message. Heartbeat pings check liveness.
+
+## `cortex stop`
+
+Also stops daemon processes:
+
+```bash
+cortex stop                          # Stop server + daemons
+cortex stop --server-only            # Stop only the HTTP server
+cortex stop --daemon-only            # Stop only the daemon processes
+```
+
 ## Examples
 
 ```bash
-cortex daemon --help
+# Start all daemon processes
+cortex daemon start
+
+# Check daemon status
+cortex daemon status
+
+# Run supervisor in foreground (for systemd integration)
+cortex daemon run
+
+# Stop all daemons
+cortex daemon stop
+
+# Stop only server, keep daemons running
+cortex stop --daemon-only
 ```

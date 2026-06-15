@@ -9,6 +9,7 @@ const PluginUpdateSchema = z.object({
   kind: z.enum(["esm", "mcp", "wasm"]).optional(),
   entryPoint: z.string().min(1).optional(),
   capabilities: z.array(z.string()).optional(),
+  tags: z.array(z.string()).optional(),
   author: z.string().optional(),
   authorUrl: z.string().optional(),
   homepage: z.string().optional(),
@@ -33,6 +34,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   return Response.json({
     ...plugin,
     capabilities: JSON.parse(plugin.capabilities || "[]"),
+    tags: JSON.parse(plugin.tags || "[]"),
     category: plugin.category?.name || null,
   });
 }
@@ -50,6 +52,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const updateData: Record<string, unknown> = { ...data };
     if (data.capabilities) {
       updateData.capabilities = JSON.stringify(data.capabilities);
+    }
+    if (data.tags) {
+      updateData.tags = JSON.stringify(data.tags);
     }
 
     const plugin = await prisma.plugin.update({

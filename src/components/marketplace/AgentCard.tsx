@@ -3,6 +3,7 @@ import { Badge } from "@/components/shared/Badge";
 import { DownloadCount } from "@/components/shared/DownloadCount";
 import { StarRating } from "@/components/shared/StarRating";
 import { cn } from "@/lib/utils";
+import { Github, Star } from "lucide-react";
 
 interface AgentCardProps {
   agent: {
@@ -19,6 +20,8 @@ interface AgentCardProps {
     tags: string[];
     category: string | null;
     icon: string | null;
+    repository: string | null;
+    githubStars: number;
   };
 }
 
@@ -95,16 +98,28 @@ export function AgentCard({ agent }: AgentCardProps) {
               <span className="text-xs text-[#55556a] truncate">{agent.author || "Unknown"}</span>
               {agent.model && (
                 <>
-                  <span className="text-[#333]">·</span>
+                  <span className="text-[#333]">&middot;</span>
                   <span className="text-xs text-[#55556a] truncate font-mono">{agent.model}</span>
                 </>
               )}
             </div>
             <div className="flex items-center gap-3 shrink-0">
+              {agent.githubStars > 0 && (
+                <span className="flex items-center gap-1 text-xs text-[#55556a]">
+                  <Star className="w-3 h-3 text-yellow-400" />
+                  {agent.githubStars}
+                </span>
+              )}
               <StarRating rating={agent.rating} />
               <DownloadCount count={agent.downloads} />
             </div>
           </div>
+
+          {agent.repository && (
+            <div className="absolute top-3 right-12 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Github className="w-4 h-4 text-[#55556a]" />
+            </div>
+          )}
         </div>
       </div>
     </Link>

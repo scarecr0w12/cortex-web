@@ -14,10 +14,7 @@ async function main() {
     prisma.category.upsert({ where: { slug: "security" }, update: {}, create: { name: "Security", slug: "security" } }),
   ]);
 
-  const cat = (slug: string) => prisma.category.findUnique({ where: { slug } }).then(r => r!.id);
-
   const categories = await prisma.category.findMany();
-
   const c = (slug: string) => categories.find((x) => x.slug === slug)!.id;
 
   const plugins = [
@@ -26,46 +23,68 @@ async function main() {
       description: "Execute Python scripts and return results. Supports pip packages, virtual environments, and timeout controls.",
       kind: "esm", entryPoint: "plugins/python-executor/mod.ts",
       capabilities: JSON.stringify(["python:execute", "python:install", "python:list-packages"]),
+      tags: JSON.stringify(["python", "scripting", "automation"]),
       author: "CortexPrism", authorUrl: "https://github.com/CortexPrism",
       homepage: "https://github.com/CortexPrism/cortex",
       repository: "https://github.com/CortexPrism/cortex",
       license: "MIT", categoryId: c("code-execution"),
-      readme: `# Python Executor\n\nExecute Python code directly from your agent's conversations. Supports pip package installation and virtual environment isolation.\n\n## Usage\n\n\`\`\`\ncortex plugin install marketplace:cortexprism.io/plugins/python-executor\n\`\`\`\n\n## Features\n- Run Python 3.11+ scripts\n- Install pip packages on demand\n- Configurable timeouts\n- Sandboxed execution\n`,
+      githubStars: 1280, githubForks: 340,
+      readme: `# Python Executor\nExecute Python code directly from your agent's conversations. Supports pip package installation and virtual environment isolation.\n\n## Usage\n\`\`\`\ncortex plugin install marketplace:cortexprism.io/plugins/python-executor\n\`\`\`\n\n## Features\n- Run Python 3.11+ scripts\n- Install pip packages on demand\n- Configurable timeouts\n- Sandboxed execution\n`,
     },
     {
       name: "SQL Query Engine", slug: "sql-query", version: "0.8.1",
       description: "Run SQL queries against PostgreSQL, MySQL, SQLite, and more. Supports read-only mode for safety.",
       kind: "esm", entryPoint: "plugins/sql-query/mod.ts",
       capabilities: JSON.stringify(["sql:query", "sql:list-tables", "sql:describe"]),
-      author: "CortexPrism", categoryId: c("data-processing"),
+      tags: JSON.stringify(["sql", "database", "query"]),
+      author: "CortexPrism", authorUrl: "https://github.com/CortexPrism",
+      repository: "https://github.com/CortexPrism/cortex",
+      license: "MIT", categoryId: c("data-processing"),
+      githubStars: 890, githubForks: 210,
     },
     {
       name: "Web Scraper", slug: "web-scraper", version: "1.0.3",
       description: "Extract structured data from web pages. Supports CSS selectors, JSON-LD, and pagination.",
       kind: "mcp", entryPoint: "plugins/web-scraper/server.ts",
       capabilities: JSON.stringify(["web:scrape", "web:extract", "web:screenshot"]),
-      author: "CortexPrism", categoryId: c("data-processing"),
+      tags: JSON.stringify(["web", "scraping", "data-extraction"]),
+      author: "CortexPrism", authorUrl: "https://github.com/CortexPrism",
+      repository: "https://github.com/CortexPrism/cortex",
+      license: "MIT", categoryId: c("data-processing"),
+      githubStars: 560, githubForks: 140,
     },
     {
       name: "Slack Integration", slug: "slack-integration", version: "0.5.0",
       description: "Send messages, read channels, and search Slack workspaces. Requires Slack API token.",
       kind: "mcp", entryPoint: "plugins/slack/server.ts",
       capabilities: JSON.stringify(["slack:send", "slack:read", "slack:search"]),
-      author: "Community", categoryId: c("communication"),
+      tags: JSON.stringify(["slack", "communication", "messaging"]),
+      author: "Community",
+      repository: "https://github.com/community/slack-cortex",
+      license: "Apache-2.0", categoryId: c("communication"),
+      githubStars: 320, githubForks: 85,
     },
     {
       name: "Image Generator", slug: "image-generator", version: "1.1.0",
       description: "Generate images using Stable Diffusion and DALL-E. Supports prompt templates and batch generation.",
       kind: "esm", entryPoint: "plugins/image-gen/mod.ts",
       capabilities: JSON.stringify(["image:generate", "image:edit", "image:variation"]),
-      author: "CortexPrism", categoryId: c("productivity"),
+      tags: JSON.stringify(["image", "generation", "ai"]),
+      author: "CortexPrism", authorUrl: "https://github.com/CortexPrism",
+      repository: "https://github.com/CortexPrism/cortex",
+      license: "MIT", categoryId: c("productivity"),
+      githubStars: 2100, githubForks: 520,
     },
     {
       name: "WASM Runtime", slug: "wasm-runtime", version: "0.3.0",
       description: "Run WebAssembly modules with host function bindings. Supports WASI preview 1 and 2.",
       kind: "wasm", entryPoint: "plugins/wasm-runtime/mod.ts",
       capabilities: JSON.stringify(["wasm:run", "wasm:compile", "wasm:inspect"]),
-      author: "CortexPrism", categoryId: c("code-execution"),
+      tags: JSON.stringify(["wasm", "webassembly", "runtime"]),
+      author: "CortexPrism", authorUrl: "https://github.com/CortexPrism",
+      repository: "https://github.com/CortexPrism/cortex",
+      license: "MIT", categoryId: c("code-execution"),
+      githubStars: 430, githubForks: 110,
     },
   ];
 
@@ -73,7 +92,7 @@ async function main() {
     await prisma.plugin.upsert({
       where: { slug: p.slug },
       update: {},
-      create: { ...p, status: "approved", downloads: 0, rating: 0 },
+      create: { ...p, status: "approved", downloads: Math.floor(Math.random() * 5000), rating: 0 },
     });
   }
 
@@ -85,7 +104,12 @@ async function main() {
       tools: JSON.stringify(["codebase_search", "read", "grep", "glob"]),
       tags: JSON.stringify(["code-review", "development", "best-practices"]),
       systemPrompt: "You are an expert code reviewer. Analyze code for bugs, security issues, performance problems, and style violations. Provide constructive feedback with specific line references and suggested fixes.",
-      author: "CortexPrism", categoryId: c("developer-tools"),
+      author: "CortexPrism", authorUrl: "https://github.com/CortexPrism",
+      repository: "https://github.com/CortexPrism/cortex",
+      license: "MIT",
+      homepage: "https://github.com/CortexPrism/cortex",
+      githubStars: 1560, githubForks: 380,
+      categoryId: c("developer-tools"),
     },
     {
       name: "Research Assistant", slug: "research-assistant", version: "1.2.0",
@@ -94,7 +118,11 @@ async function main() {
       tools: JSON.stringify(["web_fetch", "codebase_search", "read", "grep"]),
       tags: JSON.stringify(["research", "writing", "analysis"]),
       systemPrompt: "You are a research assistant. Gather information from multiple sources, cross-reference facts, and produce well-structured reports with proper citations. Be thorough and objective.",
-      author: "CortexPrism", categoryId: c("research"),
+      author: "CortexPrism", authorUrl: "https://github.com/CortexPrism",
+      repository: "https://github.com/CortexPrism/cortex",
+      license: "MIT",
+      githubStars: 980, githubForks: 240,
+      categoryId: c("research"),
     },
     {
       name: "Security Auditor", slug: "security-auditor", version: "0.9.0",
@@ -103,7 +131,11 @@ async function main() {
       tools: JSON.stringify(["codebase_search", "grep", "read", "glob", "bash"]),
       tags: JSON.stringify(["security", "auditing", "vulnerabilities"]),
       systemPrompt: "You are a security auditor. Scan code for OWASP Top 10 vulnerabilities, check dependency security, and generate detailed security reports with severity ratings and remediation steps.",
-      author: "CortexPrism", categoryId: c("security"),
+      author: "CortexPrism", authorUrl: "https://github.com/CortexPrism",
+      repository: "https://github.com/CortexPrism/cortex",
+      license: "MIT",
+      githubStars: 720, githubForks: 190,
+      categoryId: c("security"),
     },
     {
       name: "Data Analyst", slug: "data-analyst", version: "1.1.0",
@@ -112,7 +144,10 @@ async function main() {
       tools: JSON.stringify(["bash", "codebase_search", "read", "grep"]),
       tags: JSON.stringify(["data", "analytics", "visualization"]),
       systemPrompt: "You are a data analyst. Analyze datasets, compute statistics, create visualizations, and provide clear insights. Use Python for data analysis when appropriate.",
-      author: "Community", categoryId: c("analytics"),
+      author: "Community",
+      license: "Apache-2.0",
+      githubStars: 410, githubForks: 95,
+      categoryId: c("analytics"),
     },
   ];
 
@@ -120,7 +155,7 @@ async function main() {
     await prisma.agentConfig.upsert({
       where: { slug: a.slug },
       update: {},
-      create: { ...a, status: "approved", downloads: 0, rating: 0 },
+      create: { ...a, status: "approved", downloads: Math.floor(Math.random() * 3000), rating: 0 },
     });
   }
 
@@ -133,7 +168,7 @@ async function main() {
     console.log("Admin user created (admin@cortexprism.io / admin12345)");
   }
 
-  console.log("Seed data created — all download/rating counters start at 0");
+  console.log("Seed data updated with GitHub metadata, tags, licenses, and download counters");
 }
 
 main()

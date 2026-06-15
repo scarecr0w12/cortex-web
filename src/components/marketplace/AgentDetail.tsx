@@ -4,8 +4,18 @@ import { Badge } from "@/components/shared/Badge";
 import { DownloadCount } from "@/components/shared/DownloadCount";
 import { StarRating } from "@/components/shared/StarRating";
 import { InstallCommand } from "@/components/marketplace/InstallCommand";
-import { formatDate } from "@/lib/utils";
-import { Github, User, Brain, Thermometer } from "lucide-react";
+import { ScreenshotGallery } from "@/components/marketplace/ScreenshotGallery";
+import { ReviewSection } from "@/components/marketplace/ReviewSection";
+import { formatDate, formatNumber } from "@/lib/utils";
+import {
+  Github, User, Brain, Thermometer, Globe, ExternalLink, Star, GitFork,
+  Tag, Wrench
+} from "lucide-react";
+
+interface Screenshot {
+  url: string;
+  alt: string | null;
+}
 
 interface AgentDetailData {
   id: string;
@@ -22,12 +32,18 @@ interface AgentDetailData {
   soulContent: string | null;
   author: string | null;
   authorUrl: string | null;
+  homepage: string | null;
   repository: string | null;
+  license: string | null;
   icon: string | null;
   readme: string | null;
   downloads: number;
   rating: number;
+  githubStars: number;
+  githubForks: number;
+  githubTopics: string[];
   category: string | null;
+  screenshots: Screenshot[];
   createdAt: string;
   updatedAt: string;
 }
@@ -42,13 +58,18 @@ export function AgentDetailView({ agent }: AgentDetailProps) {
       <div className="glass-card p-8 mb-8">
         <div className="flex items-start gap-4 mb-6">
           <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center text-2xl shrink-0">
-            <span className="text-purple-400 font-bold">A</span>
+            {agent.icon ? (
+              <img src={agent.icon} alt="" className="w-10 h-10 rounded-lg" />
+            ) : (
+              <span className="text-purple-400 font-bold">{agent.name.charAt(0)}</span>
+            )}
           </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-1">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-1 flex-wrap">
               <h1 className="text-2xl font-bold text-[#e2e2ea]">{agent.name}</h1>
               {agent.provider && <Badge variant="indigo">{agent.provider}</Badge>}
               <span className="text-sm font-mono text-[#55556a]">v{agent.version}</span>
+              {agent.license && <Badge variant="default">{agent.license}</Badge>}
             </div>
             <p className="text-[#9090a8]">{agent.description}</p>
           </div>
@@ -60,7 +81,9 @@ export function AgentDetailView({ agent }: AgentDetailProps) {
           {agent.author && (
             <span className="flex items-center gap-1 text-[#55556a]">
               <User className="w-3.5 h-3.5" />
-              {agent.author}
+              {agent.authorUrl ? (
+                <a href={agent.authorUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300">{agent.author}</a>
+              ) : agent.author}
             </span>
           )}
           {agent.model && (
@@ -75,23 +98,64 @@ export function AgentDetailView({ agent }: AgentDetailProps) {
               temp: {agent.temperature}
             </span>
           )}
+          {agent.category && <Badge variant="default">{agent.category}</Badge>}
         </div>
+
+        {(agent.githubStars > 0 || agent.githubForks > 0) && (
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+            {agent.githubStars > 0 && (
+              <span className="flex items-center gap-1 text-sm text-[#9090a8]">
+                <Star className="w-4 h-4 text-yellow-400" /> {formatNumber(agent.githubStars)} stars
+              </span>
+            )}
+            {agent.githubForks > 0 && (
+              <span className="flex items-center gap-1 text-sm text-[#9090a8]">
+                <GitFork className="w-4 h-4 text-indigo-400" /> {formatNumber(agent.githubForks)} forks
+              </span>
+            )}
+          </div>
+        )}
+
+        {agent.githubTopics.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-6">
+            {agent.githubTopics.map((t) => (
+              <Badge key={t} variant="default">{t}</Badge>
+            ))}
+          </div>
+        )}
 
         <div className="mb-6">
           <p className="text-xs text-[#55556a] mb-2">Install Command</p>
           <InstallCommand type="agent" slug={agent.slug} />
         </div>
 
-        {agent.repository && (
-          <a href={agent.repository} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-indigo-400 hover:text-indigo-300">
-            <Github className="w-3.5 h-3.5" /> Repository
-          </a>
-        )}
+        <div className="flex flex-wrap gap-4 text-sm items-center">
+          {agent.homepage && (
+            <a href={agent.homepage} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-indigo-400 hover:text-indigo-300">
+              <Globe className="w-3.5 h-3.5" /> Website
+            </a>
+          )}
+          {agent.repository && (
+            <a href={agent.repository} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-indigo-400 hover:text-indigo-300">
+              <Github className="w-3.5 h-3.5" /> Repository
+              <ExternalLink className="w-3 h-3 opacity-50" />
+            </a>
+          )}
+          {agent.authorUrl && (
+            <a href={agent.authorUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-indigo-400 hover:text-indigo-300">
+              <User className="w-3.5 h-3.5" /> Author Profile
+            </a>
+          )}
+        </div>
       </div>
+
+      <ScreenshotGallery screenshots={agent.screenshots} />
 
       {agent.tags.length > 0 && (
         <div className="glass-card p-6 mb-8">
-          <h2 className="text-lg font-semibold text-[#e2e2ea] mb-3">Tags</h2>
+          <h2 className="text-lg font-semibold text-[#e2e2ea] mb-3 flex items-center gap-2">
+            <Tag className="w-4 h-4 text-purple-400" /> Tags
+          </h2>
           <div className="flex flex-wrap gap-2">
             {agent.tags.map((tag) => (
               <Badge key={tag} variant="default">{tag}</Badge>
@@ -102,7 +166,9 @@ export function AgentDetailView({ agent }: AgentDetailProps) {
 
       {agent.tools.length > 0 && (
         <div className="glass-card p-6 mb-8">
-          <h2 className="text-lg font-semibold text-[#e2e2ea] mb-3">Tools</h2>
+          <h2 className="text-lg font-semibold text-[#e2e2ea] mb-3 flex items-center gap-2">
+            <Wrench className="w-4 h-4 text-purple-400" /> Tools
+          </h2>
           <div className="flex flex-wrap gap-2">
             {agent.tools.map((tool) => (
               <Badge key={tool} variant="indigo">{tool}</Badge>
@@ -120,6 +186,8 @@ export function AgentDetailView({ agent }: AgentDetailProps) {
         </div>
       )}
 
+      <ReviewSection itemId={agent.id} type="agent" />
+
       {agent.readme && (
         <div className="glass-card p-8">
           <h2 className="text-lg font-semibold text-[#e2e2ea] mb-4">README</h2>
@@ -129,7 +197,7 @@ export function AgentDetailView({ agent }: AgentDetailProps) {
 
       <div className="mt-8 text-center">
         <p className="text-xs text-[#55556a]">
-          Published {formatDate(agent.createdAt)} · Updated {formatDate(agent.updatedAt)}
+          Published {formatDate(agent.createdAt)} &middot; Updated {formatDate(agent.updatedAt)}
         </p>
       </div>
     </div>

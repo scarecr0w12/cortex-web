@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/shared/Button";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +27,7 @@ export default function RegisterPage() {
       });
       const data = await res.json();
       if (!res.ok) { setError(typeof data.error === 'string' ? data.error : 'Validation error'); setLoading(false); return; }
-      localStorage.setItem("token", data.token);
+      login(data.token, data.user);
       router.push("/dashboard");
     } catch {
       setError("Connection error"); setLoading(false);

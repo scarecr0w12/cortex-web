@@ -1,21 +1,41 @@
 # `cortex sessions`
 
-The `cortex sessions` command manages sessions operations in CortexPrism.
+List and manage past chat sessions. Each session maintains its own message history in a dedicated per-session SQLite database.
 
 ## Usage
 
 ```bash
-cortex sessions [options]
+cortex sessions                      # List recent sessions
+cortex sessions --limit 50           # Show more sessions
 ```
 
 ## Options
 
 | Option | Description |
 |--------|-------------|
+| `--limit` | Maximum sessions to show (default: 20) |
 | `--help` | Show help for this command |
+
+## Session Lifecycle
+
+1. **Create** — A new session is created when you start `cortex chat` without `--resume`
+2. **Active** — Session is in active use, receiving messages
+3. **Closed** — Session is ended (exit chat) and marked with a `closed_at` timestamp
+4. **Resumed** — A closed session can be reopened with `cortex chat --resume <session_id>`
+
+## Per-Session Database
+
+Each session gets a dedicated SQLite database (`sess_<id>.db`) stored in the data directory. This keeps session data isolated and allows efficient loading of history when resuming.
 
 ## Examples
 
 ```bash
-cortex sessions --help
+# List recent sessions
+cortex sessions
+
+# Show more sessions
+cortex sessions --limit 50
+
+# Resume a session (via chat command)
+cortex chat --resume sess_a1b2c3d4
 ```

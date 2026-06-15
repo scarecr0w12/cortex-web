@@ -1,0 +1,229 @@
+# Plugin API Reference
+
+Complete reference for the CortexPrism plugin system APIs, covering the lifecycle hooks, capability interface, permission model, and runtime APIs.
+
+## Plugin Lifecycle Hooks
+
+Plugins can hook into lifecycle events to perform initialization and cleanup:
+
+```typescript
+export default definePlugin({
+  name: "lifecycle-demo",
+  version: "1.0.0",
+
+  onInstall(ctx: LifecycleContext): void | Promise<void> {
+    // Called when the plugin is first installed
+    // Use for one-time setup: create directories, initialize state
+  },
+
+  onActivate(ctx: LifecycleContext): void | Promise<void> {
+    // Called when the plugin is activated (enabled)
+    // Use for per-session setup: connect to services, allocate resources
+  },
+
+  onDeactivate(ctx: LifecycleContext): void | Promise<void> {
+    // Called when the plugin is deactivated (disabled)
+    // Use for cleanup: close connections, release resources
+  },
+
+  onUninstall(ctx: LifecycleContext): void | Promise<void> {
+    // Called right before the plugin is removed
+    // Use for final cleanup: remove data, revoke permissions
+  },
+
+  onConfigChange(ctx: LifecycleContext, prev: Record<string, unknown>): void | Promise<void> {
+    // Called when plugin configuration changes at runtime
+    // Use to hot-reload settings without restart
+  },
+});
+```
+
+### LifecycleContext
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `pluginDir` | `string` | Plugin installation directory path |
+| `dataDir` | `string` | Plugin-scoped data directory for persistent storage |
+| `config` | `Record<string, unknown>` | Current plugin configuration |
+| `log` | `Logger` | Structured logger |
+| `db` | `KVStore` | Simple key-value store backed by plugins.db |
+
+## Capability Definition
+
+### ESM Capabilities
+
+```typescript
+type CapabilityFunction<TInput = unknown, TOutput = unknown> = (
+  input: TInput,
+  context: CapabilityContext
+) => TOutput | Promise<TOutput>;
+```
+
+### CapabilityContext
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `sandbox` | `SandboxAPI` | Restricted file/network access |
+| `log` | `Logger` | Structured logger |
+| `memory` | `MemoryAPI` | Read-only memory access |
+| `config` | `Record<string, unknown>` | Plugin config scoped to this call |
+| `abortSignal` | `AbortSignal` | Signals timeout/cancellation |
+| `requestId` | `string` | Unique ID for this capability invocation |
+
+### SandboxAPI
+
+```typescript
+interface SandboxAPI {
+  readFile(path: string): Promise<string>;
+  writeFile(path: string, content: string): Promise<void>;
+  readDir(path: string): Promise<string[]>;
+  fetch(url: string, options?: RequestInit): Promise<Response>;
+  exec(command: string, args?: string[]): Promise<ExecResult>;
+  tempDir(): Promise<string>;
+}
+```
+
+Each `SandboxAPI` method is gated by the Parallax policy engine. Access is denied unless the plugin manifest declares the required permission.
+
+### MemoryAPI
+
+```typescript
+interface MemoryAPI {
+  search(query: string, options?: { limit?: number; tier?: MemoryTier }): Promise<MemoryEntry[]>;
+  get(id: string): Promise<MemoryEntry | null>;
+}
+
+type MemoryTier = "ephemeral" | "working" | "episodic" | "semantic" | "reflection";
+
+interface MemoryEntry {
+  id: string;
+  content: string;
+  score: number;
+  tier: MemoryTier;
+  timestamp: number;
+}
+```
+
+## Plugin Manifest Schema
+
+Full schema for `manifest.json`:
+
+```json
+{
+  "name": "string (required, unique, kebab-case)",
+  "version": "string (required, semver)",
+  "type": "'esm' | 'mcp' | 'wasm' (default: 'esm')",
+  "entryPoint": "string (required, path or command)",
+  "description": "string",
+  "author": "string",
+  "authorUrl": "string (url)",
+  "homepage": "string (url)",
+  "repository": "string (url)",
+  "license": "string (SPDX identifier)",
+  "icon": "string (path to icon file)",
+
+  "permissions": {
+    "network": ["string (url patterns)"],
+    "filesystem": ["string (path patterns)"],
+    "env": ["string (env var names)"],
+    "process": ["string (exec patterns)"]
+  },
+
+  "capabilities": {
+    "capabilityName": { "type": "string", "entry": "string" }
+  },
+
+  "dependencies": {
+    "plugin-name": "version (semver range)"
+  },
+
+  "mcp": {
+    "transport": "'stdio' | 'http'",
+    "args": ["string"],
+    "env": { "KEY": "value" },
+    "timeout": 30000
+  },
+
+  "wasm": {
+    "memoryPages": 10,
+    "maxMemoryPages": 100,
+    "allocator": "'wasi' | 'custom'"
+  }
+}
+```
+
+## Runtime API (Available to ESM Plugins)
+
+### Global Objects
+
+| Object | Description |
+|--------|-------------|
+| `CortexPrism` | Version info and build metadata |
+| `fetch` | Global fetch (limited by policy) |
+| `console` | Scoped console (prefixed with plugin name) |
+
+### Importable SDK
+
+```typescript
+import {
+  definePlugin,        // Type-safe plugin definition
+  z,                   // Zod validation
+  HttpError,           // 400-level errors
+  PermissionError,     // Policy denial errors
+  PluginError,         // Generic plugin errors
+  TimeoutError,        // Capability timeout errors
+} from "@cortexprism/plugin-sdk";
+```
+
+## Error Types
+
+| Error Class | HTTP Status | When to Use |
+|-------------|-------------|-------------|
+| `PluginError` | 500 | Unexpected internal errors |
+| `HttpError` | 400-599 | Client errors, service unavailable |
+| `PermissionError` | 403 | Policy denial |
+| `TimeoutError` | 408 | Operation exceeded time limit |
+
+## Registry DB Schema (plugins.db)
+
+The plugin registry is stored in `plugins.db` with this schema:
+
+```sql
+CREATE TABLE plugins (
+  id          TEXT PRIMARY KEY,
+  name        TEXT NOT NULL UNIQUE,
+  version     TEXT NOT NULL,
+  type        TEXT NOT NULL CHECK(type IN ('esm','mcp','wasm')),
+  entry_point TEXT NOT NULL,
+  manifest    TEXT NOT NULL,       -- Full manifest as JSON
+  enabled     INTEGER DEFAULT 1,
+  installed_at TEXT NOT NULL,
+  updated_at  TEXT NOT NULL,
+  download_count INTEGER DEFAULT 0
+);
+
+CREATE TABLE plugin_permissions (
+  id          TEXT PRIMARY KEY,
+  plugin_id   TEXT NOT NULL REFERENCES plugins(id),
+  permission  TEXT NOT NULL,
+  granted     INTEGER DEFAULT 0
+);
+
+CREATE TABLE plugin_config (
+  plugin_id TEXT PRIMARY KEY REFERENCES plugins(id),
+  config    TEXT NOT NULL DEFAULT '{}'
+);
+```
+
+## CLI Commands
+
+```bash
+cortex plugin install <source>     # Install from marketplace, path, npm, jsr, or URL
+cortex plugin uninstall <name>     # Remove a plugin
+cortex plugin list                  # List installed plugins with status
+cortex plugin enable <name>        # Activate a plugin
+cortex plugin disable <name>       # Deactivate without removing
+cortex plugin config <name>        # View or set plugin configuration
+cortex plugin info <name>          # Show plugin details and capabilities
+cortex plugin call <name> <cap>    # Invoke a capability directly (for testing)
+```

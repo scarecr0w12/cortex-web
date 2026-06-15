@@ -1,0 +1,212 @@
+# MCP Plugin Development
+
+MCP (Model Context Protocol) plugins wrap tools conforming to the [Model Context Protocol](https://modelcontextprotocol.io) standard. They run as separate processes and communicate via JSON-RPC, making them suitable for wrapping existing services or implementing language-agnostic tools.
+
+## Overview
+
+An MCP plugin is a plugin entry in the CortexPrism registry whose type is `mcp` and whose entry point launches an MCP-compatible server process. The CortexPrism plugin manager manages the child process lifecycle and translates capability calls into MCP `tools/call` requests.
+
+## How It Works
+
+```
+Agent → Plugin Manager → MCP Client (JSON-RPC over stdio/HTTP)
+                              ↓
+                         MCP Server Process
+                              ↓
+                         Tool Implementation
+```
+
+The MCP server advertises available tools via `tools/list` and handles invocations via `tools/call`. The CortexPrism MCP client is built on the [official MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk).
+
+## Plugin Manifest
+
+```json
+{
+  "name": "git-server",
+  "version": "1.0.0",
+  "type": "mcp",
+  "entryPoint": "node dist/server.js",
+  "description": "Git repository management tools",
+  "mcp": {
+    "transport": "stdio",
+    "args": ["--repo-dir", "/workspace"],
+    "env": {
+      "GIT_ALLOWED_COMMANDS": "status,log,diff"
+    },
+    "timeout": 30000
+  }
+}
+```
+
+## Creating an MCP Server
+
+You can create an MCP server in any language. Here is a TypeScript example:
+
+```typescript
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import {
+  CallToolRequestSchema,
+  ListToolsRequestSchema,
+} from "@modelcontextprotocol/sdk/types.js";
+
+const server = new Server(
+  { name: "git-server", version: "1.0.0" },
+  { capabilities: { tools: {} } }
+);
+
+server.setRequestHandler(ListToolsRequestSchema, async () => ({
+  tools: [
+    {
+      name: "git_status",
+      description: "Show working tree status",
+      inputSchema: {
+        type: "object",
+        properties: {
+          path: { type: "string", description: "Repository path" },
+        },
+      },
+    },
+    {
+      name: "git_log",
+      description: "Show commit log",
+      inputSchema: {
+        type: "object",
+        properties: {
+          path: { type: "string" },
+          maxCount: { type: "number", default: 10 },
+        },
+      },
+    },
+  ],
+}));
+
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const { name, arguments: args } = request.params;
+  switch (name) {
+    case "git_status": {
+      const output = await execGit(["status"], args.path);
+      return { content: [{ type: "text", text: output }] };
+    }
+    case "git_log": {
+      const output = await execGit(["log", `--max-count=${args.maxCount || 10}`], args.path);
+      return { content: [{ type: "text", text: output }] };
+    }
+    default:
+      throw new Error(`Unknown tool: ${name}`);
+  }
+});
+
+const transport = new StdioServerTransport();
+await server.connect(transport);
+```
+
+## Python MCP Server Example
+
+```python
+from mcp.server import Server
+from mcp.server.stdio import stdio_server
+from mcp.types import TextContent, Tool
+
+app = Server("weather-server")
+
+@app.list_tools()
+async def list_tools() -> list[Tool]:
+    return [
+        Tool(
+            name="get_weather",
+            description="Get current weather for a city",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "city": {"type": "string", "description": "City name"}
+                },
+                "required": ["city"],
+            },
+        )
+    ]
+
+@app.call_tool()
+async def call_tool(name: str, arguments: dict) -> list[TextContent]:
+    if name == "get_weather":
+        city = arguments["city"]
+        result = await fetch_weather(city)
+        return [TextContent(type="text", text=str(result))]
+    raise ValueError(f"Unknown tool: {name}")
+
+if __name__ == "__main__":
+    import anyio
+    anyio.run(stdio_server, app)
+```
+
+## Transports
+
+MCP supports two transport mechanisms:
+
+### stdio (Default)
+
+The plugin manager spawns the MCP server as a subprocess and communicates via stdin/stdout.
+
+```json
+{
+  "mcp": { "transport": "stdio" }
+}
+```
+
+### HTTP/SSE
+
+The MCP server runs as an HTTP server with Server-Sent Events.
+
+```json
+{
+  "mcp": {
+    "transport": "http",
+    "url": "http://localhost:8080/mcp"
+  }
+}
+```
+
+## Lifecycle Management
+
+| Event | Action |
+|-------|--------|
+| Plugin install | Entry point registered but not started |
+| First capability call | MCP server process spawned |
+| Subsequent calls | Messages sent to the running process |
+| Plugin disable | Process sent SIGTERM (graceful shutdown) |
+| Plugin uninstall | Process killed, resources cleaned up |
+| Plugin idle timeout | Process terminated after inactivity period |
+
+## Error Handling
+
+MCP tools should return structured error responses:
+
+```json
+{
+  "isError": true,
+  "content": [
+    {
+      "type": "text",
+      "text": "Repository not found at path: /invalid/path"
+    }
+  ]
+}
+```
+
+## Security Considerations
+
+- MCP processes run with the permissions declared in the manifest
+- Network access is controlled by the Parallax policy engine
+- Long-running processes are monitored for resource usage
+- Output is capped to prevent flooding (default: 64KB)
+- Timeout is enforced per tool call (default: 30s)
+
+## Debugging
+
+Enable verbose logging to inspect MCP communication:
+
+```bash
+cortex --verbose plugin list
+```
+
+The raw JSON-RPC messages are logged to the Cortex Lens audit trail.

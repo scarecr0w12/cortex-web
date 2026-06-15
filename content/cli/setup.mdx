@@ -1,21 +1,60 @@
-# `cortex setup`
+# `cortex setup` / `cortex migrate`
 
-The `cortex setup` command manages setup operations in CortexPrism.
+Initialize the CortexPrism environment, configure LLM providers, and set up databases.
 
-## Usage
+## `cortex setup`
+
+Run the interactive setup wizard to configure CortexPrism for first use:
 
 ```bash
-cortex setup [options]
+cortex setup
 ```
 
-## Options
+The setup wizard guides you through:
+1. **Provider configuration** — Add API keys for LLM providers
+2. **Data directory** — Choose data storage location (default: `~/.cortex/`)
+3. **Default model** — Set your preferred LLM model for chat sessions
 
-| Option | Description |
-|--------|-------------|
-| `--help` | Show help for this command |
+## `cortex migrate`
 
-## Examples
+Initialize or migrate all databases to the latest schema:
 
 ```bash
-cortex setup --help
+cortex migrate
+```
+
+Migrates all databases:
+| Database | File | Migrations |
+|----------|------|------------|
+| Core | `cortex.db` | sessions, turns, jobs, policy rules |
+| Memory | `memory.db` | 5-tier memory, FTS5, embeddings |
+| Lens | `lens.db` | Audit events |
+| Vault | `vault.db` | Encrypted credential entries |
+| Plugins | `plugins.db` | Plugin registry |
+
+Migrations are idempotent with checksum guards — safe to run multiple times.
+
+## Configuration File
+
+After setup, configuration is stored at `~/.cortex/config.json`:
+
+```json
+{
+  "version": 1,
+  "defaultProvider": "anthropic",
+  "providers": {
+    "anthropic": { "kind": "anthropic", "model": "claude-sonnet-4-20250514", "apiKey": "sk-..." },
+    "openai": { "kind": "openai", "model": "gpt-4o", "apiKey": "sk-..." }
+  },
+  "agent": {
+    "name": "Cortex",
+    "maxTurns": 50,
+    "streamOutput": true
+  },
+  "router": {
+    "enabled": false,
+    "confidenceThreshold": 0.7,
+    "cascade": []
+  }
+}
 ```

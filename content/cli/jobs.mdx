@@ -1,21 +1,69 @@
 # `cortex jobs`
 
-The `cortex jobs` command manages jobs operations in CortexPrism.
+Manage scheduled cron jobs that run on the daemon scheduler. Jobs are persisted in SQLite with retry logic and status tracking.
 
 ## Usage
 
 ```bash
-cortex jobs [options]
+cortex jobs add --schedule "<cron>" --task <command>   # Add a scheduled job
+cortex jobs list                                        # List all jobs
+cortex jobs remove <job_id>                             # Remove a job
+cortex jobs pause <job_id>                              # Pause a job
+cortex jobs resume <job_id>                             # Resume a paused job
 ```
+
+## Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `add` | Create a new scheduled job |
+| `list` | List all jobs with their status |
+| `remove` | Delete a job by ID |
+| `pause` | Pause a job without deleting it |
+| `resume` | Resume a paused job |
 
 ## Options
 
 | Option | Description |
 |--------|-------------|
+| `--schedule` | CRON expression (e.g., `0 9 * * 1` for weekly Monday 9AM) |
+| `--task` | Command or task to execute |
 | `--help` | Show help for this command |
+
+## Scheduler Behavior
+
+- The scheduler daemon polls the database every 30 seconds for due jobs
+- On failure, jobs are retried with configurable backoff
+- Execution history is logged for audit
+- Memory consolidation can be scheduled as a recurring job
+
+## CRON Format
+
+```
+┌───────── minute (0-59)
+│ ┌───────── hour (0-23)
+│ │ ┌───────── day of month (1-31)
+│ │ │ ┌───────── month (1-12)
+│ │ │ │ ┌───────── day of week (0-6, 0=Sunday)
+│ │ │ │ │
+* * * * *
+```
 
 ## Examples
 
 ```bash
-cortex jobs --help
+# Add a weekly report generation job every Monday at 9 AM
+cortex jobs add --schedule "0 9 * * 1" --task "generate-weekly-report"
+
+# List all jobs
+cortex jobs list
+
+# Pause a job temporarily
+cortex jobs pause job_xyz789
+
+# Resume a paused job
+cortex jobs resume job_xyz789
+
+# Remove a completed or unwanted job
+cortex jobs remove job_xyz789
 ```

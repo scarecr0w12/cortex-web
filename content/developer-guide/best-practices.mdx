@@ -1,0 +1,267 @@
+# Plugin Development Best Practices
+
+Guidelines and recommendations for building high-quality CortexPrism plugins.
+
+## General Principles
+
+### 1. Single Responsibility
+
+Each plugin should do one thing well. If you find yourself adding unrelated capabilities, split them into separate plugins.
+
+```typescript
+// Good: focused plugin
+export default definePlugin({
+  name: "csv-parser",
+  capabilities: { parseCSV, validateCSV, transformCSV },
+});
+
+// Bad: mixed concerns
+export default definePlugin({
+  name: "data-utils",
+  capabilities: { parseCSV, sendEmail, resizeImage, queryDatabase },
+});
+```
+
+### 2. Fail Gracefully
+
+Always handle errors and provide meaningful messages:
+
+```typescript
+// Good
+async function fetchData(url: string, ctx: CapabilityContext) {
+  if (!url.startsWith("https://")) {
+    throw new PluginError("Only HTTPS URLs are supported");
+  }
+  try {
+    return await ctx.sandbox.fetch(url);
+  } catch (err) {
+    throw new PluginError(`Failed to fetch ${url}: ${err.message}`);
+  }
+}
+```
+
+### 3. Validate Inputs
+
+Use Zod schemas or explicit validation for all capability inputs:
+
+```typescript
+const Input = z.object({
+  email: z.string().email(),
+  template: z.string().min(1).max(10000),
+  variables: z.record(z.string()).optional(),
+});
+```
+
+### 4. Respect Timeouts
+
+Capabilities have a default timeout of 30 seconds. Support cancellation:
+
+```typescript
+async function processLargeFile(path: string, ctx: CapabilityContext) {
+  const stream = await ctx.sandbox.readFileStream(path);
+  for await (const chunk of stream) {
+    if (ctx.abortSignal.aborted) {
+      throw new TimeoutError("Processing cancelled");
+    }
+    // process chunk
+  }
+}
+```
+
+### 5. Declare Minimal Permissions
+
+Only request the permissions you actually use:
+
+```json
+{
+  "permissions": {
+    "network": ["fetch:https://api.example.com"],
+    "filesystem": ["read:/tmp/data"]
+  }
+}
+```
+
+## ESM-Specific
+
+### Use TypeScript
+
+TypeScript provides better IDE support and catches errors at build time:
+
+```typescript
+interface SearchResult {
+  title: string;
+  url: string;
+  snippet: string;
+}
+
+export default definePlugin({
+  name: "web-search",
+  capabilities: {
+    async search(query: string): Promise<SearchResult[]> {
+      // Type-safe implementation
+    },
+  },
+});
+```
+
+### Bundle for Distribution
+
+Bundle your plugin into a single file for reliable distribution:
+
+```bash
+deno bundle mod.ts dist/plugin.js
+```
+
+Or for npm-published plugins:
+
+```bash
+npx tsc && npx esbuild dist/index.js --bundle --format=esm --outfile=dist/bundle.js
+```
+
+### Avoid Global State
+
+Each capability call may run in a fresh context. Use factory functions for stateful plugins:
+
+```typescript
+export default async function createPlugin() {
+  const connection = await createConnectionPool();
+  return {
+    name: "db-connector",
+    capabilities: {
+      async query(sql: string) {
+        return connection.execute(sql);
+      },
+    },
+  };
+}
+```
+
+## MCP-Specific
+
+### Handle Process Lifecycle
+
+MCP servers should handle graceful shutdown:
+
+```typescript
+process.on("SIGTERM", async () => {
+  await cleanup();
+  process.exit(0);
+});
+
+process.on("SIGINT", async () => {
+  await cleanup();
+  process.exit(0);
+});
+```
+
+### Minimize Startup Time
+
+Keep MCP server initialization fast. Defer expensive setup to the first tool call:
+
+```typescript
+let client: DatabaseClient | null = null;
+
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  if (!client) {
+    client = await createClient(); // Deferred initialization
+  }
+  // handle tool call
+});
+```
+
+### Stream Large Results
+
+For large outputs, use streaming responses:
+
+```typescript
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const stream = await getLargeResultStream();
+  return {
+    content: [{ type: "text", text: stream.readAll() }],
+  };
+});
+```
+
+## WASM-Specific
+
+### Optimize for Size
+
+```toml
+[profile.release]
+opt-level = "s"        # Optimize for size
+lto = true             # Link-time optimization
+codegen-units = 1      # Better optimization
+strip = true           # Remove debug symbols
+```
+
+### Use Simple Types
+
+WASM ABI works best with primitive types. Use JSON for complex data:
+
+```rust
+// Good: use JSON for structured data
+#[derive(Deserialize)]
+struct Input {
+    values: Vec<f64>,
+    threshold: f64,
+}
+
+// Avoid: complex ABI types
+fn process(values: *const f64, count: u32, threshold: f64) -> u32 { }
+```
+
+### Test with wasmtime
+
+Always test your WASM plugin outside of CortexPrism first:
+
+```bash
+wasmtime run --dir=. plugin.wasm
+```
+
+## Testing Guidelines
+
+### Unit Tests
+
+```typescript
+import { testPlugin } from "@cortexprism/plugin-sdk/testing";
+
+const harness = await testPlugin(myPlugin);
+
+Deno.test("my capability works", async () => {
+  const result = await harness.call("myCap", { input: "test" });
+  assertEquals(result, { expected: "output" });
+});
+
+Deno.test("my capability rejects invalid input", async () => {
+  await assertRejects(
+    () => harness.call("myCap", { input: "" }),
+    PluginError,
+  );
+});
+```
+
+### Integration Tests
+
+Test your plugin in a real CortexPrism session:
+
+```bash
+cortex plugin install ./my-plugin
+cortex chat --plugin my-plugin --no-stream <<< "Use my-plugin to do something"
+```
+
+## Documentation
+
+Every plugin should include:
+
+1. **README.md**: Usage instructions, examples, configuration options
+2. **manifest.json**: Complete metadata for marketplace display
+3. **Inline comments**: For complex logic in capability implementations
+4. **Example inputs**: In capability descriptions for LLM context
+
+## What to Avoid
+
+- **Hardcoded secrets**: Use the vault or environment variables
+- **Synchronous blocking**: All capabilities must be async
+- **Side effects without cleanup**: Always clean up in `onDeactivate`
+- **Dependency on specific LLM providers**: Keep capabilities provider-agnostic
+- **Overly broad permissions**: Request minimum required access

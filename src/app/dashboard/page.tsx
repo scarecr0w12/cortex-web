@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Badge } from "@/components/shared/Badge";
 import { Plus, Package, Bot } from "lucide-react";
+import { useAuth } from "@/lib/AuthContext";
 
 interface Submission {
   id: string; name: string; slug: string; version: string;
@@ -20,48 +21,45 @@ const statusBadge: Record<string, "yellow" | "green" | "red" | "default"> = {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [user, setUser] = useState<{ username: string; email: string; role: string } | null>(null);
+  const { user, loading: authLoading, logout } = useAuth();
   const [plugins, setPlugins] = useState<Submission[]>([]);
   const [agents, setAgents] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) { router.push("/login"); return; }
+
     const token = localStorage.getItem("token");
-    if (!token) { router.push("/login"); return; }
+    fetch("/api/user/submissions", {
+      headers: { authorization: `Bearer ${token}` },
+    })
+      .then(r => r.json())
+      .then(subs => {
+        setPlugins(subs.plugins || []);
+        setAgents(subs.agents || []);
+        setLoading(false);
+      })
+      .catch(() => { setError("Failed to load"); setLoading(false); });
+  }, [user, authLoading, router]);
 
-    Promise.all([
-      fetch("/api/auth/me", { headers: { authorization: `Bearer ${token}` } }).then(r => r.json()),
-      fetch("/api/user/submissions", { headers: { authorization: `Bearer ${token}` } }).then(r => r.json()),
-    ]).then(([userData, subs]) => {
-      if (userData.error) { setError(userData.error); setLoading(false); return; }
-      setUser(userData.user);
-      setPlugins(subs.plugins || []);
-      setAgents(subs.agents || []);
-      setLoading(false);
-    }).catch(() => { setError("Failed to load"); setLoading(false); });
-  }, [router]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    router.push("/login");
-  };
-
-  if (loading) return <div className="max-w-4xl mx-auto px-4 py-20 text-center text-[#55556a]">Loading...</div>;
-  if (error) return <div className="max-w-4xl mx-auto px-4 py-20 text-center text-red-400">{error}</div>;
+  if (authLoading || loading) return <div className="max-w-page-narrow mx-auto px-4 py-20 text-center text-[#55556a]">Loading...</div>;
+  if (error) return <div className="max-w-page-narrow mx-auto px-4 py-20 text-center text-red-400">{error}</div>;
+  if (!user) return null;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-page-narrow mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-[#e2e2ea]">Dashboard</h1>
-          <p className="text-[#9090a8]">Welcome, {user?.username}</p>
+          <p className="text-[#9090a8]">Welcome, {user.username}</p>
         </div>
         <div className="flex items-center gap-3">
-          {user?.role === "admin" && (
+          {user.role === "admin" && (
             <Link href="/admin" className="text-sm text-indigo-400 hover:text-indigo-300">Admin Panel</Link>
           )}
-          <button onClick={handleLogout} className="text-sm text-[#55556a] hover:text-[#e2e2ea]">Sign Out</button>
+          <button onClick={logout} className="text-sm text-[#55556a] hover:text-[#e2e2ea]">Sign Out</button>
         </div>
       </div>
 

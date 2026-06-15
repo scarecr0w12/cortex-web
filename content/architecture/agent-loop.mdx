@@ -1,23 +1,71 @@
 # Agent Loop
 
-The agent loop is the core execution engine of CortexPrism.
+The agent loop is the core execution engine of CortexPrism. `agentTurn()` handles one complete user→agent exchange.
 
 ## Execution Flow
 
-1. Receive user input
-2. Retrieve relevant context from memory
-3. Build prompt with system instructions and context
-4. Send to LLM via model router
-5. Parse response for tool calls
-6. Execute approved tool calls
-7. Store results in working memory
-8. Return response to user
+```
+agentTurn(opts)
+  1. injectMemory(systemPrompt, hits)   ← prepend relevant memory
+  2. persistMessage(userMessage)
+  3. [TOOL LOOP — up to MAX_TOOL_ROUNDS=8]
+     a. LLM call (stream or complete)
+     b. parseToolCalls(response)        ← extract <tool_call>{...}</tool_call>
+     c. for each call:
+        - validateToolCall()            ← Parallax policy check
+        - tool.execute()
+        - logEvent(tool_call)
+     d. formatToolResults() → re-prompt
+  4. persistMessage(agentResponse)
+  5. incrementTurn(sessionId)
+  6. writeEpisodic(summary)             ← fire-and-forget
+  7. reflectOnTurn() [if enabled]       ← fire-and-forget
+  8. logEvent(llm_call)
+  return AgentTurnResult
+```
+
+## Agent Options
+
+| Option | Type | Purpose |
+|--------|------|---------|
+| `userMessage` | string | User input |
+| `provider` | LLMProvider | Active LLM provider |
+| `model` | string | Model name |
+| `sessionDb` | Db | Per-session SQLite instance |
+| `sessionId` | string | Session identifier |
+| `systemPrompt` | string | System prompt (may have memory injected) |
+| `stream` | boolean | Stream output chunks |
+| `onChunk` | function | Chunk callback for streaming |
+| `registry` | ToolRegistry | Registered tools |
+| `toolContext` | ToolContext | Working dir, approval gate |
+| `embedder` | EmbeddingProvider | For memory retrieval |
+| `enableReflection` | boolean | Post-turn reflection |
+
+## Tool Loop Detail
+
+The tool loop runs up to 8 rounds per user turn. Each round:
+1. LLM generates a response (may contain tool calls)
+2. Tool calls are parsed from `<tool_call>{"tool":"x","args":{...}}</tool_call>` format
+3. Each tool call is validated through the Parallax security gate
+4. Valid tool calls are executed; results are formatted and sent back to the LLM
+5. The LLM can then respond or make additional tool calls
+
+This enables complex multi-step reasoning chains without returning control to the user.
 
 ## Configuration
 
-The agent loop is configurable via the agent configuration system:
+Configured via the agent section of `~/.cortex/config.json`:
 
-- `maxTurns`: Maximum conversation turns
-- `temperature`: Response randomness
-- `tools`: Available tools for the agent
-- `systemPrompt`: Custom system instructions
+```json
+{
+  "agent": {
+    "name": "Cortex",
+    "maxTurns": 50,
+    "streamOutput": true
+  }
+}
+```
+
+- `maxTurns`: Maximum conversation turns before session auto-closes
+- `streamOutput`: Enable streaming token-by-token output
+- `name`: Agent name used in system prompts

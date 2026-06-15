@@ -1,21 +1,74 @@
 # `cortex policy`
 
-The `cortex policy` command manages policy operations in CortexPrism.
+Manage security policy rules for the Parallax security model. Policy rules control which operations agents are allowed to perform, based on pattern matching with priority-based evaluation.
 
 ## Usage
 
 ```bash
-cortex policy [options]
+cortex policy list                              # List all policy rules
+cortex policy add "<pattern>" --kind shell --effect deny --reason "reason"
+cortex policy check shell "rm -rf /etc"          # Check if an action would be allowed
+cortex policy remove <rule_id>                   # Remove a rule by ID
 ```
+
+## Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `list` | List all policy rules with their patterns, effects, and priorities |
+| `add` | Add a new policy rule |
+| `remove` | Remove a policy rule by ID |
+| `check` | Check whether a specific action would be allowed or denied |
 
 ## Options
 
 | Option | Description |
 |--------|-------------|
+| `--kind` | Rule kind: `tool`, `shell`, `domain` |
+| `--effect` | `allow` or `deny` |
+| `--reason` | Human-readable reason for the rule |
+| `--priority` | Rule priority (lower number = higher precedence, default: 500) |
 | `--help` | Show help for this command |
+
+## Default Deny Rules
+
+On first migration, the following dangerous patterns are seeded:
+
+| Rule | Pattern | Blocks |
+|------|---------|--------|
+| Recursive root delete | `rm\s+-rf\s+/` | `rm -rf /` and variants |
+| Fork bombs | `:\(\)\{.*\}` | Shell fork bomb patterns |
+| Direct disk writes | `dd\s+if=.*of=/dev/` | `dd` to block devices |
+| World-writable root | `chmod\s+777\s+/` | Making root world-writable |
+
+## Policy Evaluation
+
+```
+checkPolicy(kind, value):
+  for rule in rules WHERE kind = ? ORDER BY priority ASC:
+    if regex(rule.pattern).test(value):
+      return { allowed: rule.effect === 'allow', reason: rule.reason }
+  return { allowed: true, reason: 'default allow' }
+```
+
+Priority ASC means lower numbers are evaluated first. A `deny` at priority 100 will override an `allow` at priority 500.
 
 ## Examples
 
 ```bash
-cortex policy --help
+# List all current rules
+cortex policy list
+
+# Add a deny rule for a dangerous domain pattern
+cortex policy add "curl.*evil\.com" --kind shell --effect deny --reason "Block known malicious domain"
+
+# Check if a command would be allowed
+cortex policy check shell "curl https://evil.com"
+# → { allowed: false, reason: "Block known malicious domain" }
+
+# Add an allow rule with high priority to override deny
+cortex policy add "git pull" --kind shell --effect allow --priority 100 --reason "Allow git operations"
+
+# Remove a rule
+cortex policy remove pol_abc123
 ```

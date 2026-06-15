@@ -51,13 +51,13 @@ export default function AdminPage() {
     if (res.ok) fetchSubmissions();
   };
 
-  if (loading) return <div className="max-w-5xl mx-auto px-4 py-20 text-center text-[#55556a]">Loading...</div>;
-  if (error) return <div className="max-w-5xl mx-auto px-4 py-20 text-center text-red-400">{error}</div>;
+  if (loading) return <div className="max-w-page-narrow mx-auto px-4 py-20 text-center text-[#55556a]">Loading...</div>;
+  if (error) return <div className="max-w-page-narrow mx-auto px-4 py-20 text-center text-red-400">{error}</div>;
 
   const items = tab === "plugins" ? plugins : agents;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-page-narrow mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-[#e2e2ea]">Admin Panel</h1>

@@ -1,21 +1,74 @@
 # `cortex vault`
 
-The `cortex vault` command manages vault operations in CortexPrism.
+Manage encrypted credentials using AES-256-GCM encryption with PBKDF2 key derivation. The vault stores sensitive credentials like API keys and secrets securely on disk.
 
 ## Usage
 
 ```bash
-cortex vault [options]
+export CORTEX_VAULT_KEY="your-passphrase"
+
+cortex vault store "<name>" --service <service>  # Prompts for value
+cortex vault get "<name>"                         # Retrieve and decrypt value
+cortex vault list                                 # List all stored entries
+cortex vault delete "<name>"                      # Delete an entry
 ```
+
+## Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `store` | Store a new encrypted credential (prompts for value) |
+| `get` | Retrieve and decrypt a credential |
+| `list` | List all stored credential names |
+| `delete` | Delete a stored credential |
 
 ## Options
 
 | Option | Description |
 |--------|-------------|
+| `--service` | Service name to associate with the credential (for `store`) |
 | `--help` | Show help for this command |
+
+## Encryption Details
+
+```
+vaultStore(name, value):
+  passphrase = Deno.env.get('CORTEX_VAULT_KEY')
+  key = PBKDF2(passphrase, salt='cortex-vault-salt-v1', 100000 iterations, SHA-256) → AES-256 key
+  iv = crypto.getRandomValues(12 bytes)
+  ciphertext = AES-GCM-256.encrypt(iv, key, value)
+  store(iv || ciphertext) in vault_entries
+
+vaultGet(name):
+  buf = vault_entries[name].encrypted_data
+  iv = buf[0:12]
+  cipher = buf[12:]
+  plaintext = AES-GCM-256.decrypt(iv, key, cipher)
+  vault_access_log.insert(...)
+  return plaintext
+```
+
+## Security Notes
+
+- The passphrase is never stored — only held in the environment variable at runtime
+- All access is logged to `vault_access_log` for audit
+- Default deny rules protect against common dangerous patterns
 
 ## Examples
 
 ```bash
-cortex vault --help
+# Set the vault passphrase
+export CORTEX_VAULT_KEY="my-strong-passphrase"
+
+# Store an API key
+cortex vault store "openai-key" --service openai
+
+# Retrieve an API key (outputs to stdout)
+cortex vault get "openai-key"
+
+# List all stored credentials
+cortex vault list
+
+# Delete a credential
+cortex vault delete "openai-key"
 ```

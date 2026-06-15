@@ -4,6 +4,29 @@ import { Hero } from "@/components/landing/Hero";
 import { StatsBar } from "@/components/landing/StatsBar";
 import { FeatureGrid } from "@/components/landing/FeatureGrid";
 import { CtaSection } from "@/components/landing/CtaSection";
+import fs from "fs";
+import path from "path";
+
+const CORTEX_VERSION_DEFAULT = "0.1.0";
+
+function getCortexVersion(): string {
+  const envVersion = process.env.NEXT_PUBLIC_CORTEX_VERSION;
+  if (envVersion) return envVersion;
+
+  try {
+    const cortexDir = process.env.CORTEX_SOURCE_DIR || "/root/cortex";
+    const denoJsonPath = path.join(cortexDir, "deno.json");
+    if (fs.existsSync(denoJsonPath)) {
+      const raw = fs.readFileSync(denoJsonPath, "utf-8");
+      const { version } = JSON.parse(raw);
+      return version || CORTEX_VERSION_DEFAULT;
+    }
+  } catch {}
+
+  return CORTEX_VERSION_DEFAULT;
+}
+
+const cortexVersion = getCortexVersion();
 
 export default async function HomePage() {
   const [pluginCount, agentCount, downloadAgg, gh] = await Promise.all([
@@ -19,7 +42,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero />
+      <Hero version={cortexVersion} />
       <StatsBar
         githubStars={gh.stargazers_count}
         pluginCount={pluginCount}

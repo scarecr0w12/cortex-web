@@ -1,0 +1,217 @@
+# Performance Tuning
+
+Guide to optimizing CortexPrism performance for different workloads and deployment scenarios.
+
+## LLM Provider Selection
+
+Provider choice has the biggest impact on response time:
+
+| Provider | Avg. Latency | Best For |
+|----------|-------------|----------|
+| Groq | ~500ms | Fast inference, prototyping |
+| OpenAI GPT-4o mini | ~1s | General purpose, cost-sensitive |
+| Anthropic Claude Sonnet | ~2s | Code, analysis |
+| Ollama (local) | ~5-30s | Offline, privacy-sensitive |
+| DeepSeek | ~1.5s | Code generation, cost-effective |
+
+### Cascade Router
+
+Optimize cost and latency with cascading providers:
+
+```json
+{
+  "router": {
+    "enabled": true,
+    "confidenceThreshold": 0.7,
+    "cascade": [
+      { "provider": "groq", "model": "llama-3.3-70b-versatile" },
+      { "provider": "openai", "model": "gpt-4o-mini" },
+      { "provider": "anthropic", "model": "claude-sonnet-4-20250514" }
+    ]
+  }
+}
+```
+
+The router tries cheaper/faster models first and escalates when confidence is low.
+
+## Memory Performance
+
+### Hybrid Retrieval
+
+Memory search uses hybrid FTS5 + vector embedding retrieval:
+
+```json
+{
+  "memory": {
+    "retrieval": {
+      "ftsWeight": 0.4,
+      "vectorWeight": 0.4,
+      "recencyWeight": 0.2,
+      "limit": 5
+    }
+  }
+}
+```
+
+- Lower `limit` for faster queries
+- Adjust `ftsWeight` vs `vectorWeight` based on your data type
+- Indexed queries are faster — use specific keywords
+
+### Memory Tiers
+
+Limit which tiers are searched:
+
+```bash
+# Search only fast tiers
+cortex memory search "query" --tiers episodic,semantic
+
+# Exclude slow reflection tier
+cortex memory search "query" --tiers working,episodic,semantic
+```
+
+### Pruning
+
+Regularly prune old or low-value memories:
+
+```bash
+# Auto-prune on startup (config)
+{
+  "memory": {
+    "pruning": {
+      "enabled": true,
+      "maxEntries": 10000,
+      "retentionDays": 90
+    }
+  }
+}
+
+# Manual prune
+cortex memory prune --keep 5000
+cortex memory prune --older-than 30d
+```
+
+## Database Performance
+
+### SQLite WAL Mode
+
+CortexPrism uses SQLite with WAL (Write-Ahead Logging) mode by default for concurrent read/write performance.
+
+### Vacuum
+
+Periodically vacuum databases to reclaim space:
+
+```bash
+# Vacuum all databases
+cortex setup --vacuum
+
+# Manual vacuum for specific db
+sqlite3 ~/.cortex/data/cortex.db "VACUUM;"
+```
+
+### Connection Pooling
+
+The Prisma client handles connection pooling automatically. For high-throughput deployments:
+
+```bash
+# Set connection limits
+export DATABASE_POOL_MIN=2
+export DATABASE_POOL_MAX=10
+```
+
+## Sandbox Performance
+
+### Docker vs Subprocess
+
+| Mode | Startup | Execution | Isolation |
+|------|---------|-----------|-----------|
+| Docker | ~2s | Fast | Strong |
+| Subprocess | ~10ms | Fast | Weak |
+| WASM | ~1ms | Fastest | Strong |
+
+For development: use subprocess mode for speed
+For production: use WASM or Docker for security
+
+### Sandbox Resource Limits
+
+```json
+{
+  "sandbox": {
+    "timeout": 30,
+    "memory": 256,
+    "maxOutput": 64,
+    "cpuQuota": 0.5
+  }
+}
+```
+
+- Increase `timeout` for long-running scripts
+- Increase `memory` for data-heavy operations
+- Decrease `cpuQuota` to share resources across sessions
+
+## Server Performance
+
+### Concurrent Sessions
+
+```bash
+# Increase max concurrent sessions
+cortex serve --max-sessions 50
+
+# Or in config:
+{
+  "server": {
+    "maxSessions": 50,
+    "sessionTimeout": 3600000
+  }
+}
+```
+
+### WebSocket vs REST
+
+Use WebSocket for streaming chat (lower latency, fewer connections):
+
+```bash
+# WebSocket endpoint
+ws://localhost:3000/api/chat
+
+# REST endpoint
+POST http://localhost:3000/api/chat
+```
+
+WebSocket is recommended for interactive sessions; REST for batch processing.
+
+## Profiling
+
+Enable performance profiling:
+
+```bash
+cortex chat --profile
+```
+
+Output includes:
+- LLM call latency per provider
+- Tool execution time
+- Memory retrieval time
+- Total agent loop time
+
+## Benchmarking
+
+```bash
+# Run built-in benchmarks
+cortex benchmark chat --rounds 10
+cortex benchmark memory --queries 100
+cortex benchmark sandbox --iterations 50
+
+# Compare providers
+cortex benchmark providers --rounds 5
+```
+
+## Production Tuning Checklist
+
+- [ ] Cascade router enabled with fast fallback providers
+- [ ] Memory pruning configured and scheduled
+- [ ] Database vacuum scheduled (weekly)
+- [ ] Sandbox timeout and memory limits tuned for workload
+- [ ] Server max sessions adjusted for expected load
+- [ ] Docker sandbox enabled (or WASM for performance)
+- [ ] Profiling data collected to identify bottlenecks
+- [ ] Benchmarks run to establish baseline

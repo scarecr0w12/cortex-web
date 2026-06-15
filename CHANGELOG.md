@@ -2,6 +2,48 @@
 
 All notable changes to the CortexPrism website will be documented in this file.
 
+## [0.1.0] — 2026-06-15
+
+### Added
+- Developer Guide section with full plugin development framework (9 pages)
+  - Plugin Types: ESM, MCP, WASM comparison and decision matrix
+  - ESM Plugin Development: SDK, validation, testing, bundling guide
+  - MCP Plugin Development: TypeScript and Python examples, transports, lifecycle
+  - WASM Plugin Development: Rust, Go, C support, ABI, memory model
+  - Plugin API Reference: lifecycle hooks, CapabilityContext, manifest schema
+  - Agent Development: custom agent configs, soul/persona, tools, examples
+  - Publishing Guide: web UI and API submission workflows, version management
+  - Best Practices: guidelines for all three plugin types, testing, documentation
+- Knowledge Base expansion (3 new pages)
+  - Migration Guide: version upgrades, database and data directory migration
+  - Security Guidelines: vault encryption, policy rules, incident response
+  - Performance Tuning: provider latency, cascade router, memory pruning, profiling
+- Collapsible sidebar sections with auto-expand for the active page
+- Sidebar search bar for filtering across all 42 documentation pages
+- Loading and error states for the Swagger UI API documentation page
+- Full OpenAPI 3.1 spec coverage for all 20+ API endpoints
+  - Authentication endpoints: register, login, me
+  - Review endpoints for plugins and agents (GET/POST)
+  - User submissions endpoint
+  - Admin review workflow endpoints (GET/PUT for plugins and agents)
+- Shared ScreenshotGallery and ReviewSection components (eliminating ~8KB of duplicate code)
+- Prisma schema migration step in Dockerfile startup
+
+### Changed
+- Documentation sidebar sections are now collapsible with chevron indicators
+- Documentation sidebar now has real-time search filtering
+- Plugin detail page bundle size reduced from 2.98 kB to 1.53 kB
+- Agent detail page bundle size reduced from 3.35 kB to 1.97 kB
+- OpenAPI spec schemas updated with all current fields (githubStars, tags, screenshots, versions, etc.)
+- `getCortexVersion()` evaluated at module level instead of per-request
+- Design docs index now links to inline architecture docs alongside external GitHub references
+- Navigation bar includes Developer Guide in Docs dropdown
+- Footer includes Developer Guide and Publish links
+- Plugin and agent detail pages show GitHub stars, forks, topics from API
+
+### Fixed
+- Stale `.next` build cache causing 500 errors after rebuilds
+
 ## [0.0.2] — 2026-06-14
 
 ### Added
