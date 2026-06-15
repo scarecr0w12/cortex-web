@@ -60,14 +60,47 @@ export async function GET(request: NextRequest) {
       return new Response("Missing code parameter", { status: 400 });
     }
 
+    // Link flow: validate state, then pass code to the link API
+    // (don't exchangeCode here — the code is single-use and the link API handles it)
     if (state.startsWith("link:")) {
       const stateValue = state.slice(5);
       const storedState = getCookie(request, "discord_oauth_state");
       if (!storedState || storedState !== stateValue) {
         return new Response("Invalid state parameter", { status: 400 });
       }
+
+      const html = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Linking Discord...</title></head>
+<body>
+<script>
+(async function() {
+  var token = localStorage.getItem("token");
+  if (!token) { window.location.href = "/login?error=not_authenticated"; return; }
+  try {
+    var res = await fetch("/api/auth/discord/link", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", authorization: "Bearer " + token },
+      body: JSON.stringify({ code: ${JSON.stringify(code)} }),
+    });
+    var data = await res.json();
+    if (res.ok && data.user) {
+      localStorage.setItem("user", JSON.stringify(data.user));
+      window.location.href = "/dashboard/settings?linked=discord";
+    } else {
+      window.location.href = "/dashboard/settings?error=" + encodeURIComponent(data.error || "link_failed");
+    }
+  } catch(e) {
+    window.location.href = "/dashboard/settings?error=connection_error";
+  }
+})();
+</script>
+</body>
+</html>`;
+      return new Response(html, { headers: { "Content-Type": "text/html" } });
     }
 
+    // Sign-in flow: exchange the code and create/log in the user
     const discordUser = await exchangeCode(code);
     if (!discordUser) {
       return new Response("Failed to authenticate with Discord", { status: 500 });
@@ -76,44 +109,6 @@ export async function GET(request: NextRequest) {
     const discordId = discordUser.id;
     const discordUsername = `${discordUser.username}`;
 
-    if (state.startsWith("link:")) {
-      const html = `<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><title>Linking Discord...</title></head>
-<body>
-  <script>
-    (async function() {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        window.location.href = "/login?error=not_authenticated";
-        return;
-      }
-      try {
-        const res = await fetch("/api/auth/discord/link", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", authorization: "Bearer " + token },
-          body: JSON.stringify({ code: ${JSON.stringify(code)} }),
-        });
-        const data = await res.json();
-        if (res.ok && data.user) {
-          localStorage.setItem("user", JSON.stringify(data.user));
-          window.location.href = "/dashboard/settings?linked=discord";
-        } else {
-          window.location.href = "/dashboard/settings?error=" + encodeURIComponent(data.error || "link_failed");
-        }
-      } catch {
-        window.location.href = "/dashboard/settings?error=connection_error";
-      }
-    })();
-  </script>
-</body>
-</html>`;
-
-      return new Response(html, {
-        headers: { "Content-Type": "text/html" },
-      });
-    }
-
     let user = await prisma.user.findUnique({ where: { discordId } });
 
     if (!user) {
@@ -121,13 +116,7 @@ export async function GET(request: NextRequest) {
       const username = generateUsername(discordUser.username);
 
       user = await prisma.user.create({
-        data: {
-          email,
-          username,
-          passwordHash: "",
-          discordId,
-          discordUsername,
-        },
+        data: { email, username, passwordHash: "", discordId, discordUsername },
       });
     } else {
       await prisma.user.update({
@@ -157,22 +146,17 @@ export async function GET(request: NextRequest) {
 
     const html = `<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Redirecting...</title>
-</head>
+<head><meta charset="utf-8"><title>Redirecting...</title></head>
 <body>
-  <script>
-    localStorage.setItem("token", ${JSON.stringify(token)});
-    localStorage.setItem("user", ${JSON.stringify(userJson)});
-    window.location.href = "/dashboard";
-  </script>
+<script>
+  localStorage.setItem("token", ${JSON.stringify(token)});
+  localStorage.setItem("user", ${JSON.stringify(userJson)});
+  window.location.href = "/dashboard";
+</script>
 </body>
 </html>`;
 
-    return new Response(html, {
-      headers: { "Content-Type": "text/html" },
-    });
+    return new Response(html, { headers: { "Content-Type": "text/html" } });
   } catch (error) {
     console.error("Discord callback error:", error);
     return new Response("Internal server error", { status: 500 });
