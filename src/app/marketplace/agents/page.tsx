@@ -29,6 +29,8 @@ export default function AgentListingPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [providers, setProviders] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 300);
@@ -39,7 +41,7 @@ export default function AgentListingPage() {
 
   useEffect(() => {
     if (!categories.length) {
-      fetch("/api/marketplace/categories").then(r => r.json()).then(setCategories);
+      fetch("/api/marketplace/categories").then(r => r.json()).then(setCategories).catch(() => {});
     }
   }, [categories.length]);
 
@@ -53,16 +55,17 @@ export default function AgentListingPage() {
     params.set("limit", "12");
 
     fetch(`/api/marketplace/agents?${params}`)
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() })
       .then(d => {
         setData(d);
-        const allProviders = new Set<string>();
-        d.agents.forEach((a: Agent) => { if (a.provider) allProviders.add(a.provider) });
-        setProviders(prev => prev.length ? prev : Array.from(allProviders));
+        setError(null);
+        const providerList: string[] = [];
+        d.agents.forEach((a: Agent) => { if (a.provider && !providerList.includes(a.provider)) providerList.push(a.provider) });
+        setProviders(prev => { const merged = [...prev]; providerList.forEach(p => { if (!merged.includes(p)) merged.push(p) }); return merged });
         setLoading(false);
       })
-      .catch(() => setLoading(false));
-  }, [debouncedSearch, selectedCategory, selectedProvider, page]);
+      .catch(e => { setError(e.message); setLoading(false) });
+  }, [debouncedSearch, selectedCategory, selectedProvider, page, retryCount]);
 
   return (
     <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
@@ -157,6 +160,18 @@ export default function AgentListingPage() {
               </div>
             </div>
           ))}
+        </div>
+      ) : error ? (
+        <div className="text-center py-20">
+          <div className="text-4xl mb-4 opacity-30">⚠️</div>
+          <p className="text-lg text-[#9090a8] mb-1">Failed to load agents</p>
+          <p className="text-sm text-[#55556a]">{error}</p>
+          <button
+            onClick={() => { setError(null); setLoading(true); setRetryCount(c => c + 1) }}
+            className="mt-4 px-4 py-2 text-sm rounded-lg bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors"
+          >
+            Try again
+          </button>
         </div>
       ) : data && data.agents.length > 0 ? (
         <>

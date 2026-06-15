@@ -28,6 +28,8 @@ export default function PluginListingPage() {
   const [data, setData] = useState<PluginResponse | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 300);
@@ -38,7 +40,7 @@ export default function PluginListingPage() {
 
   useEffect(() => {
     if (!categories.length) {
-      fetch("/api/marketplace/categories").then(r => r.json()).then(setCategories);
+      fetch("/api/marketplace/categories").then(r => r.json()).then(setCategories).catch(() => {});
     }
   }, [categories.length]);
 
@@ -52,10 +54,10 @@ export default function PluginListingPage() {
     params.set("limit", "12");
 
     fetch(`/api/marketplace/plugins?${params}`)
-      .then(r => r.json())
-      .then(d => { setData(d); setLoading(false) })
-      .catch(() => setLoading(false));
-  }, [debouncedSearch, selectedCategory, selectedKind, page]);
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() })
+      .then(d => { setData(d); setError(null); setLoading(false) })
+      .catch(e => { setError(e.message); setLoading(false) });
+  }, [debouncedSearch, selectedCategory, selectedKind, page, retryCount]);
 
   const kinds = ["esm", "mcp", "wasm"];
 
@@ -151,6 +153,18 @@ export default function PluginListingPage() {
               </div>
             </div>
           ))}
+        </div>
+      ) : error ? (
+        <div className="text-center py-20">
+          <div className="text-4xl mb-4 opacity-30">⚠️</div>
+          <p className="text-lg text-[#9090a8] mb-1">Failed to load plugins</p>
+          <p className="text-sm text-[#55556a]">{error}</p>
+          <button
+            onClick={() => { setError(null); setLoading(true); setRetryCount(c => c + 1) }}
+            className="mt-4 px-4 py-2 text-sm rounded-lg bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors"
+          >
+            Try again
+          </button>
         </div>
       ) : data && data.plugins.length > 0 ? (
         <>

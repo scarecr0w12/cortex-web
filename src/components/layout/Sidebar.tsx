@@ -148,10 +148,6 @@ export function Sidebar() {
   const pathname = usePathname();
   const [search, setSearch] = useState("");
 
-  if (!pathname.startsWith("/getting-started") && !pathname.startsWith("/docs")) {
-    return null;
-  }
-
   const filteredLinks = useMemo(() => {
     if (!search.trim()) return null;
     const q = search.toLowerCase();
@@ -159,6 +155,10 @@ export function Sidebar() {
       (l) => l.label.toLowerCase().includes(q) || l.href.toLowerCase().includes(q)
     );
   }, [search]);
+
+  if (!pathname.startsWith("/getting-started") && !pathname.startsWith("/docs")) {
+    return null;
+  }
 
   return (
     <aside className="w-64 shrink-0 hidden lg:block">

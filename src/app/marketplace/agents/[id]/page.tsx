@@ -10,7 +10,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const agent = await prisma.agentConfig.findFirst({
-    where: { OR: [{ id: params.id }, { slug: params.id }] },
+    where: { status: "approved", OR: [{ id: params.id }, { slug: params.id }] },
   });
   if (!agent) return { title: "Agent Not Found" };
   return {
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function AgentDetailPage({ params }: Props) {
   const agent = await prisma.agentConfig.findFirst({
-    where: { OR: [{ id: params.id }, { slug: params.id }] },
+    where: { status: "approved", OR: [{ id: params.id }, { slug: params.id }] },
     include: { category: true, screenshots: { orderBy: { order: "asc" } }, versions: { orderBy: { createdAt: "desc" }, take: 10 } },
   });
 

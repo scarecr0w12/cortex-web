@@ -10,7 +10,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const plugin = await prisma.plugin.findFirst({
-    where: { OR: [{ id: params.id }, { slug: params.id }] },
+    where: { status: "approved", OR: [{ id: params.id }, { slug: params.id }] },
   });
   if (!plugin) return { title: "Plugin Not Found" };
   return {
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PluginDetailPage({ params }: Props) {
   const plugin = await prisma.plugin.findFirst({
-    where: { OR: [{ id: params.id }, { slug: params.id }] },
+    where: { status: "approved", OR: [{ id: params.id }, { slug: params.id }] },
     include: { category: true, screenshots: { orderBy: { order: "asc" } }, versions: { orderBy: { createdAt: "desc" }, take: 10 } },
   });
 

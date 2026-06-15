@@ -35,7 +35,7 @@ export default async function MarketplacePage() {
               Extend CortexPrism with plugins. ESM modules, MCP servers, and WASM runtimes.
             </p>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-[#55556a]}">{pluginCount} plugins available</span>
+              <span className="text-sm text-[#55556a]">{pluginCount} plugins available</span>
               <span className="inline-flex items-center gap-1 text-sm text-indigo-400">
                 Browse <ArrowRight className="w-3.5 h-3.5" />
               </span>

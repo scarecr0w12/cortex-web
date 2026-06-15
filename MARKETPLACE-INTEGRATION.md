@@ -49,12 +49,12 @@ Response body (`PluginManifest`):
 ```json
 {
   "id": "cmpxyz...",
-  "name": "Python Executor",
-  "version": "1.2.0",
-  "description": "Execute Python scripts and return results.",
+  "name": "example-plugin",
+  "version": "1.0.0",
+  "description": "An example plugin manifest.",
   "kind": "esm",
-  "entryPoint": "plugins/python-executor/mod.ts",
-  "capabilities": ["python:execute", "python:install"],
+  "entryPoint": "plugins/example-plugin/mod.ts",
+  "capabilities": ["example:action"],
   "author": "CortexPrism",
   "homepage": "https://github.com/CortexPrism/cortex"
 }
@@ -122,15 +122,15 @@ Response body:
 ```json
 {
   "id": "cmqabc...",
-  "name": "Code Reviewer",
+  "name": "example-agent",
   "version": "1.0.0",
-  "description": "An expert code reviewer agent...",
+  "description": "An example agent configuration.",
   "provider": "anthropic",
   "model": "claude-sonnet-4-20250514",
   "temperature": 0.2,
-  "tools": ["codebase_search", "read", "grep", "glob"],
-  "tags": ["code-review", "development", "best-practices"],
-  "systemPrompt": "You are an expert code reviewer...",
+  "tools": ["codebase_search", "read", "grep"],
+  "tags": ["example"],
+  "systemPrompt": "You are a helpful assistant.",
   "author": "CortexPrism",
   "createdAt": "2026-06-14T00:00:00.000Z",
   "updatedAt": "2026-06-14T00:00:00.000Z"
@@ -181,10 +181,10 @@ Response:
   "plugins": [
     {
       "id": "cmpxyz...",
-      "name": "Python Executor",
-      "slug": "python-executor",
-      "version": "1.2.0",
-      "description": "Execute Python scripts...",
+      "name": "Example Plugin",
+      "slug": "example-plugin",
+      "version": "1.0.0",
+      "description": "An example plugin.",
       "kind": "esm",
       "author": "CortexPrism",
       "icon": null,
@@ -194,7 +194,7 @@ Response:
       "createdAt": "2026-06-14T00:00:00.000Z"
     }
   ],
-  "total": 6,
+  "total": 1,
   "page": 1,
   "limit": 20,
   "totalPages": 1
@@ -222,17 +222,17 @@ Response:
   "agents": [
     {
       "id": "cmqabc...",
-      "name": "Code Reviewer",
-      "slug": "code-reviewer",
+      "name": "Example Agent",
+      "slug": "example-agent",
       "version": "1.0.0",
-      "description": "An expert code reviewer agent...",
+      "description": "An example agent.",
       "provider": "anthropic",
       "model": "claude-sonnet-4-20250514",
       "author": "CortexPrism",
       "icon": null,
       "downloads": 892,
       "rating": 4.6,
-      "tags": ["code-review", "development", "best-practices"],
+      "tags": ["example"],
       "category": "Developer Tools",
       "createdAt": "2026-06-14T00:00:00.000Z"
     }
