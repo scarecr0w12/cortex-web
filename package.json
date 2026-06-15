@@ -12,7 +12,11 @@
     "db:studio": "npx prisma studio",
     "discord:install": "cd discord-bot && npm install",
     "discord:dev": "cd discord-bot && npm run dev",
-    "discord:deploy": "cd discord-bot && npm run deploy-commands"
+    "discord:deploy": "cd discord-bot && npm run deploy-commands",
+    "discord:start": "cd discord-bot && ./manage.sh start",
+    "discord:stop": "cd discord-bot && ./manage.sh stop",
+    "discord:status": "cd discord-bot && ./manage.sh status",
+    "discord:logs": "cd discord-bot && ./manage.sh logs"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

@@ -1,0 +1,16 @@
+[Unit]
+Description=CortexPrism Discord Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/cortex-web/discord-bot
+Environment=NODE_ENV=production
+Environment=DOTENV_CONFIG_PATH=../.env
+ExecStart=/root/cortex-web/node_modules/.bin/tsx src/index.ts
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
