@@ -41,6 +41,7 @@ export async function getGitHubStats(): Promise<GitHubRepo> {
 }
 
 const repoCache = new Map<string, { data: RepoMetadata; ts: number }>();
+const fileCache = new Map<string, { data: string | null; ts: number }>();
 
 function parseGitHubUrl(url: string): { owner: string; repo: string } | null {
   try {
@@ -88,3 +89,45 @@ export async function getRepoMetadata(repoUrl: string): Promise<RepoMetadata | n
     return null;
   }
 }
+
+export async function getRepoFile(repoUrl: string, path: string): Promise<string | null> {
+  const parsed = parseGitHubUrl(repoUrl);
+  if (!parsed) return null;
+
+  const cacheKey = `${parsed.owner}/${parsed.repo}/${path}`;
+  const cached = fileCache.get(cacheKey);
+  if (cached && Date.now() - cached.ts < 300_000) return cached.data;
+
+  for (const branch of ["main", "master"]) {
+    try {
+      const url = `https://raw.githubusercontent.com/${parsed.owner}/${parsed.repo}/${branch}/${path}`;
+      const res = await fetch(url, { next: { revalidate: 300 } });
+      if (res.ok) {
+        const text = await res.text();
+        fileCache.set(cacheKey, { data: text, ts: Date.now() });
+        return text;
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  fileCache.set(cacheKey, { data: null, ts: Date.now() });
+  return null;
+}
+
+export async function getRepoReadme(repoUrl: string): Promise<string | null> {
+  const readme = await getRepoFile(repoUrl, "README.md");
+  if (readme) return readme;
+  return getRepoFile(repoUrl, "README");
+}
+
+export async function getRepoChangelog(repoUrl: string): Promise<string | null> {
+  for (const file of ["CHANGELOG.md", "CHANGES.md", "CHANGELOG", "HISTORY.md"]) {
+    const content = await getRepoFile(repoUrl, file);
+    if (content) return content;
+  }
+  return null;
+}
+
+export { parseGitHubUrl };

@@ -35,7 +35,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   return Response.json({
     ...agent,
     tools: JSON.parse(agent.tools || "[]"),
-    tags: JSON.parse(agent.tags || "[]"),
+    tags: typeof agent.tags === 'string' ? JSON.parse(agent.tags || "[]") : (agent.tags || []),
     category: agent.category?.name || null,
   });
 }

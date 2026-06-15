@@ -25,12 +25,13 @@ export async function GET(request: NextRequest) {
     plugins: plugins.map((p) => ({
       ...p,
       capabilities: JSON.parse(p.capabilities || "[]"),
+      tags: typeof p.tags === 'string' ? JSON.parse(p.tags || "[]") : (p.tags || []),
       category: p.category?.name || null,
     })),
     agents: agents.map((a) => ({
       ...a,
       tools: JSON.parse(a.tools || "[]"),
-      tags: JSON.parse(a.tags || "[]"),
+      tags: typeof a.tags === 'string' ? JSON.parse(a.tags || "[]") : (a.tags || []),
       category: a.category?.name || null,
     })),
   });

@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, signToken } from "@/lib/auth";
 import { z } from "zod";
+import { sendEmail, renderWelcomeEmail } from "@/lib/email";
+import { createNotification } from "@/lib/notifications";
 
 const RegisterSchema = z.object({
   email: z.string().email(),
@@ -51,6 +53,18 @@ export async function POST(request: NextRequest) {
     });
 
     const token = signToken({ userId: user.id, role: user.role });
+
+    const { subject, html } = renderWelcomeEmail(user.username);
+    await sendEmail(user.email, subject, html);
+
+    await createNotification({
+      userId: user.id,
+      type: "system",
+      title: "Welcome to CortexPrism",
+      body: "Your account has been created. Start exploring the marketplace and documentation.",
+      link: "/getting-started",
+    });
+
     return Response.json({
       token,
       user: formatUser(user),

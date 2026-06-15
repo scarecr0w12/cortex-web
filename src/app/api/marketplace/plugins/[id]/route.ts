@@ -34,7 +34,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   return Response.json({
     ...plugin,
     capabilities: JSON.parse(plugin.capabilities || "[]"),
-    tags: JSON.parse(plugin.tags || "[]"),
+    tags: typeof plugin.tags === 'string' ? JSON.parse(plugin.tags || "[]") : (plugin.tags || []),
     category: plugin.category?.name || null,
   });
 }

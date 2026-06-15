@@ -1,6 +1,10 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
   "indexing": {
-    "enabled": true
+    "enabled": true,
+    "vectorStore": "qdrant",
+    "qdrant": {
+      "url": "http://10.10.20.31:6333/"
+    }
   }
 }

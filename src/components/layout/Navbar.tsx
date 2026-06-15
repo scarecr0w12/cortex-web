@@ -10,6 +10,7 @@ import { useState, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/AuthContext";
 import { LogoMark } from "@/components/shared/LogoMark";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 const navLinks = [
   {
@@ -130,6 +131,7 @@ export function Navbar() {
 
           {/* Desktop right actions */}
           <div className="hidden md:flex items-center gap-2">
+            {user && <NotificationBell />}
             {/* Discord icon */}
             <a
               href="https://discord.gg/y7DkaEbPQC"
@@ -266,6 +268,13 @@ export function Navbar() {
                   onClick={() => setMobileOpen(false)}
                 >
                   Dashboard
+                </Link>
+                <Link
+                  href="/dashboard/notifications"
+                  className="block px-3 py-2 text-sm rounded-lg text-[#9090a8] hover:text-[#e2e2ea] hover:bg-[#111118]"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Notifications
                 </Link>
                 <Link
                   href={`/profile/${user.username}`}

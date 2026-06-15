@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser, requireAdmin } from "@/lib/auth-middleware";
 import { createAuditLog } from "@/lib/audit";
+import { notifySubmissionAction } from "@/lib/submissions";
 
 export async function GET(request: NextRequest) {
   const user = getAuthUser(request);
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
     agents: agents.map((a) => ({
       ...a,
       tools: JSON.parse(a.tools || "[]"),
-      tags: JSON.parse(a.tags || "[]"),
+      tags: typeof a.tags === 'string' ? JSON.parse(a.tags || "[]") : (a.tags || []),
       category: a.category?.name || null,
     })),
     total,
@@ -87,6 +88,8 @@ export async function PUT(request: NextRequest) {
       entityId: id,
       metadata: { name: agent.name },
     });
+
+    await notifySubmissionAction("agent", agent, action, notes);
 
     return Response.json({ agent });
   } catch {

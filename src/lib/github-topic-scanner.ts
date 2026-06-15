@@ -64,22 +64,25 @@ function authHeader(token: string | null): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+const GITHUB_ACCEPT = "application/vnd.github.v3+json, application/vnd.github.mercy-preview+json";
+
 export async function searchGitHubByTopic(
   topic: string,
   token: string | null = null,
-  perPage: number = 50,
+  perPage: number = 100,
 ): Promise<GitHubSearchItem[]> {
   const allItems: GitHubSearchItem[] = [];
+  let totalCount = 0;
   let page = 1;
-  let hasMore = true;
+  const maxPages = 10;
 
-  while (hasMore && page <= 5) {
+  while (page <= maxPages) {
     try {
       const res = await fetch(
         `https://api.github.com/search/repositories?q=topic:${encodeURIComponent(topic)}&sort=updated&per_page=${perPage}&page=${page}`,
         {
           headers: {
-            Accept: "application/vnd.github.v3+json",
+            Accept: GITHUB_ACCEPT,
             ...authHeader(token),
           },
         },
@@ -91,8 +94,9 @@ export async function searchGitHubByTopic(
         break;
       }
       const data: GitHubSearchResponse = await res.json();
+      if (page === 1) totalCount = data.total_count;
       allItems.push(...data.items);
-      hasMore = data.items.length === perPage;
+      if (allItems.length >= totalCount || data.items.length === 0) break;
       page++;
     } catch {
       break;
@@ -177,8 +181,6 @@ export async function scanTopic(topic: string, userId: string): Promise<{ scanId
     }[] = [];
 
     for (const repo of repos) {
-      if (repo.owner?.login === "CortexPrism") continue;
-
       const manifestCheck = await checkManifest(repo.owner.login, repo.name, token);
       const repoTopics = repo.topics || [];
 
@@ -276,6 +278,10 @@ export async function importDiscoveredRepo(
         return { success: false, error: "Already exists" };
       }
 
+      const pluginTopics = typeof discovered.topics === 'string'
+        ? discovered.topics
+        : JSON.stringify(discovered.topics);
+
       const plugin = await prisma.plugin.create({
         data: {
           name: discovered.repo,
@@ -285,7 +291,7 @@ export async function importDiscoveredRepo(
           kind: (manifest?.kind as string) || "esm",
           entryPoint: (manifest?.entryPoint as string) || `plugins/${slug}/mod.ts`,
           capabilities: JSON.stringify((manifest?.capabilities as string[]) || []),
-          tags: JSON.stringify(discovered.topics),
+          tags: pluginTopics,
           author: discovered.owner,
           license: (manifest?.license as string) || null,
           homepage: repoUrl,
@@ -293,7 +299,7 @@ export async function importDiscoveredRepo(
           status: autoApprove ? "approved" : "pending",
           githubImportId: `topic:${discovered.fullName}`,
           githubStars: discovered.stars,
-          githubTopics: JSON.stringify(discovered.topics),
+          githubTopics: pluginTopics,
           userId: null,
         },
       });
@@ -318,6 +324,10 @@ export async function importDiscoveredRepo(
         return { success: false, error: "Already exists" };
       }
 
+      const agentTopics = typeof discovered.topics === 'string'
+        ? discovered.topics
+        : JSON.stringify(discovered.topics);
+
       const agent = await prisma.agentConfig.create({
         data: {
           name: discovered.repo,
@@ -328,7 +338,7 @@ export async function importDiscoveredRepo(
           model: (manifest?.model as string) || null,
           temperature: (manifest?.temperature as number) ?? null,
           tools: JSON.stringify((manifest?.tools as string[]) || []),
-          tags: JSON.stringify(discovered.topics),
+          tags: agentTopics,
           systemPrompt: (manifest?.systemPrompt as string) || null,
           author: discovered.owner,
           license: (manifest?.license as string) || null,
@@ -337,7 +347,7 @@ export async function importDiscoveredRepo(
           status: autoApprove ? "approved" : "pending",
           githubImportId: `topic:${discovered.fullName}`,
           githubStars: discovered.stars,
-          githubTopics: JSON.stringify(discovered.topics),
+          githubTopics: agentTopics,
           userId: null,
         },
       });

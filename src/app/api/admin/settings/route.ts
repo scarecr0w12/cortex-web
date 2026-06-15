@@ -14,6 +14,8 @@ export async function GET(request: NextRequest) {
     result[s.key] = s.value;
   }
   result._env_github_token = process.env.GITHUB_TOKEN ? "set" : "not set";
+  result._env_sendgrid_api_key = process.env.SENDGRID_API_KEY ? "set" : "not set";
+  result._env_sendgrid_from_email = process.env.SENDGRID_FROM_EMAIL ? "set" : "not set";
   return Response.json({ settings: result });
 }
 

@@ -1,5 +1,7 @@
 "use client";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Badge } from "@/components/shared/Badge";
 import { DownloadCount } from "@/components/shared/DownloadCount";
 import { StarRating } from "@/components/shared/StarRating";
@@ -254,7 +256,11 @@ export function AgentDetailView({ agent }: AgentDetailProps) {
       {agent.readme && (
         <div className="glass-card p-8">
           <h2 className="text-lg font-semibold text-[#e2e2ea] mb-4">README</h2>
-          <div className="text-sm text-[#9090a8] whitespace-pre-wrap">{agent.readme}</div>
+          <div className="prose prose-invert max-w-none prose-headings:text-[#e2e2ea] prose-p:text-[#c8c8dc] prose-strong:text-[#e2e2ea] prose-code:text-indigo-300 prose-pre:bg-[#0a0a0f] prose-pre:border prose-pre:border-[rgba(255,255,255,0.07)] prose-a:text-indigo-400 prose-a:hover:text-indigo-300 prose-li:text-[#c8c8dc] prose-hr:border-[rgba(255,255,255,0.07)] prose-blockquote:border-indigo-500/50 prose-blockquote:text-[#9090a8]">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {agent.readme}
+            </ReactMarkdown>
+          </div>
         </div>
       )}
 

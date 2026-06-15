@@ -56,3 +56,6 @@ next-env.d.ts
 discord-bot/node_modules/
 discord-bot/dist/
 discord-bot/.env
+
+# kilo local config (contains API keys and tokens)
+.kilo/kilo.json

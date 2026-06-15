@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
       icon: a.icon,
       downloads: a.downloads,
       rating: a.rating,
-      tags: JSON.parse(a.tags || "[]"),
+      tags: typeof a.tags === 'string' ? JSON.parse(a.tags || "[]") : (a.tags || []),
       category: a.category?.name || null,
       repository: a.repository,
       githubStars: a.githubStars,

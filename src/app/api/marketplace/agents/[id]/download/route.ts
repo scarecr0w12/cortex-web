@@ -24,7 +24,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     model: agent.model,
     temperature: agent.temperature,
     tools: JSON.parse(agent.tools || "[]"),
-    tags: JSON.parse(agent.tags || "[]"),
+    tags: typeof agent.tags === 'string' ? JSON.parse(agent.tags || "[]") : (agent.tags || []),
     systemPrompt: agent.systemPrompt,
     author: agent.author,
     createdAt: agent.createdAt,

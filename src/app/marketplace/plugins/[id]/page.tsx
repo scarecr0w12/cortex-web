@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { getRepoMetadata } from "@/lib/github";
+import { getRepoMetadata, getRepoReadme } from "@/lib/github";
 import { PluginDetailView } from "@/components/marketplace/PluginDetail";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { generateBreadcrumbSchema, SITE_URL } from "@/lib/seo";
@@ -41,7 +41,10 @@ export default async function PluginDetailPage({ params }: Props) {
 
   if (!plugin) notFound();
 
-  const githubMeta = plugin.repository ? await getRepoMetadata(plugin.repository) : null;
+  const [githubMeta, fetchedReadme] = await Promise.all([
+    plugin.repository ? getRepoMetadata(plugin.repository) : null,
+    plugin.repository && !plugin.readme ? getRepoReadme(plugin.repository) : null,
+  ]);
 
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: "Home", url: SITE_URL },
@@ -62,15 +65,15 @@ export default async function PluginDetailPage({ params }: Props) {
           description: plugin.description,
           kind: plugin.kind,
           entryPoint: plugin.entryPoint,
-          capabilities: JSON.parse(plugin.capabilities || "[]"),
-          tags: JSON.parse(plugin.tags || "[]"),
+          capabilities: typeof plugin.capabilities === 'string' ? JSON.parse(plugin.capabilities || "[]") : (plugin.capabilities || []),
+          tags: typeof plugin.tags === 'string' ? JSON.parse(plugin.tags || "[]") : (plugin.tags || []),
           author: plugin.author,
           authorUrl: plugin.authorUrl,
           homepage: plugin.homepage,
           repository: plugin.repository,
           license: plugin.license,
           icon: plugin.icon,
-          readme: plugin.readme,
+          readme: plugin.readme || fetchedReadme,
           downloads: plugin.downloads,
           rating: plugin.rating,
           githubStars: plugin.githubStars || githubMeta?.stars || 0,

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { getRepoMetadata } from "@/lib/github";
+import { getRepoMetadata, getRepoReadme } from "@/lib/github";
 import { AgentDetailView } from "@/components/marketplace/AgentDetail";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { generateBreadcrumbSchema, SITE_URL } from "@/lib/seo";
@@ -41,10 +41,10 @@ export default async function AgentDetailPage({ params }: Props) {
 
   if (!agent) notFound();
 
-  let githubMeta = null;
-  if (agent.repository) {
-    githubMeta = await getRepoMetadata(agent.repository);
-  }
+  const [githubMeta, fetchedReadme] = await Promise.all([
+    agent.repository ? getRepoMetadata(agent.repository) : null,
+    agent.repository && !agent.readme ? getRepoReadme(agent.repository) : null,
+  ]);
 
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: "Home", url: SITE_URL },
@@ -67,7 +67,7 @@ export default async function AgentDetailPage({ params }: Props) {
           model: agent.model,
           temperature: agent.temperature,
           tools: JSON.parse(agent.tools || "[]"),
-          tags: JSON.parse(agent.tags || "[]"),
+          tags: typeof agent.tags === 'string' ? JSON.parse(agent.tags || "[]") : (agent.tags || []),
           systemPrompt: agent.systemPrompt,
           soulContent: agent.soulContent,
           author: agent.author,
@@ -76,7 +76,7 @@ export default async function AgentDetailPage({ params }: Props) {
           repository: agent.repository,
           license: agent.license,
           icon: agent.icon,
-          readme: agent.readme,
+          readme: agent.readme || fetchedReadme,
           downloads: agent.downloads,
           rating: agent.rating,
           githubStars: agent.githubStars || githubMeta?.stars || 0,

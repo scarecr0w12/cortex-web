@@ -1,5 +1,7 @@
 "use client";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Badge } from "@/components/shared/Badge";
 import { DownloadCount } from "@/components/shared/DownloadCount";
 import { StarRating } from "@/components/shared/StarRating";
@@ -8,7 +10,8 @@ import { ScreenshotGallery } from "@/components/marketplace/ScreenshotGallery";
 import { ReviewSection } from "@/components/marketplace/ReviewSection";
 import { formatDate, formatNumber } from "@/lib/utils";
 import {
-  Globe, Github, User, ExternalLink, Star, GitFork, Tag, Settings, Zap, Award
+  Globe, Github, User, ExternalLink, Star, GitFork, Tag,
+  Settings, Award, Zap
 } from "lucide-react";
 
 interface Screenshot {
@@ -236,10 +239,10 @@ export function PluginDetailView({ plugin }: PluginDetailProps) {
       {plugin.readme && (
         <div className="glass-card p-8">
           <h2 className="text-lg font-semibold text-[#e2e2ea] mb-4">README</h2>
-          <div className="prose prose-invert max-w-none prose-p:text-[#9090a8] prose-strong:text-[#e2e2ea] prose-code:text-[#e2e2ea]">
-            {plugin.readme.split("\n").map((line, i) => (
-              <p key={i} className="text-sm text-[#9090a8]">{line}</p>
-            ))}
+          <div className="prose prose-invert max-w-none prose-headings:text-[#e2e2ea] prose-p:text-[#c8c8dc] prose-strong:text-[#e2e2ea] prose-code:text-indigo-300 prose-pre:bg-[#0a0a0f] prose-pre:border prose-pre:border-[rgba(255,255,255,0.07)] prose-a:text-indigo-400 prose-a:hover:text-indigo-300 prose-li:text-[#c8c8dc] prose-hr:border-[rgba(255,255,255,0.07)] prose-blockquote:border-indigo-500/50 prose-blockquote:text-[#9090a8]">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {plugin.readme}
+            </ReactMarkdown>
           </div>
         </div>
       )}
