@@ -14,6 +14,10 @@ All notable changes to the CortexPrism website will be documented in this file.
   - `SoftwareApplication` schema with version, author, category, offer metadata on every plugin and agent detail page
   - `Article` schema generator for content pages
 - Sitemap: added `/docs` and `/getting-started` index pages, raised FAQ priority to 0.8
+- Dynamic Open Graph image generation for marketplace items
+  - Per-plugin OG images with name, kind badge, description, version, author
+  - Per-agent OG images with name, provider badge, description, version, author
+  - Dark theme branding matching site design, 1200×630 resolution
 
 ### Fixed
 - XSS in `StructuredData` component — `JSON.stringify` output now escapes `<` to `\u003C` to prevent `</script>` injection via user-submitted content
