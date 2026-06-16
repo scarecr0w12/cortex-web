@@ -9,6 +9,8 @@ import { InstallCommand } from "@/components/marketplace/InstallCommand";
 import { ScreenshotGallery } from "@/components/marketplace/ScreenshotGallery";
 import { ReviewSection } from "@/components/marketplace/ReviewSection";
 import { formatDate, formatNumber } from "@/lib/utils";
+import { ShareButton } from "@/components/shared/ShareButton";
+import { getAgentShareText, SITE_URL } from "@/lib/share";
 import {
   Github, User, Brain, Thermometer, Globe, ExternalLink, Star, GitFork,
   Tag, Wrench, Settings, Award
@@ -150,6 +152,13 @@ export function AgentDetailView({ agent }: AgentDetailProps) {
               <User className="w-3.5 h-3.5" /> Author Profile
             </a>
           )}
+          <ShareButton
+            url={`${SITE_URL}/marketplace/agents/${agent.slug}`}
+            title={`${agent.name} — CortexPrism Agent`}
+            text={getAgentShareText(agent.name, agent.description || "")}
+            variant="outline"
+            size="sm"
+          />
         </div>
       </div>
 

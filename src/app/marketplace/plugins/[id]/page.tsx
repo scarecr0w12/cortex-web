@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getRepoMetadata, getRepoReadme } from "@/lib/github";
 import { PluginDetailView } from "@/components/marketplace/PluginDetail";
 import { StructuredData } from "@/components/seo/StructuredData";
-import { generateBreadcrumbSchema, SITE_URL } from "@/lib/seo";
+import { generateBreadcrumbSchema, generateSoftwareApplicationSchema, SITE_URL } from "@/lib/seo";
 
 interface Props {
   params: { id: string };
@@ -53,9 +53,19 @@ export default async function PluginDetailPage({ params }: Props) {
     { name: plugin.name, url: `${SITE_URL}/marketplace/plugins/${plugin.slug}` },
   ]);
 
+  const softwareSchema = generateSoftwareApplicationSchema({
+    name: plugin.name,
+    description: plugin.description || `${plugin.name} v${plugin.version} — a ${plugin.kind.toUpperCase()} plugin`,
+    url: `${SITE_URL}/marketplace/plugins/${plugin.slug}`,
+    image: plugin.icon,
+    version: plugin.version,
+    authorName: plugin.author,
+  });
+
   return (
     <div className="max-w-page-narrow mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
       <StructuredData data={breadcrumbSchema} />
+      <StructuredData data={softwareSchema} />
       <PluginDetailView
         plugin={{
           id: plugin.id,

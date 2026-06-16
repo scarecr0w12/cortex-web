@@ -80,6 +80,90 @@ export function generateBreadcrumbSchema(items: BreadcrumbItem[]) {
   };
 }
 
+export function generateSoftwareApplicationSchema({
+  name,
+  description,
+  url,
+  image,
+  version,
+  applicationCategory = "DeveloperApplication",
+  operatingSystem = "Linux, macOS, Windows",
+  authorName,
+  offers = { price: "0", priceCurrency: "USD" },
+}: {
+  name: string;
+  description: string;
+  url: string;
+  image?: string | null;
+  version: string;
+  applicationCategory?: string;
+  operatingSystem?: string;
+  authorName?: string | null;
+  offers?: { price: string; priceCurrency: string };
+}) {
+  const schema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name,
+    description,
+    url,
+    applicationCategory,
+    operatingSystem,
+    version,
+    offers: {
+      "@type": "Offer",
+      price: offers.price,
+      priceCurrency: offers.priceCurrency,
+    },
+  };
+
+  if (image) schema.image = image;
+  if (authorName) schema.author = { "@type": "Person", name: authorName };
+
+  return schema;
+}
+
+export function generateArticleSchema({
+  title,
+  description,
+  url,
+  image,
+  datePublished,
+  dateModified,
+  authorName,
+}: {
+  title: string;
+  description: string;
+  url: string;
+  image?: string | null;
+  datePublished: string;
+  dateModified?: string;
+  authorName?: string | null;
+}) {
+  const schema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url,
+    datePublished,
+    dateModified: dateModified || datePublished,
+    author: {
+      "@type": "Person",
+      name: authorName || "CortexPrism",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+  };
+
+  if (image) schema.image = image;
+
+  return schema;
+}
+
 export function generateMetaBase(): {
   metadataBase: URL;
   alternates: { canonical: string };

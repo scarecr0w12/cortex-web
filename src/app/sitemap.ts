@@ -14,14 +14,20 @@ const sectionMap: Record<string, string> = {
   "developer-guide": "developer-guide",
 };
 
-const staticRoutes: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [
+interface StaticRoute {
+  path: string;
+  priority: number;
+  changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
+}
+
+const staticRoutes: StaticRoute[] = [
   { path: "", priority: 1.0, changeFrequency: "weekly" },
   { path: "/about", priority: 0.8, changeFrequency: "monthly" },
   { path: "/features", priority: 0.9, changeFrequency: "monthly" },
   { path: "/use-cases", priority: 0.8, changeFrequency: "monthly" },
   { path: "/security", priority: 0.8, changeFrequency: "monthly" },
   { path: "/install", priority: 0.9, changeFrequency: "monthly" },
-  { path: "/changelog", priority: 0.7, changeFrequency: "daily" },
+  { path: "/changelog", priority: 0.7, changeFrequency: "weekly" },
   { path: "/contribute", priority: 0.7, changeFrequency: "monthly" },
   { path: "/marketplace", priority: 0.9, changeFrequency: "daily" },
   { path: "/marketplace/plugins", priority: 0.9, changeFrequency: "daily" },
@@ -29,6 +35,8 @@ const staticRoutes: { path: string; priority: number; changeFrequency: MetadataR
   { path: "/marketplace/publish/plugin", priority: 0.6, changeFrequency: "monthly" },
   { path: "/marketplace/publish/agent", priority: 0.6, changeFrequency: "monthly" },
   { path: "/openapi", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/docs", priority: 0.8, changeFrequency: "weekly" },
+  { path: "/getting-started", priority: 0.9, changeFrequency: "weekly" },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -58,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           url: `${SITE_URL}/docs/${dir}/${slug}`,
           lastModified: new Date(),
           changeFrequency: "weekly",
-          priority: 0.7,
+          priority: slug === "faq" ? 0.8 : 0.7,
         });
       }
     } else {
@@ -70,8 +78,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         docsEntries.push({
           url: `${SITE_URL}/docs/${pathSegments}`,
           lastModified: new Date(),
-          changeFrequency: "weekly",
-          priority: 0.7,
+          changeFrequency: "monthly",
+          priority: slug === "index" ? 0.7 : 0.6,
         });
       }
     }
@@ -82,8 +90,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     docsEntries.push({
       url: `${SITE_URL}/getting-started/${slug === "index" ? "" : slug}`,
       lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: slug === "index" ? 0.8 : 0.7,
+      changeFrequency: "monthly",
+      priority: slug === "index" ? 0.9 : 0.7,
     });
   }
 

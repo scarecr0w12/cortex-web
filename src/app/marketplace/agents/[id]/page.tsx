@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getRepoMetadata, getRepoReadme } from "@/lib/github";
 import { AgentDetailView } from "@/components/marketplace/AgentDetail";
 import { StructuredData } from "@/components/seo/StructuredData";
-import { generateBreadcrumbSchema, SITE_URL } from "@/lib/seo";
+import { generateBreadcrumbSchema, generateSoftwareApplicationSchema, SITE_URL } from "@/lib/seo";
 
 interface Props {
   params: { id: string };
@@ -53,9 +53,19 @@ export default async function AgentDetailPage({ params }: Props) {
     { name: agent.name, url: `${SITE_URL}/marketplace/agents/${agent.slug}` },
   ]);
 
+  const softwareSchema = generateSoftwareApplicationSchema({
+    name: agent.name,
+    description: agent.description || `${agent.name} v${agent.version} — a pre-configured agent profile`,
+    url: `${SITE_URL}/marketplace/agents/${agent.slug}`,
+    image: agent.icon,
+    version: agent.version,
+    authorName: agent.author,
+  });
+
   return (
     <div className="max-w-page-narrow mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
       <StructuredData data={breadcrumbSchema} />
+      <StructuredData data={softwareSchema} />
       <AgentDetailView
         agent={{
           id: agent.id,

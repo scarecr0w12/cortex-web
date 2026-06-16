@@ -9,6 +9,8 @@ import { InstallCommand } from "@/components/marketplace/InstallCommand";
 import { ScreenshotGallery } from "@/components/marketplace/ScreenshotGallery";
 import { ReviewSection } from "@/components/marketplace/ReviewSection";
 import { formatDate, formatNumber } from "@/lib/utils";
+import { ShareButton } from "@/components/shared/ShareButton";
+import { getPluginShareText, SITE_URL } from "@/lib/share";
 import {
   Globe, Github, User, ExternalLink, Star, GitFork, Tag,
   Settings, Award, Zap
@@ -144,6 +146,13 @@ export function PluginDetailView({ plugin }: PluginDetailProps) {
             <span className="text-[#55556a]">License: {plugin.license}</span>
           )}
           <span className="text-[#55556a]">Entry: {plugin.entryPoint}</span>
+          <ShareButton
+            url={`${SITE_URL}/marketplace/plugins/${plugin.slug}`}
+            title={`${plugin.name} — CortexPrism Plugin`}
+            text={getPluginShareText(plugin.name, plugin.description || "")}
+            variant="outline"
+            size="sm"
+          />
         </div>
       </div>
 

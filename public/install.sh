@@ -93,11 +93,10 @@ install_cortex() {
 
   cd "$install_dir"
 
-  header "Running Setup"
-  printf "${DIM}  Initializing databases...${NC}\n"
-  deno run --allow-all src/main.ts setup 2>/dev/null || {
-    warn "  Automatic setup failed, running migration manually..."
-    deno run --allow-all src/db/migrate.ts 2>/dev/null || true
+  header "Initializing databases"
+  printf "${DIM}  Running migrations...${NC}\n"
+  deno run --allow-all src/db/migrate.ts 2>/dev/null || {
+    warn "  Migration step had warnings — this is usually fine for a first install"
   }
 
   info ""

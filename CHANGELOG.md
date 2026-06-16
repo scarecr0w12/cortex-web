@@ -2,6 +2,24 @@
 
 All notable changes to the CortexPrism website will be documented in this file.
 
+## [0.6.0] — 2026-06-16
+
+### Added
+- Social share system for marketplace items
+  - `ShareButton` component with Web Share API (mobile) and dropdown with Twitter/X, Facebook, LinkedIn, Reddit, Hacker News, Email share links
+  - Copy-to-clipboard link sharing with confirmation feedback
+  - `src/lib/share.ts` utility with share URL generators for 6 platforms
+  - Share buttons integrated on all plugin and agent detail pages
+- Enhanced JSON-LD structured data for marketplace items
+  - `SoftwareApplication` schema with version, author, category, offer metadata on every plugin and agent detail page
+  - `Article` schema generator for content pages
+- Sitemap: added `/docs` and `/getting-started` index pages, raised FAQ priority to 0.8
+
+### Fixed
+- XSS in `StructuredData` component — `JSON.stringify` output now escapes `<` to `\u003C` to prevent `</script>` injection via user-submitted content
+- `SITE_URL` duplication — `share.ts` now re-exports from `seo.ts` to prevent drift
+- Native share cancellation on mobile no longer opens the share dropdown
+
 ## [0.5.0] — 2026-06-15
 
 ### Added
