@@ -95,7 +95,7 @@ install_cortex() {
 
   header "Running Setup"
   printf "${DIM}  Initializing databases...${NC}\n"
-  deno task setup 2>/dev/null || {
+  deno run --allow-all src/main.ts setup 2>/dev/null || {
     warn "  Automatic setup failed, running migration manually..."
     deno run --allow-all src/db/migrate.ts 2>/dev/null || true
   }
@@ -104,9 +104,21 @@ install_cortex() {
   info "  ✓ CortexPrism installed successfully!"
 }
 
+create_wrapper() {
+  local install_dir="${CORTEX_DIR:-$HOME/.cortex}"
+  local bin_dir="${DENO_INSTALL:-$HOME/.deno}/bin"
+  local wrapper="$bin_dir/cortex"
+
+  header "Creating cortex command"
+  mkdir -p "$bin_dir"
+
+  printf '#!/bin/sh\nexec deno run --allow-all "%s/src/main.ts" "$@"\n' "$install_dir" > "$wrapper"
+  chmod +x "$wrapper"
+  info "  ✓ cortex command created at $wrapper"
+}
+
 print_next_steps() {
   local install_dir="${CORTEX_DIR:-$HOME/.cortex}"
-  local bin_path="$install_dir"
 
   printf "\n"
   printf "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
@@ -123,7 +135,6 @@ print_next_steps() {
 
   printf "${BOLD}Quick start:${NC}\n"
   printf "\n"
-  printf "  ${GREEN}cd %s${NC}\n" "$install_dir"
   printf "  ${GREEN}cortex setup${NC}         ${DIM}# Configure your LLM provider${NC}\n"
   printf "  ${GREEN}cortex chat${NC}           ${DIM}# Start chatting${NC}\n"
   printf "  ${GREEN}cortex serve${NC}          ${DIM}# Start web UI at http://localhost:3000${NC}\n"
@@ -153,7 +164,7 @@ main() {
 
   if [[ "$os" == "windows" ]]; then
     warn "  Windows detected — use Git Bash, WSL, or run:"
-    warn "  git clone https://github.com/${REPO}.git && cd cortex && deno task setup"
+    warn "  git clone https://github.com/${REPO}.git && cd cortex && deno run --allow-all src/main.ts setup"
     exit 0
   fi
 
@@ -175,6 +186,7 @@ main() {
 
   ensure_deno
   install_cortex
+  create_wrapper
   print_next_steps
 }
 
