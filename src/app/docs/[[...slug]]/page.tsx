@@ -7,7 +7,7 @@ import { getContentBySlug, getContentSlugs } from "@/lib/markdown";
 import { getAllKbArticles, getKbArticleBySlug, getKbSlugs } from "@/lib/knowledge-base";
 import { TableOfContents } from "@/components/docs/TableOfContents";
 import { StructuredData } from "@/components/seo/StructuredData";
-import { generateBreadcrumbSchema, SITE_URL } from "@/lib/seo";
+import { generateBreadcrumbSchema, generateArticleSchema, SITE_URL } from "@/lib/seo";
 
 interface Props {
   params: { slug?: string[] };
@@ -103,7 +103,7 @@ export default async function DocsPage({ params }: Props) {
 
       return (
         <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 flex gap-8">
-          <StructuredData data={breadcrumbSchema} />
+        <StructuredData data={breadcrumbSchema} />
           <Sidebar />
           <article className="flex-1 min-w-0 max-w-page-content">
             <h1 className="text-3xl font-bold text-[#e2e2ea] mb-6">Knowledge Base</h1>
@@ -147,10 +147,19 @@ export default async function DocsPage({ params }: Props) {
       { name: article.title, url: `${SITE_URL}/docs/knowledge-base/${article.slug}` },
     ];
     const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems);
+    const articleSchema = generateArticleSchema({
+      title: article.title,
+      description: article.description || article.title,
+      url: `${SITE_URL}/docs/knowledge-base/${article.slug}`,
+      datePublished: article.createdAt.toISOString(),
+      dateModified: article.updatedAt.toISOString(),
+      authorName: undefined,
+    });
 
     return (
       <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 flex gap-8">
         <StructuredData data={breadcrumbSchema} />
+        <StructuredData data={articleSchema} />
         <Sidebar />
         <article className="flex-1 min-w-0 max-w-page-content">
           <MdxContent content={article.content} />

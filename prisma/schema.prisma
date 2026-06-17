@@ -342,3 +342,48 @@ model Setting {
 
   @@map("Setting")
 }
+
+model GuildConfig {
+  id                  String      @id @default(cuid())
+  guildId             String      @unique
+  guildName           String?
+  logChannelId        String?
+  modRoleId           String?
+  adminRoleId         String?
+  muteRoleId          String?
+  autoModEnabled      Boolean     @default(false)
+  welcomeEnabled      Boolean     @default(false)
+  welcomeMessage      String?
+  welcomeChannelId    String?
+  leaveEnabled        Boolean     @default(false)
+  leaveMessage        String?
+  leaveChannelId      String?
+  slowmodeDefault     Int         @default(0)
+  maxWarnsBeforeBan   Int         @default(3)
+  moderationActions   ModerationAction[]
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+
+  @@map("GuildConfig")
+}
+
+model ModerationAction {
+  id          String      @id @default(cuid())
+  guildId     String
+  guildConfig GuildConfig? @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  actionType  String      // warn | mute | unmute | kick | ban | unban | purge
+  moderatorId String
+  moderatorTag String?
+  targetId    String
+  targetTag   String?
+  reason      String?
+  duration    String?     // duration in ms for timed actions (mute)
+  expiresAt   DateTime?   // when a timed action expires
+  metadata    String?     // JSON for extra data (message count for purge, etc.)
+  createdAt   DateTime    @default(now())
+
+  @@index([guildId])
+  @@index([targetId])
+  @@index([moderatorId])
+  @@map("ModerationAction")
+}

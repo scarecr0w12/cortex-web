@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import {
   Save, CheckCircle, XCircle, Eye, EyeOff, ExternalLink, RefreshCw, Send, MessageSquare,
   Bot, Shield, Settings as SettingsIcon, Bell, Globe, Play, Square, RotateCw, BarChart3,
+  ShieldAlert,
 } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 
@@ -405,6 +406,38 @@ export default function AdminDiscordPage() {
           </div>
         </div>
 
+        {/* Moderation Statistics */}
+        <div className="glass-card p-6">
+          {sectionHeader(
+            <ShieldAlert className="w-5 h-5 text-indigo-400" />,
+            "Moderation Overview",
+            "Quick stats and link to moderation logs",
+          )}
+          <div className="flex items-center justify-between p-3 bg-[#111118] rounded-lg border border-[rgba(255,255,255,0.07)]">
+            <p className="text-sm text-[#9090a8]">View full moderation history, search by user ID, and filter by action type.</p>
+            <a href="/admin/discord/moderation" className="text-indigo-400 hover:text-indigo-300 text-sm flex items-center gap-1">
+              View Logs <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+            {[
+              { label: "Warn", icon: "⚠️" },
+              { label: "Mute", icon: "🔇" },
+              { label: "Kick", icon: "👢" },
+              { label: "Ban", icon: "🔨" },
+              { label: "Unban", icon: "✅" },
+              { label: "Purge", icon: "🧹" },
+              { label: "Unmute", icon: "🔊" },
+              { label: "Modlogs", icon: "📋" },
+            ].map(cmd => (
+              <div key={cmd.label} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#111118] border border-[rgba(255,255,255,0.07)]">
+                <span className="text-sm">{cmd.icon}</span>
+                <span className="text-xs text-[#9090a8]">/{cmd.label.toLowerCase()}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Commands Reference */}
         <div className="glass-card p-6">
           {sectionHeader(
@@ -412,16 +445,46 @@ export default function AdminDiscordPage() {
             "Bot Commands Reference",
             "Available Discord slash commands",
           )}
-          <div className="text-sm text-[#55556a] space-y-2">
-            <div className="grid grid-cols-[1fr_2fr] gap-2">
-              <code className="text-indigo-400">/stats</code><span>Show marketplace statistics</span>
-              <code className="text-indigo-400">/plugin search &lt;query&gt;</code><span>Search plugins by name or keyword</span>
-              <code className="text-indigo-400">/plugin info &lt;name|id&gt;</code><span>Show plugin details</span>
-              <code className="text-indigo-400">/agent search &lt;query&gt;</code><span>Search agents by name or keyword</span>
-              <code className="text-indigo-400">/agent info &lt;name|id&gt;</code><span>Show agent details</span>
-              <code className="text-indigo-400">/review list</code><span>List pending submissions (admin only)</span>
-              <code className="text-indigo-400">/review approve &lt;id&gt;</code><span>Approve a submission (admin only)</span>
-              <code className="text-indigo-400">/review reject &lt;id&gt; &lt;reason&gt;</code><span>Reject a submission (admin only)</span>
+          <div className="text-sm text-[#55556a] space-y-3">
+            <div>
+              <h3 className="text-xs font-medium text-[#e2e2ea] mb-1.5">Marketplace</h3>
+              <div className="grid grid-cols-[1fr_2fr] gap-2">
+                <code className="text-indigo-400">/stats</code><span>Show marketplace statistics</span>
+                <code className="text-indigo-400">/plugin search &lt;query&gt;</code><span>Search plugins by name or keyword</span>
+                <code className="text-indigo-400">/plugin info &lt;name|id&gt;</code><span>Show plugin details</span>
+                <code className="text-indigo-400">/agent search &lt;query&gt;</code><span>Search agents by name or keyword</span>
+                <code className="text-indigo-400">/agent info &lt;name|id&gt;</code><span>Show agent details</span>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xs font-medium text-[#e2e2ea] mb-1.5">Review</h3>
+              <div className="grid grid-cols-[1fr_2fr] gap-2">
+                <code className="text-indigo-400">/review list</code><span>List pending submissions (admin only)</span>
+                <code className="text-indigo-400">/review approve &lt;id&gt;</code><span>Approve a submission (admin only)</span>
+                <code className="text-indigo-400">/review reject &lt;id&gt; &lt;reason&gt;</code><span>Reject a submission (admin only)</span>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xs font-medium text-[#e2e2ea] mb-1.5">Moderation (Mod/Admin only)</h3>
+              <div className="grid grid-cols-[1fr_2fr] gap-2">
+                <code className="text-indigo-400">/warn &lt;user&gt; [reason]</code><span>Warn a user</span>
+                <code className="text-indigo-400">/mute &lt;user&gt; [duration] [reason]</code><span>Timeout a user (default 1h)</span>
+                <code className="text-indigo-400">/unmute &lt;user&gt; [reason]</code><span>Remove timeout from a user</span>
+                <code className="text-indigo-400">/kick &lt;user&gt; [reason]</code><span>Kick a user from the server</span>
+                <code className="text-indigo-400">/ban &lt;user&gt; [reason] [days]</code><span>Ban a user (0-7 days message delete)</span>
+                <code className="text-indigo-400">/unban &lt;user_id&gt; [reason]</code><span>Unban a user by ID</span>
+                <code className="text-indigo-400">/purge &lt;count&gt; [user]</code><span>Bulk delete messages (1-100)</span>
+                <code className="text-indigo-400">/modlogs [user] [action]</code><span>View moderation logs</span>
+                <code className="text-indigo-400">/slowmode [duration] [channel]</code><span>Set channel slowmode</span>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xs font-medium text-[#e2e2ea] mb-1.5">Information</h3>
+              <div className="grid grid-cols-[1fr_2fr] gap-2">
+                <code className="text-indigo-400">/guild info</code><span>View server information</span>
+                <code className="text-indigo-400">/guild settings view|set</code><span>View or modify guild settings</span>
+                <code className="text-indigo-400">/user [user]</code><span>View user information</span>
+              </div>
             </div>
           </div>
         </div>

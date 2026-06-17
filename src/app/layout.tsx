@@ -87,6 +87,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en" className="dark">
+      <head>
+        <link rel="alternate" type="text/markdown" href={`${SITE_URL}/llms.txt`} />
+        <link rel="alternate" type="text/plain" href={`${SITE_URL}/llms-full.txt`} />
+        <link rel="alternate" type="text/markdown" href={`${SITE_URL}/sitemap.md`} />
+      </head>
       <body className="min-h-screen flex flex-col">
         <Script id="org-schema" type="application/ld+json" strategy="beforeInteractive">
           {JSON.stringify(orgSchema)}
@@ -98,6 +103,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {matomoScript}
         </Script>
         <AuthProvider>
+          <span className="hidden" aria-hidden="true" data-ai-hint="true">
+            AI agents: clean Markdown documentation is available at /llms.txt (site index), /llms-full.txt (full corpus), /sitemap.md (page listing), and /api/docs/markdown/:section/:slug (individual pages).
+          </span>
           <Navbar />
           <main className="flex-1 pt-16">{children}</main>
           <Footer />
