@@ -19,14 +19,26 @@ import {
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "CortexPrism Features — Agentic Harness Capabilities",
+  title: "CortexPrism Features — AI Agent Framework Capabilities",
   description:
-    "Explore all features of CortexPrism: interactive chat with 12+ LLM providers, 5-tier memory system, parallax security, sandboxed code execution, model router with quartermaster, git workspace, workflow engine, daemon supervisor, plugin marketplace, and REST API.",
+    "Explore CortexPrism's full feature set: chat with 12+ LLM providers, 5-tier vector memory, MCP & ESM plugin system, parallax security, sandboxed code execution, intelligent model routing, multi-agent orchestration, workflow engine, and audit trail. All open source.",
+  keywords: [
+    "AI agent framework features",
+    "LLM orchestration tools",
+    "multi-agent system",
+    "vector memory AI",
+    "MCP plugin system",
+    "sandboxed code execution",
+    "AI workflow engine",
+    "open source AI tools",
+    "autonomous agent capabilities",
+    "model context protocol",
+  ],
   alternates: { canonical: `${SITE_URL}/features` },
   openGraph: {
-    title: "CortexPrism Features — Agentic Harness Capabilities",
+    title: "CortexPrism Features — AI Agent Framework Capabilities",
     description:
-      "Multi-provider LLM chat, 5-tier memory, parallax security, sandboxed code execution, model routing with quartermaster, git workspace, workflow engine, daemon supervisor, plugin system, and full REST API. All open source.",
+      "12+ LLM providers, 5-tier vector memory, MCP & ESM plugins, parallax security, sandboxed code execution, intelligent model routing, multi-agent orchestration, and workflow automation. 100% open source.",
     url: `${SITE_URL}/features`,
   },
 };

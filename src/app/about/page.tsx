@@ -4,14 +4,24 @@ import { ArrowRight, Shield, Zap, Globe, Github, Heart, Code2 } from "lucide-rea
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "About CortexPrism — The Open-Source Agentic Harness",
+  title: "About CortexPrism — Open-Source AI Agent Runtime",
   description:
-    "Learn about CortexPrism — a single-process agentic harness written in TypeScript/Deno with 12+ LLM providers, 5-tier memory, parallax security, and an extensible plugin marketplace. MIT licensed.",
+    "CortexPrism is an open-source AI agent runtime built with TypeScript and Deno. Features 12+ LLM providers, 5-tier memory architecture, parallax security, sandboxed code execution, and an extensible MCP plugin marketplace. MIT licensed, privacy-first, no telemetry.",
+  keywords: [
+    "about CortexPrism",
+    "open source AI agent runtime",
+    "TypeScript AI framework",
+    "Deno AI runtime",
+    "MIT licensed AI tools",
+    "privacy-first AI agent",
+    "self-hosted AI platform",
+    "no vendor lock-in LLM",
+  ],
   alternates: { canonical: `${SITE_URL}/about` },
   openGraph: {
-    title: "About CortexPrism — The Open-Source Agentic Harness",
+    title: "About CortexPrism — Open-Source AI Agent Runtime",
     description:
-      "A single-process agentic harness in TypeScript/Deno. Multi-provider LLM support, 5-tier memory, parallax security, sandboxed execution, and plugin marketplace.",
+      "Open-source AI agent runtime in TypeScript/Deno. 12+ LLM providers, 5-tier memory, parallax security, sandboxed execution, MCP plugin marketplace. MIT licensed. No telemetry, no vendor lock-in.",
     url: `${SITE_URL}/about`,
   },
 };

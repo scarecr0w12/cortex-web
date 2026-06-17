@@ -3,14 +3,26 @@ import { Shield, Lock, Eye, FileSearch, Server, Wrench } from "lucide-react";
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Security — Parallax Defense-in-Depth Architecture",
+  title: "CortexPrism Security — Enterprise-Grade AI Agent Security Architecture",
   description:
-    "CortexPrism Parallax security model with 3-stage tool validation, AES-256-GCM encrypted vault, granular policy engine, sandboxed code execution, and full audit logging. Defense in depth for agentic AI.",
+    "CortexPrism's Parallax security model provides defense-in-depth for AI agents: 3-stage tool validation, AES-256-GCM encrypted credential vault, granular policy engine, Docker-sandboxed code execution, and full immutable audit logging.",
+  keywords: [
+    "AI agent security",
+    "enterprise AI security",
+    "secure AI agent runtime",
+    "AES-256 credential vault",
+    "AI tool validation",
+    "sandboxed AI execution",
+    "AI audit logging",
+    "defense-in-depth AI",
+    "AI policy engine",
+    "secure LLM deployment",
+  ],
   alternates: { canonical: `${SITE_URL}/security` },
   openGraph: {
-    title: "Security — Parallax Defense-in-Depth Architecture",
+    title: "CortexPrism Security — Enterprise-Grade AI Agent Security Architecture",
     description:
-      "3-stage tool validation gate, encrypted credential vault with AES-256-GCM, regex-based policy engine, containerized sandboxes, and Cortex Lens audit trail. Enterprise-grade security for AI agents.",
+      "Defense-in-depth for AI agents: 3-stage tool validation, AES-256-GCM encrypted vault, policy engine, Docker-isolated sandboxes, and immutable audit trail via Cortex Lens.",
     url: `${SITE_URL}/security`,
   },
 };

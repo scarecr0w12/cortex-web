@@ -9,7 +9,7 @@ import {
 import { useState, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/AuthContext";
-import { LogoMark } from "@/components/shared/LogoMark";
+import { NavLogo } from "@/components/shared/NavLogo";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 const navLinks = [
@@ -53,9 +53,8 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="CortexPrism home">
-            <LogoMark size={22} />
-            <span className="font-bold text-xl tracking-tight text-[#e2e2ea]">CortexPrism</span>
+          <Link href="/" className="shrink-0" aria-label="CortexPrism home">
+            <NavLogo />
           </Link>
 
           {/* Desktop nav */}

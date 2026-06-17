@@ -1,23 +1,58 @@
 import type { Metadata } from "next";
 import { Terminal, Cpu, Package } from "lucide-react";
-import { SITE_URL } from "@/lib/seo";
+import { SITE_URL, generateHowToSchema } from "@/lib/seo";
+import { StructuredData } from "@/components/seo/StructuredData";
 
 export const metadata: Metadata = {
-  title: "Install CortexPrism — One-Command Setup",
+  title: "Install CortexPrism — Self-Host Your AI Agent Runtime in One Command",
   description:
-    "Install CortexPrism on Linux, macOS, or Windows with a single command. Includes Deno runtime setup, repository clone, and database initialization. Docker support available.",
+    "Install the CortexPrism open-source AI agent runtime on Linux, macOS, or Windows with a single command. Includes Deno setup, database initialization, and Docker support. Free, self-hosted, no cloud dependency.",
+  keywords: [
+    "install AI agent runtime",
+    "self-hosted AI setup",
+    "open source AI install guide",
+    "how to install CortexPrism",
+    "self-host LLM agent",
+    "AI framework installation",
+    "Docker AI agent",
+    "Deno AI runtime setup",
+    "local AI agent install",
+  ],
   alternates: { canonical: `${SITE_URL}/install` },
   openGraph: {
-    title: "Install CortexPrism — One-Command Setup for AI Agent Harness",
+    title: "Install CortexPrism — Self-Host Your AI Agent Runtime in One Command",
     description:
-      "curl -fsSL https://cortexprism.io/install.sh | bash or iwr https://cortexprism.io/install.ps1 -useb | iex — one command to get the agentic harness running. Full manual installation and Docker instructions included.",
+      "One command to install the open-source AI agent runtime on Linux, macOS, or Windows. curl -fsSL https://cortexprism.io/install.sh | bash — fully self-hosted, no cloud required.",
     url: `${SITE_URL}/install`,
   },
 };
 
+const howToSchema = generateHowToSchema({
+  name: "How to Install CortexPrism AI Agent Runtime",
+  description:
+    "Install CortexPrism, the open-source AI agent runtime, on Linux, macOS, or Windows with a single command.",
+  url: `${SITE_URL}/install`,
+  totalTime: "PT5M",
+  steps: [
+    {
+      name: "Run the one-command installer",
+      text: "On macOS or Linux, run: curl -fsSL https://cortexprism.io/install.sh | bash. On Windows PowerShell, run: iwr https://cortexprism.io/install.ps1 -useb | iex",
+    },
+    {
+      name: "Run initial setup",
+      text: "After installation, run 'cortex setup' to configure your LLM provider API keys and initialize the databases.",
+    },
+    {
+      name: "Start chatting with your AI agent",
+      text: "Run 'cortex chat' to start an interactive session with your preferred LLM provider, or 'cortex serve' to launch the web UI and REST API.",
+    },
+  ],
+});
+
 export default function InstallPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 md:py-20">
+      <StructuredData data={howToSchema} />
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">
           Install <span className="gradient-text">CortexPrism</span>

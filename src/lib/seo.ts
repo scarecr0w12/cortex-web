@@ -4,9 +4,57 @@ export const SITE_URL =
 export const SITE_NAME = "CortexPrism";
 
 export const SITE_DESCRIPTION =
-  "An open-source agentic harness system with multi-provider LLM support, 5-tier memory, parallax security, and a plugin marketplace.";
+  "Open-source AI agent runtime with multi-provider LLM support, 5-tier memory, MCP plugin marketplace, and enterprise-grade security. Self-host your AI agents with confidence.";
 
-export const SITE_TAGLINE = "Open-Source Agentic Harness";
+const SITE_TAGLINE = "Open-Source AI Agent Runtime";
+
+/**
+ * Primary and secondary keyword targets for CortexPrism.
+ *
+ * Primary (high-volume, competitive):
+ *   "open source AI agent", "AI agent framework", "LLM orchestration",
+ *   "self-hosted AI", "agent runtime", "autonomous AI agents"
+ *
+ * Secondary (medium-volume, more specific):
+ *   "agentic harness", "multi-agent system", "MCP plugin", "Model Context Protocol",
+ *   "AI memory system", "AI plugin marketplace", "vector memory",
+ *   "sandboxed code execution", "LLM agent tools"
+ *
+ * Long-tail (low-volume, high intent):
+ *   "TypeScript AI agent framework", "Deno AI runtime",
+ *   "open source LangChain alternative", "self-hosted LLM platform",
+ *   "AI agent workflow automation", "agentic AI platform MIT license"
+ */
+export const SITE_KEYWORDS = [
+  // Primary
+  "open source AI agent",
+  "AI agent framework",
+  "LLM orchestration",
+  "self-hosted AI",
+  "agent runtime",
+  "autonomous AI agents",
+  // Secondary
+  "agentic harness",
+  "agentic AI platform",
+  "multi-agent system",
+  "MCP plugin",
+  "Model Context Protocol",
+  "AI memory system",
+  "AI plugin marketplace",
+  "vector memory AI",
+  "sandboxed code execution",
+  "LLM agent tools",
+  "multi-provider LLM",
+  "open-source AI",
+  "AI security",
+  // Long-tail
+  "TypeScript AI agent",
+  "Deno AI runtime",
+  "open source LangChain alternative",
+  "self-hosted LLM platform",
+  "AI agent workflow automation",
+  "agent orchestration framework",
+];
 
 export const OG_IMAGE_URL = `${SITE_URL}/og-image.png`;
 
@@ -64,6 +112,38 @@ export function generateSoftwareAppSchema() {
     },
     description: SITE_DESCRIPTION,
     url: SITE_URL,
+    license: "https://opensource.org/licenses/MIT",
+    keywords:
+      "open source AI agent, AI agent framework, LLM orchestration, self-hosted AI, agent runtime, MCP plugin marketplace",
+  };
+}
+
+export function generateHowToSchema({
+  name,
+  description,
+  url,
+  steps,
+  totalTime,
+}: {
+  name: string;
+  description: string;
+  url: string;
+  steps: { name: string; text: string }[];
+  totalTime?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name,
+    description,
+    url,
+    ...(totalTime ? { totalTime } : {}),
+    step: steps.map((step, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: step.name,
+      text: step.text,
+    })),
   };
 }
 

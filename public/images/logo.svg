@@ -1,15 +1,49 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 40">
-  <!-- Prism icon (28 × 30 px, vertically centred) -->
-  <!-- Left face: indigo -->
-  <polygon points="14,4 2,36 14,36" fill="#6366f1"/>
-  <!-- Right face: violet -->
-  <polygon points="14,4 14,36 26,36" fill="#8b5cf6"/>
-  <!-- Top highlight facet -->
-  <polygon points="14,4 21,18 7,18" fill="rgba(255,255,255,0.2)"/>
-  <!-- Refraction seam -->
-  <line x1="14" y1="4" x2="14" y2="36" stroke="rgba(255,255,255,0.25)" stroke-width="0.8"/>
-  <!-- Base line -->
-  <line x1="2" y1="36" x2="26" y2="36" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+  <defs>
+    <linearGradient id="l" x1="14" y1="4" x2="2" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="r" x1="14" y1="4" x2="26" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Mesh rays from apex -->
+  <line x1="14" y1="4"  x2="10" y2="1"  stroke="rgba(139,92,246,0.25)" stroke-width="0.5"/>
+  <line x1="14" y1="4"  x2="18" y2="1"  stroke="rgba(139,92,246,0.25)" stroke-width="0.5"/>
+  <!-- Mesh rays from bottom-left -->
+  <line x1="2"  y1="36" x2="-1" y2="31" stroke="rgba(99,102,241,0.2)"  stroke-width="0.5"/>
+  <line x1="2"  y1="36" x2="-1" y2="38" stroke="rgba(99,102,241,0.2)"  stroke-width="0.5"/>
+  <!-- Mesh rays from bottom-right -->
+  <line x1="26" y1="36" x2="29" y2="31" stroke="rgba(139,92,246,0.2)"  stroke-width="0.5"/>
+  <line x1="26" y1="36" x2="29" y2="38" stroke="rgba(139,92,246,0.2)"  stroke-width="0.5"/>
+
+  <!-- Internal mesh cross-connections -->
+  <line x1="8"  y1="20" x2="20" y2="20" stroke="rgba(167,139,250,0.3)"  stroke-width="0.45"/>
+  <line x1="8"  y1="20" x2="14" y2="36" stroke="rgba(99,102,241,0.28)"  stroke-width="0.45"/>
+  <line x1="20" y1="20" x2="14" y2="36" stroke="rgba(139,92,246,0.28)"  stroke-width="0.45"/>
+  <line x1="8"  y1="20" x2="14" y2="4"  stroke="rgba(167,139,250,0.28)" stroke-width="0.45"/>
+  <line x1="20" y1="20" x2="14" y2="4"  stroke="rgba(167,139,250,0.28)" stroke-width="0.45"/>
+
+  <!-- Prism faces -->
+  <polygon points="14,4 2,36 14,36"  fill="url(#l)"/>
+  <polygon points="14,4 14,36 26,36" fill="url(#r)"/>
+  <polygon points="14,4 21,18 7,18"  fill="rgba(255,255,255,0.16)"/>
+
+  <!-- Edge lines -->
+  <line x1="2"  y1="36" x2="26" y2="36" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+  <line x1="14" y1="4"  x2="14" y2="36" stroke="rgba(255,255,255,0.22)" stroke-width="0.6"/>
+
+  <!-- Node dots -->
+  <circle cx="14" cy="4"  r="1.2" fill="#c4b5fd"/>
+  <circle cx="2"  cy="36" r="1.0" fill="#818cf8" fill-opacity="0.85"/>
+  <circle cx="26" cy="36" r="1.0" fill="#a78bfa" fill-opacity="0.85"/>
+  <circle cx="8"  cy="20" r="0.8" fill="#a78bfa" fill-opacity="0.7"/>
+  <circle cx="20" cy="20" r="0.8" fill="#a78bfa" fill-opacity="0.7"/>
+  <circle cx="14" cy="36" r="0.8" fill="#818cf8" fill-opacity="0.6"/>
+
   <!-- Wordmark -->
   <text x="36" y="27" font-family="Inter, sans-serif" font-size="19" font-weight="800" fill="#e2e2ea">CortexPrism</text>
 </svg>

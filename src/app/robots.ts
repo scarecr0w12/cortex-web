@@ -7,6 +7,7 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
+        // Allow all legitimate crawlers (Googlebot, Bingbot, etc.)
         userAgent: "*",
         allow: "/",
         disallow: [
@@ -19,14 +20,35 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
       {
+        // Allow Anthropic's crawler — helps CortexPrism appear in Claude AI answers
+        userAgent: "ClaudeBot",
+        allow: "/",
+        disallow: [
+          "/api/",
+          "/dashboard/",
+          "/admin/",
+          "/login/",
+          "/register/",
+          "/profile/",
+        ],
+      },
+      {
+        // Block OpenAI's training crawler (GPTBot scrapes for training data, not citations)
         userAgent: "GPTBot",
         disallow: "/",
       },
       {
+        // Block Common Crawl (used for mass training datasets)
         userAgent: "CCBot",
+        disallow: "/",
+      },
+      {
+        // Block Amazon's Alexa crawler
+        userAgent: "ia_archiver",
         disallow: "/",
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

@@ -4,14 +4,26 @@ import { ArrowRight, Bot, Beaker, TestTube, GitBranch, Search, Shield } from "lu
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "CortexPrism Use Cases — Personal AI, Dev, Research & More",
+  title: "CortexPrism Use Cases — AI Automation, Dev Assistant & Enterprise Agents",
   description:
-    "Explore how CortexPrism powers personal AI assistants, research workflows, code development and debugging, CI/CD automation, knowledge management, and secure enterprise agent deployments.",
+    "See how CortexPrism powers personal AI assistants with persistent memory, AI-assisted development and debugging, research automation, CI/CD workflows, knowledge management, and secure enterprise AI agent deployments.",
+  keywords: [
+    "AI agent use cases",
+    "AI automation use cases",
+    "personal AI assistant with memory",
+    "AI coding assistant self-hosted",
+    "AI research automation",
+    "enterprise AI agent deployment",
+    "CI/CD AI automation",
+    "knowledge management AI",
+    "agentic AI workflow",
+    "autonomous agent examples",
+  ],
   alternates: { canonical: `${SITE_URL}/use-cases` },
   openGraph: {
-    title: "CortexPrism Use Cases — Personal AI, Dev, Research & More",
+    title: "CortexPrism Use Cases — AI Automation, Dev Assistant & Enterprise Agents",
     description:
-      "From personal AI assistants to enterprise-grade secure deployments — see how CortexPrism adapts to any workflow. Research, development, CI/CD, and knowledge management.",
+      "From self-hosted personal AI assistants with persistent memory to enterprise-grade secure agent deployments — CortexPrism adapts to research, development, CI/CD, and knowledge workflows.",
     url: `${SITE_URL}/use-cases`,
   },
 };

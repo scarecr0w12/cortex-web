@@ -8,14 +8,25 @@ import { SITE_URL } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "CortexPrism Marketplace — Plugins & Agent Configurations",
+  title: "CortexPrism Marketplace — AI Plugins, MCP Servers & Agent Configs",
   description:
-    "Browse the CortexPrism marketplace for plugins (ESM, MCP, WASM) and pre-configured agent profiles. Discover, install, and publish extensions for the open-source agentic harness.",
+    "Browse the CortexPrism marketplace for AI plugins (ESM, MCP servers, WASM) and pre-configured agent profiles. Discover, install, and publish open-source extensions for the AI agent runtime.",
+  keywords: [
+    "AI plugin marketplace",
+    "MCP server plugins",
+    "Model Context Protocol plugins",
+    "open source AI extensions",
+    "agent configuration marketplace",
+    "ESM AI plugins",
+    "WASM AI plugins",
+    "AI agent profiles",
+    "LLM plugin store",
+  ],
   alternates: { canonical: `${SITE_URL}/marketplace` },
   openGraph: {
-    title: "CortexPrism Marketplace — Plugins & Agent Configurations",
+    title: "CortexPrism Marketplace — AI Plugins, MCP Servers & Agent Configs",
     description:
-      "Discover plugins (ESM modules, MCP servers, WASM runtimes) and pre-configured agent profiles. Extend your agentic harness with community-built extensions.",
+      "Discover AI plugins (ESM modules, MCP servers, WASM runtimes) and pre-configured agent profiles. Community-driven marketplace for the open-source AI agent runtime.",
     url: `${SITE_URL}/marketplace`,
   },
 };

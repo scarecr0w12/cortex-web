@@ -11,16 +11,27 @@ import fs from "fs";
 import path from "path";
 
 export const metadata: Metadata = {
-  title: "CortexPrism — Open-Source Agentic Harness",
+  title: "CortexPrism — Open-Source AI Agent Runtime & Plugin Marketplace",
   description:
-    "A single-process agentic harness system with multi-provider LLM support, 5-tier memory, parallax security, and a plugin marketplace. Install with one command and deploy AI agents with confidence.",
+    "Open-source AI agent runtime with 12+ LLM providers, 5-tier memory, MCP plugin marketplace, sandboxed code execution, and enterprise security. Install with one command and deploy autonomous agents with confidence. MIT licensed.",
+  keywords: [
+    "open source AI agent",
+    "AI agent runtime",
+    "LLM orchestration",
+    "self-hosted AI",
+    "MCP plugin marketplace",
+    "autonomous agents",
+    "agent orchestration framework",
+    "multi-provider LLM",
+    "agentic AI platform",
+  ],
   alternates: {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "CortexPrism — Open-Source Agentic Harness",
+    title: "CortexPrism — Open-Source AI Agent Runtime & Plugin Marketplace",
     description:
-      "A single-process agentic harness with 12+ LLM providers, 5-tier memory, parallax security, sandboxed code execution, and a plugin marketplace. MIT licensed.",
+      "Open-source AI agent runtime: 12+ LLM providers, 5-tier memory, MCP plugin marketplace, sandboxed code execution, and enterprise security. MIT licensed. One-command install.",
     url: SITE_URL,
   },
 };
