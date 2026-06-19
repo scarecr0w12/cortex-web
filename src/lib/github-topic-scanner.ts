@@ -225,6 +225,141 @@ async function buildImportedRepoUrls(
   return imported;
 }
 
+interface RepoInfo {
+  fullName: string;
+  owner: string;
+  repo: string;
+  description: string | null;
+  htmlUrl: string;
+  stars: number;
+  topics: string[];
+}
+
+async function listOrgRepos(org: string, token: string | null): Promise<RepoInfo[]> {
+  const allRepos: RepoInfo[] = [];
+  let page = 1;
+  const perPage = 100;
+
+  while (true) {
+    try {
+      const res = await fetch(
+        `https://api.github.com/orgs/${org}/repos?per_page=${perPage}&page=${page}&sort=updated&type=public`,
+        {
+          headers: {
+            Accept: GITHUB_ACCEPT,
+            ...authHeader(token),
+          },
+        },
+      );
+      if (!res.ok) break;
+      const repos = await res.json();
+      if (!Array.isArray(repos) || repos.length === 0) break;
+
+      for (const r of repos) {
+        allRepos.push({
+          fullName: r.full_name,
+          owner: r.owner?.login || org,
+          repo: r.name,
+          description: r.description || null,
+          htmlUrl: r.html_url,
+          stars: r.stargazers_count || 0,
+          topics: r.topics || [],
+        });
+      }
+
+      if (repos.length < perPage) break;
+      page++;
+    } catch {
+      break;
+    }
+  }
+
+  return allRepos;
+}
+
+async function processRepos(
+  repos: RepoInfo[],
+  scanId: string,
+  userId: string,
+  token: string | null,
+  topic: string,
+  filterCortex: boolean,
+): Promise<number> {
+  const results: {
+    fullName: string; owner: string; repo: string;
+    description: string | null; htmlUrl: string; stars: number;
+    topics: string[]; manifestCheck: ManifestCheck;
+  }[] = [];
+
+  for (const repo of repos) {
+    const hasCortexTopic = repo.topics.some(t => CORTEX_TOPICS.all.includes(t));
+    const manifestCheck = hasCortexTopic
+      ? { found: false, kind: null as "plugin" | "agent" | null, manifest: null as Record<string, unknown> | null }
+      : await checkManifest(repo.owner, repo.repo, token);
+    results.push({
+      fullName: repo.fullName,
+      owner: repo.owner,
+      repo: repo.repo,
+      description: repo.description,
+      htmlUrl: repo.htmlUrl,
+      stars: repo.stars,
+      topics: repo.topics,
+      manifestCheck,
+    });
+  }
+
+  const discovered = filterCortex
+    ? results.filter(r =>
+        r.topics.some(t => CORTEX_TOPICS.all.includes(t)) || r.manifestCheck.found
+      )
+    : results;
+
+  const importedRepoUrls = await buildImportedRepoUrls(
+    discovered.map(r => ({ owner: r.owner, repo: r.repo, fullName: r.fullName })),
+  );
+
+  for (const r of discovered) {
+    const kind = detectKind(r.topics, r.manifestCheck);
+    const repoUrl = `https://github.com/${r.owner}/${r.repo}`;
+    const alreadyImported = importedRepoUrls.has(repoUrl);
+    try {
+      await prisma.discoveredRepo.create({
+        data: {
+          scanId,
+          owner: r.owner,
+          repo: r.repo,
+          fullName: r.fullName,
+          description: r.description,
+          htmlUrl: r.htmlUrl,
+          stars: r.stars,
+          topics: JSON.stringify(r.topics),
+          repoKind: kind,
+          manifestFound: r.manifestCheck.found,
+          manifestData: r.manifestCheck.manifest ? JSON.stringify(r.manifestCheck.manifest) : null,
+          importStatus: alreadyImported ? "imported" : "pending",
+        },
+      });
+    } catch {
+      // duplicate skip
+    }
+  }
+
+  await prisma.gitHubTopicScan.update({
+    where: { id: scanId },
+    data: { status: "completed", resultCount: discovered.length, completedAt: new Date() },
+  });
+
+  await createAuditLog({
+    userId,
+    action: "github.topic_scan",
+    entity: "github_topic_scan",
+    entityId: scanId,
+    metadata: { topic, discovered: discovered.length, total: repos.length },
+  });
+
+  return discovered.length;
+}
+
 export async function scanTopic(topic: string, userId: string): Promise<{ scanId: string; totalFound: number }> {
   const token = await getGitHubToken();
 
@@ -239,77 +374,18 @@ export async function scanTopic(topic: string, userId: string): Promise<{ scanId
 
   try {
     const repos = await searchGitHubByTopic(topic, token);
+    const repoInfos: RepoInfo[] = repos.map(r => ({
+      fullName: r.full_name,
+      owner: r.owner.login,
+      repo: r.name,
+      description: r.description,
+      htmlUrl: r.html_url,
+      stars: r.stargazers_count,
+      topics: r.topics || [],
+    }));
 
-    const results: {
-      fullName: string; owner: string; repo: string;
-      description: string | null; htmlUrl: string; stars: number;
-      topics: string[]; manifestCheck: ManifestCheck;
-    }[] = [];
-
-    for (const repo of repos) {
-      const manifestCheck = await checkManifest(repo.owner.login, repo.name, token);
-      const repoTopics = repo.topics || [];
-
-      results.push({
-        fullName: repo.full_name,
-        owner: repo.owner.login,
-        repo: repo.name,
-        description: repo.description,
-        htmlUrl: repo.html_url,
-        stars: repo.stargazers_count,
-        topics: repoTopics,
-        manifestCheck,
-      });
-    }
-
-    const discovered = results.filter(r =>
-      r.topics.some(t => CORTEX_TOPICS.all.includes(t)) || r.manifestCheck.found
-    );
-
-    const importedRepoUrls = await buildImportedRepoUrls(
-      discovered.map(r => ({ owner: r.owner, repo: r.repo, fullName: r.fullName })),
-    );
-
-    for (const r of discovered) {
-      const kind = detectKind(r.topics, r.manifestCheck);
-      const repoUrl = `https://github.com/${r.owner}/${r.repo}`;
-      const alreadyImported = importedRepoUrls.has(repoUrl);
-      try {
-        await prisma.discoveredRepo.create({
-          data: {
-            scanId: scan.id,
-            owner: r.owner,
-            repo: r.repo,
-            fullName: r.fullName,
-            description: r.description,
-            htmlUrl: r.htmlUrl,
-            stars: r.stars,
-            topics: JSON.stringify(r.topics),
-            repoKind: kind,
-            manifestFound: r.manifestCheck.found,
-            manifestData: r.manifestCheck.manifest ? JSON.stringify(r.manifestCheck.manifest) : null,
-            importStatus: alreadyImported ? "imported" : "pending",
-          },
-        });
-      } catch {
-        // duplicate skip
-      }
-    }
-
-    await prisma.gitHubTopicScan.update({
-      where: { id: scan.id },
-      data: { status: "completed", resultCount: discovered.length, completedAt: new Date() },
-    });
-
-    await createAuditLog({
-      userId,
-      action: "github.topic_scan",
-      entity: "github_topic_scan",
-      entityId: scan.id,
-      metadata: { topic, discovered: discovered.length, total: repos.length },
-    });
-
-    return { scanId: scan.id, totalFound: discovered.length };
+    const totalFound = await processRepos(repoInfos, scan.id, userId, token, topic, true);
+    return { scanId: scan.id, totalFound };
   } catch (error) {
     await prisma.gitHubTopicScan.update({
       where: { id: scan.id },
@@ -320,6 +396,40 @@ export async function scanTopic(topic: string, userId: string): Promise<{ scanId
       },
     });
     throw error;
+  }
+}
+
+export async function scanOrg(orgName: string, userId: string): Promise<{ scanId: string; status: string }> {
+  const topic = `org:${orgName}`;
+
+  const scan = await prisma.gitHubTopicScan.create({
+    data: {
+      topic,
+      status: "running",
+      startedAt: new Date(),
+      createdById: userId,
+    },
+  });
+
+  return { scanId: scan.id, status: "running" };
+}
+
+export async function runOrgScan(scanId: string, orgName: string, userId: string): Promise<void> {
+  const token = await getGitHubToken();
+  const topic = `org:${orgName}`;
+
+  try {
+    const repos = await listOrgRepos(orgName, token);
+    await processRepos(repos, scanId, userId, token, topic, false);
+  } catch (error) {
+    await prisma.gitHubTopicScan.update({
+      where: { id: scanId },
+      data: {
+        status: "failed",
+        error: error instanceof Error ? error.message : "Unknown error",
+        completedAt: new Date(),
+      },
+    });
   }
 }
 

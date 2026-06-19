@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { Search, RefreshCw, ExternalLink, Star, CheckCircle, XCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/shared/Badge";
@@ -48,6 +48,10 @@ export default function TopicScannerPage() {
   const [importFilter, setImportFilter] = useState("");
   const [importing, setImporting] = useState<string | null>(null);
   const [importMessage, setImportMessage] = useState<string | null>(null);
+  const [orgName, setOrgName] = useState("CortexPrism");
+  const [orgScanning, setOrgScanning] = useState(false);
+  const pollScanId = useRef<string | null>(null);
+  const pollInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fetchScans = useCallback(async () => {
     const headers = authHeaders();
@@ -65,6 +69,14 @@ export default function TopicScannerPage() {
   }, []);
 
   useEffect(() => { fetchScans(); }, [fetchScans]);
+
+  useEffect(() => {
+    return () => {
+      if (pollInterval.current) {
+        clearInterval(pollInterval.current);
+      }
+    };
+  }, []);
 
   const fetchResults = useCallback(async (scanId: string) => {
     const headers = authHeaders();
@@ -110,6 +122,58 @@ export default function TopicScannerPage() {
       setImportMessage(`Scan failed: ${data.error || res.statusText}`);
     }
     setScanning(false);
+  };
+
+  const triggerOrgScan = async () => {
+    const headers = authHeaders();
+    if (!headers.authorization) { setAuthError(true); return; }
+    setAuthError(false);
+    setOrgScanning(true);
+    setImportMessage(null);
+    const res = await fetch("/api/admin/github-topic-scanner/org", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...headers },
+      body: JSON.stringify({ org: orgName }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setImportMessage(`Org scan started — scanning ${orgName} repos in background...`);
+      await fetchScans();
+      setActiveScanId(data.scanId);
+      setResultsPage(1);
+      pollScanId.current = data.scanId;
+      pollInterval.current = setInterval(() => {
+        fetch(`/api/admin/github-topic-scanner/${pollScanId.current}?page=1&limit=20`, { headers })
+          .then(r => r.ok ? r.json() : null)
+          .then(d => {
+            if (d) {
+              setResults(d.results || []);
+              setResultsTotalPages(d.totalPages || 1);
+            }
+            return fetch("/api/admin/github-topic-scanner", { headers });
+          })
+          .then(r => r.ok ? r.json() : null)
+          .then(scanData => {
+            if (scanData) setScans(scanData.scans || []);
+            const scan = scanData?.scans?.find((s: Scan) => s.id === pollScanId.current);
+            if (scan && scan.status !== "running") {
+              clearInterval(pollInterval.current!);
+              pollInterval.current = null;
+              setImportMessage(`Org scan complete: ${scan.resultCount} repositories discovered`);
+              setOrgScanning(false);
+            }
+          })
+          .catch(() => {});
+      }, 2000);
+    } else if (res.status === 403) {
+      setImportMessage("Org scan failed: Admin access required — your session may have expired. Try logging out and back in.");
+      setAuthError(true);
+      setOrgScanning(false);
+    } else {
+      const data = await res.json();
+      setImportMessage(`Org scan failed: ${data.error || res.statusText}`);
+      setOrgScanning(false);
+    }
   };
 
   const importRepo = async (discoveredId: string, autoApprove: boolean) => {
@@ -208,6 +272,24 @@ export default function TopicScannerPage() {
               }`}>{t}</button>
           ))}
         </div>
+        <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.06)]">
+          <label className="block text-xs text-[#55556a] mb-2">Organization Scan — scan every repo in a GitHub org (no topic tags needed)</label>
+          <div className="flex flex-wrap items-end gap-4">
+            <div>
+              <input
+                type="text"
+                value={orgName}
+                onChange={e => setOrgName(e.target.value)}
+                placeholder="CortexPrism"
+                className={inputClass + " w-48"}
+              />
+            </div>
+            <Button onClick={triggerOrgScan} disabled={orgScanning}>
+              <RefreshCw className={`w-4 h-4 mr-1.5 ${orgScanning ? "animate-spin" : ""}`} />
+              {orgScanning ? "Scanning..." : "Scan Org"}
+            </Button>
+          </div>
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
@@ -267,6 +349,12 @@ export default function TopicScannerPage() {
                 </div>
               </div>
 
+              {orgScanning && (
+                <div className="flex items-center gap-2 px-3 py-2 mb-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-sm text-yellow-300">
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  Scanning org repos... results will appear as repos are discovered.
+                </div>
+              )}
               {resultsLoading ? (
                 <div className="text-center py-12 text-[#55556a]">Loading...</div>
               ) : results.length === 0 ? (
