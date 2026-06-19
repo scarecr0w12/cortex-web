@@ -151,12 +151,32 @@ export const commandDefinitions = [
       { name: "create", description: "Create a poll", type: 1, options: [
         { name: "channel", description: "Channel", type: 7, required: true },
         { name: "title", description: "Poll title", type: 3, required: true },
-        { name: "description", description: "Poll description", type: 3, required: false },
         { name: "options", description: "Options separated by |", type: 3, required: true },
+        { name: "description", description: "Poll description", type: 3, required: false },
         { name: "allow_multiple", description: "Allow multiple choices", type: 5, required: false },
         { name: "duration_hours", description: "Duration in hours", type: 4, required: false },
       ]},
       { name: "end", description: "End a poll and show results", type: 1, options: [{ name: "id", description: "Poll ID", type: 3, required: true }] },
+    ],
+  },
+  {
+    name: "releasewatch", description: "Watch GitHub repos for new releases and tags",
+    options: [
+      { name: "add", description: "Add a repository to watch", type: 1, options: [
+        { name: "repo", description: "Repository (owner/repo or URL)", type: 3, required: true },
+        { name: "channel", description: "Channel to post notifications", type: 7, required: true },
+        { name: "type", description: "What to watch for", type: 3, required: false, choices: [{ name: "Releases", value: "release" }, { name: "Tags", value: "tag" }, { name: "Both", value: "both" }] },
+      ]},
+      { name: "remove", description: "Stop watching a repository", type: 1, options: [
+        { name: "repo", description: "Repository (owner/repo)", type: 3, required: true },
+      ]},
+      { name: "list", description: "List watched repositories", type: 1 },
+      { name: "toggle", description: "Pause or resume watching a repo", type: 1, options: [
+        { name: "repo", description: "Repository (owner/repo)", type: 3, required: true },
+      ]},
+      { name: "check", description: "Force check for new releases now", type: 1, options: [
+        { name: "repo", description: "Specific repo to check (omit for all)", type: 3, required: false },
+      ]},
     ],
   },
   {

@@ -333,6 +333,27 @@ model KnowledgeBaseArticle {
   @@map("KnowledgeBaseArticle")
 }
 
+model ReleaseWatch {
+  id                    String   @id @default(cuid())
+  owner                 String
+  repo                  String
+  watchType             String   @default("release") // "release" | "tag" | "both"
+  lastReleaseTag        String?
+  lastTagName           String?
+  lastReleasePublishedAt DateTime?
+  channelId             String
+  guildId               String
+  isActive              Boolean  @default(true)
+  createdBy             String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@unique([owner, repo, guildId])
+  @@index([isActive])
+  @@index([guildId])
+  @@map("ReleaseWatch")
+}
+
 model Setting {
   id        String   @id @default(cuid())
   key       String   @unique

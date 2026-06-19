@@ -58,14 +58,14 @@ ensure_deno() {
   elif command -v wget &>/dev/null; then
     wget -qO- https://deno.land/install.sh | sh -s -- -y
   else
-    error "Need curl or wget to install Deno. Install manually: https://docs.deno.land/runtime/getting_started/installation"
+    error "Need curl or wget to install Deno. Install manually: https://docs.deno.com/runtime/getting_started/installation"
   fi
 
   export DENO_INSTALL="$HOME/.deno"
   export PATH="$DENO_INSTALL/bin:$PATH"
 
   if ! command -v deno &>/dev/null; then
-    error "Deno installation failed. Please install manually: https://docs.deno.land/runtime/getting_started/installation"
+    error "Deno installation failed. Please install manually: https://docs.deno.com/runtime/getting_started/installation"
   fi
   info "  ✓ Deno $(deno --version | head -1) installed"
 }
@@ -79,14 +79,12 @@ install_cortex() {
     git pull --ff-only origin "$BRANCH" 2>/dev/null || {
       warn "  Git pull failed, backing up config and re-cloning..."
       cd "$HOME"
-      # Backup config if it exists
       if [[ -f "$install_dir/config.json" ]]; then
         cp "$install_dir/config.json" /tmp/cortex-config-backup.json 2>/dev/null && \
         info "  ✓ Config backed up to /tmp/cortex-config-backup.json"
       fi
       rm -rf "$install_dir"
       git clone --depth 1 -b "$BRANCH" "https://github.com/${REPO}.git" "$install_dir"
-      # Restore backed-up config
       if [[ -f /tmp/cortex-config-backup.json ]]; then
         mkdir -p "$install_dir"
         cp /tmp/cortex-config-backup.json "$install_dir/config.json" 2>/dev/null && \
@@ -144,44 +142,48 @@ print_next_steps() {
   printf "\n"
   printf "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
   printf "${BOLD}${GREEN}  CortexPrism is ready!${NC}\n"
+  printf "${CYAN}  24 LLM Providers · 10 Channels · Vector Memory · Voice · MCP${NC}\n"
   printf "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
   printf "\n"
 
-  if [[ "$os" == "windows" ]]; then
-    if [[ ":$PATH:" != *":$HOME/.deno/bin:"* ]]; then
-      printf "${YELLOW}  Add Deno to your PATH:${NC}\n"
-      printf "    echo 'export PATH=\"\$HOME/.deno/bin:\$PATH\"' >> ~/.bashrc\n"
-      printf "    source ~/.bashrc\n"
-      printf "\n"
-    fi
-  elif [[ "$os" == "macos" ]]; then
-    local shell_config="$HOME/.zshrc"
-    [[ "$SHELL" == */bash* ]] && shell_config="$HOME/.bash_profile"
-    if [[ ":$PATH:" != *":$HOME/.deno/bin:"* ]]; then
-      printf "${YELLOW}  Add Deno to your PATH:${NC}\n"
-      printf "    echo 'export PATH=\"\$HOME/.deno/bin:\$PATH\"' >> %s\n" "$shell_config"
-      printf "    source %s\n" "$shell_config"
-      printf "\n"
-    fi
-  else
-    if [[ ":$PATH:" != *":$HOME/.deno/bin:"* ]]; then
-      printf "${YELLOW}  Add Deno to your PATH:${NC}\n"
-      printf "    echo 'export PATH=\"\$HOME/.deno/bin:\$PATH\"' >> ~/.bashrc\n"
-      printf "    source ~/.bashrc\n"
-      printf "\n"
-    fi
+  if [[ ":$PATH:" != *":$HOME/.deno/bin:"* ]]; then
+    local shell_config="$HOME/.bashrc"
+    [[ "$os" == "macos" ]] && shell_config="$HOME/.zshrc"
+    [[ "$SHELL" == */bash* && "$os" == "macos" ]] && shell_config="$HOME/.bash_profile"
+    printf "${YELLOW}  Add Deno to your PATH:${NC}\n"
+    printf "    echo 'export PATH=\"\$HOME/.deno/bin:\$PATH\"' >> %s\n" "$shell_config"
+    printf "    source %s\n" "$shell_config"
+    printf "\n"
   fi
 
   printf "${BOLD}Quick start:${NC}\n"
   printf "\n"
-  printf "  ${GREEN}cortex setup${NC}         ${DIM}# Configure your LLM provider${NC}\n"
-  printf "  ${GREEN}cortex chat${NC}           ${DIM}# Start chatting${NC}\n"
-  printf "  ${GREEN}cortex serve${NC}          ${DIM}# Start web UI at http://localhost:3000${NC}\n"
+  printf "  ${GREEN}cortex setup${NC}         ${DIM}# Interactive setup wizard${NC}\n"
+  printf "  ${GREEN}cortex chat${NC}           ${DIM}# Start an interactive chat${NC}\n"
+  printf "  ${GREEN}cortex serve${NC}          ${DIM}# Web UI + REST API at http://localhost:3000${NC}\n"
+  printf "  ${GREEN}cortex "check the time"${NC}${DIM}# One-shot command${NC}\n"
+  printf "\n"
+
+  printf "${BOLD}What you get:${NC}\n"
+  printf "  ${DIM}• 24 LLM providers (Anthropic, OpenAI, Google, Ollama, Bedrock, +18 more)${NC}\n"
+  printf "  ${DIM}• 10 channel integrations (Discord, Slack, Telegram, Teams, WhatsApp, +5)${NC}\n"
+  printf "  ${DIM}• Pluggable memory backends (SQLite, Qdrant, ChromaDB, Pinecone)${NC}\n"
+  printf "  ${DIM}• Chrome Bridge — browser automation via MCP${NC}\n"
+  printf "  ${DIM}• Voice & speech (STT/TTS via OpenAI, ElevenLabs)${NC}\n"
+  printf "  ${DIM}• Multi-agent architecture with tool execution${NC}\n"
+  printf "  ${DIM}• Plugin marketplace, workflow engine, code sandbox${NC}\n"
   printf "\n"
 
   printf "${BOLD}Documentation:${NC}\n"
   printf "  ${CYAN}https://cortexprism.io/getting-started${NC}\n"
   printf "  ${CYAN}https://cortexprism.io/docs/cli${NC}\n"
+  printf "\n"
+
+  printf "${BOLD}Also available via package managers:${NC}\n"
+  printf "  ${DIM}brew install CortexPrism/tap/cortex${NC}\n"
+  printf "  ${DIM}scoop install cortex${NC}\n"
+  printf "  ${DIM}choco install cortexprism${NC}\n"
+  printf "  ${DIM}winget install CortexPrism.Cortex${NC}\n"
   printf "\n"
 
   printf "${BOLD}${DIM}Installed at: %s${NC}\n" "$install_dir"
@@ -243,6 +245,8 @@ main() {
   printf "${BOLD}${CYAN}  ╔══════════════════════════════════════╗${NC}\n"
   printf "${BOLD}${CYAN}  ║       CortexPrism Installer         ║${NC}\n"
   printf "${BOLD}${CYAN}  ║   Open-Source Agentic Harness       ║${NC}\n"
+  printf "${BOLD}${CYAN}  ║   24 LLM Providers · 10 Channels    ║${NC}\n"
+  printf "${BOLD}${CYAN}  ║   Vector Memory · Voice · MCP       ║${NC}\n"
   printf "${BOLD}${CYAN}  ╚══════════════════════════════════════╝${NC}\n"
   printf "\n"
 

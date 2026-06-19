@@ -17,18 +17,30 @@ Override with:
   "version": 1,
   "defaultProvider": "anthropic",
   "providers": {
-    "anthropic":  { "kind": "anthropic",  "model": "claude-sonnet-4-5",                "apiKey": "sk-..." },
-    "openai":     { "kind": "openai",     "model": "gpt-4o",                            "apiKey": "sk-..." },
-    "google":     { "kind": "google",     "model": "gemini-2.0-flash",                  "apiKey": "..." },
-    "mistral":    { "kind": "mistral",    "model": "mistral-large-latest",              "apiKey": "..." },
-    "groq":       { "kind": "groq",       "model": "llama-3.3-70b-versatile",           "apiKey": "gsk_..." },
-    "deepseek":   { "kind": "deepseek",   "model": "deepseek-chat",                     "apiKey": "sk-..." },
-    "openrouter": { "kind": "openrouter", "model": "openai/gpt-4o",                     "apiKey": "..." },
-    "xai":        { "kind": "xai",        "model": "grok-2-latest",                     "apiKey": "..." },
+    "anthropic":  { "kind": "anthropic",  "model": "claude-sonnet-4-5",                      "apiKey": "sk-..." },
+    "openai":     { "kind": "openai",     "model": "gpt-4o",                                  "apiKey": "sk-..." },
+    "google":     { "kind": "google",     "model": "gemini-2.0-flash",                        "apiKey": "..." },
+    "mistral":    { "kind": "mistral",    "model": "mistral-large-latest",                    "apiKey": "..." },
+    "groq":       { "kind": "groq",       "model": "llama-3.3-70b-versatile",                 "apiKey": "gsk_..." },
+    "deepseek":   { "kind": "deepseek",   "model": "deepseek-chat",                           "apiKey": "sk-..." },
+    "openrouter": { "kind": "openrouter", "model": "openai/gpt-4o",                           "apiKey": "..." },
+    "xai":        { "kind": "xai",        "model": "grok-2-latest",                           "apiKey": "..." },
     "together":   { "kind": "together",   "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo", "apiKey": "..." },
-    "bedrock":    { "kind": "bedrock",    "model": "anthropic.claude-3-5-sonnet-20240620-v1:0", "apiKey": "AKIA...", "secretKey": "...", "baseUrl": "us-east-1" },
-    "cohere":     { "kind": "cohere",     "model": "command-r-plus",                    "apiKey": "..." },
-    "ollama":     { "kind": "ollama",     "model": "llama3.2",                          "baseUrl": "http://localhost:11434" }
+    "bedrock":    { "kind": "bedrock",    "model": "anthropic.claude-3-5-sonnet-20240620-v1:0","apiKey": "AKIA...", "secretKey": "...", "baseUrl": "us-east-1" },
+    "cohere":     { "kind": "cohere",     "model": "command-r-plus",                          "apiKey": "..." },
+    "ollama":     { "kind": "ollama",     "model": "llama3.2",                                "baseUrl": "http://localhost:11434" },
+    "cerebras":   { "kind": "cerebras",   "model": "llama-3.3-70b",                           "apiKey": "..." },
+    "fireworks":  { "kind": "fireworks",  "model": "accounts/fireworks/models/llama-v3p3-70b-instruct", "apiKey": "..." },
+    "perplexity": { "kind": "perplexity", "model": "sonar-pro",                               "apiKey": "..." },
+    "nvidia":     { "kind": "nvidia",     "model": "meta/llama-3.3-70b-instruct",             "apiKey": "..." },
+    "moonshot":   { "kind": "moonshot",   "model": "moonshot-v1-8k",                          "apiKey": "..." },
+    "novita":     { "kind": "novita",     "model": "meta-llama/llama-3.1-8b-instruct",        "apiKey": "..." },
+    "lmstudio":   { "kind": "lmstudio",   "model": "local-model",                             "baseUrl": "http://localhost:1234" },
+    "litellm":    { "kind": "litellm",    "model": "gpt-4o",                                  "baseUrl": "http://localhost:4000" },
+    "huggingface":{ "kind": "huggingface","model": "meta-llama/Llama-3.3-70B-Instruct",       "apiKey": "..." },
+    "alibaba":    { "kind": "alibaba",    "model": "qwen-max",                                "apiKey": "..." },
+    "venice":     { "kind": "venice",     "model": "dolphin-2.9.2-qwen2-72b",                 "apiKey": "..." },
+    "kilo":       { "kind": "kilo",       "model": "kilo/sonnet",                             "apiKey": "..." }
   },
   "agent": {
     "name": "My Agent",
@@ -150,5 +162,134 @@ Ollama runs locally and doesn't need an API key, just a `baseUrl` pointing to th
 ```json
 {
   "ollama": { "kind": "ollama", "model": "llama3.2", "baseUrl": "http://localhost:11434" }
+}
+```
+
+## Memory & Embeddings
+
+The `embeddings` section configures the embedding provider used for vector memory:
+
+```json
+{
+  "embeddings": {
+    "provider": "openai",
+    "model": "text-embedding-3-small",
+    "apiKey": "sk-..."
+  }
+}
+```
+
+Supported providers: `openai`, `ollama` (local), `stub` (basic, no external dependency).
+
+The `memory` section configures the vector store backend:
+
+```json
+{
+  "memory": {
+    "vectorStore": {
+      "kind": "sqlite",
+      "collection": "cortex"
+    }
+  }
+}
+```
+
+Supported backends:
+
+| Kind | Type | Configuration |
+|------|------|--------------|
+| `sqlite` | Built-in | No additional config needed |
+| `qdrant` | Self-hosted or cloud | `url` (e.g. `http://localhost:6333`), optional `apiKey`, `collection` |
+| `chromadb` | Open-source | `url` (e.g. `http://localhost:8000`), optional `apiKey`, `collection` |
+| `pinecone` | Managed cloud | `url` (index host), `apiKey`, `collection`, optional `namespace` |
+
+## Chrome Bridge (Browser Automation)
+
+Chrome Bridge integrates browser automation via the MCP protocol:
+
+```json
+{
+  "chromeBridge": {
+    "enabled": true,
+    "nodePath": "node",
+    "serverPath": "/path/to/chrome-bridge-server.js",
+    "port": 9222,
+    "autoStart": true,
+    "autoRegisterTools": true,
+    "toolPrefix": "chrome"
+  }
+}
+```
+
+## Voice / Speech
+
+Configure speech-to-text (STT) and text-to-speech (TTS):
+
+```json
+{
+  "voice": {
+    "enabled": true,
+    "sttProvider": "openai",
+    "ttsProvider": "openai",
+    "sttModel": "whisper-1",
+    "ttsModel": "tts-1",
+    "defaultVoice": "alloy",
+    "autoTTS": false,
+    "language": "en"
+  }
+}
+```
+
+TTS providers: `openai` (OpenAI TTS), `elevenlabs` (requires `elevenLabsApiKey`).
+
+## Server Configuration
+
+```json
+{
+  "server": {
+    "corsOrigin": "same-origin",
+    "maxBodyBytes": 10485760,
+    "https": {
+      "enabled": true,
+      "certFile": "/path/to/cert.pem",
+      "keyFile": "/path/to/key.pem"
+    }
+  }
+}
+```
+
+## Channel Integrations
+
+Channels are configured under `plugins.channels`:
+
+```json
+{
+  "plugins": {
+    "channels": {
+      "enabled": ["web", "discord", "slack"],
+      "credentials": {
+        "discord": { "token": "..." },
+        "slack": { "botToken": "xoxb-...", "appSecret": "..." }
+      }
+    }
+  }
+}
+```
+
+Supported channels: `web`, `discord`, `slack`, `telegram`, `teams`, `mattermost`, `rocketchat`, `whatsapp`, `google-chat`, `lark`.
+
+## Telemetry & Logging
+
+```json
+{
+  "logging": {
+    "level": "info",
+    "fileEnabled": true,
+    "fileMaxBytes": 10485760,
+    "fileMaxFiles": 5,
+    "otlp": { "endpoint": "http://localhost:4318", "headers": {} },
+    "langfuse": { "publicKey": "...", "secretKey": "..." },
+    "grafana": { "otlpEndpoint": "...", "authToken": "..." }
+  }
 }
 ```

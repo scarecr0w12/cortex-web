@@ -32,6 +32,7 @@ const navItems: NavItem[] = [
       { href: "/admin/discord/moderation", label: "Moderation Logs" },
       { href: "/admin/discord/tickets", label: "Tickets" },
       { href: "/admin/discord/polls", label: "Polls" },
+      { href: "/admin/release-watches", label: "Release Watches" },
     ],
   },
   { href: "/admin/email", label: "Email", icon: Mail },

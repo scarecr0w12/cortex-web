@@ -27,9 +27,11 @@ import { handleLockdown, handleUnlock } from "./commands/lockdown";
 import { handlePollCreate, handlePollEnd } from "./commands/poll";
 import { handleTicketCreate, handleTicketClose, handleTicketClaim, handleTicketAdd, handleTicketRemove } from "./commands/ticket";
 import { handleNickname } from "./commands/nickname";
+import { handleReleaseWatchAdd, handleReleaseWatchRemove, handleReleaseWatchList, handleReleaseWatchCheck, handleReleaseWatchToggle } from "./commands/releasewatch";
 import { checkAutoMod } from "./lib/auto-mod";
 import { isModerator } from "./lib/moderation";
 import { handleWelcome, handleLeave } from "./lib/events";
+import { startReleaseMonitor, stopReleaseMonitor } from "./lib/github-release-monitor";
 import { commandDefinitions } from "./commands/command-definitions";
 
 export const prisma = new PrismaClient();
@@ -74,6 +76,7 @@ client.once(Events.ClientReady, async (c) => {
   console.log(`Bot logged in as ${c.user.tag}`);
   await trackStartTime();
   await updateHeartbeat();
+  startReleaseMonitor(client).catch((err) => console.error("Failed to start release monitor:", err));
 });
 
 async function updateHeartbeat() {
@@ -328,6 +331,13 @@ client.on(Events.InteractionCreate, async (interaction) => {
         add: handleTicketAdd,
         remove: handleTicketRemove,
       },
+      releasewatch: {
+        add: handleReleaseWatchAdd,
+        remove: handleReleaseWatchRemove,
+        list: handleReleaseWatchList,
+        check: handleReleaseWatchCheck,
+        toggle: handleReleaseWatchToggle,
+      },
     };
 
     const handler = cmdHandlers[interaction.commandName];
@@ -393,3 +403,6 @@ async function main() {
 }
 
 main().catch(console.error);
+
+process.on("SIGTERM", () => { stopReleaseMonitor(); process.exit(0); });
+process.on("SIGINT", () => { stopReleaseMonitor(); process.exit(0); });

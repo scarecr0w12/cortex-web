@@ -32,6 +32,8 @@ Write-Host @"
   ╔══════════════════════════════════════╗
   ║       CortexPrism Installer         ║
   ║   Open-Source Agentic Harness       ║
+  ║   24 LLM Providers · 10 Channels    ║
+  ║   Vector Memory · Voice · MCP       ║
   ╚══════════════════════════════════════╝
 
 "@
@@ -74,13 +76,13 @@ if (-not (Get-Command deno -ErrorAction SilentlyContinue)) {
     try {
         iwr https://deno.land/install.ps1 -useb | iex
     } catch {
-        Write-ErrorExit "Deno installation failed. Install manually: https://docs.deno.land/runtime/getting_started/installation"
+        Write-ErrorExit "Deno installation failed. Install manually: https://docs.deno.com/runtime/getting_started/installation"
     }
 
     if (-not (Get-Command deno -ErrorAction SilentlyContinue)) {
         $env:Path = "$BIN_DIR;$env:Path"
         if (-not (Get-Command deno -ErrorAction SilentlyContinue)) {
-            Write-ErrorExit "Deno installation failed. Install manually: https://docs.deno.land/runtime/getting_started/installation"
+            Write-ErrorExit "Deno installation failed. Install manually: https://docs.deno.com/runtime/getting_started/installation"
         }
     }
 }
@@ -132,17 +134,33 @@ Write-Host @"
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   CortexPrism is ready!
+  24 LLM Providers · 10 Channels · Vector Memory · Voice · MCP
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Quick start:
 
-  cortex setup         Configure your LLM provider
-  cortex chat           Start chatting
-  cortex serve          Start web UI at http://localhost:3000
+  cortex setup         Interactive setup wizard
+  cortex chat          Start an interactive chat
+  cortex serve         Web UI + REST API at http://localhost:3000
+
+What you get:
+
+  • 24 LLM providers (Anthropic, OpenAI, Google, Ollama, Bedrock, +18 more)
+  • 10 channel integrations (Discord, Slack, Telegram, Teams, WhatsApp, +5)
+  • Pluggable memory backends (SQLite, Qdrant, ChromaDB, Pinecone)
+  • Chrome Bridge — browser automation via MCP
+  • Voice & speech (STT/TTS via OpenAI, ElevenLabs)
+  • Multi-agent architecture with tool execution
+  • Plugin marketplace, workflow engine, code sandbox
 
 Documentation:
   https://cortexprism.io/getting-started
   https://cortexprism.io/docs/cli
+
+Also available via package managers:
+  winget install CortexPrism.Cortex
+  scoop install cortex
+  choco install cortexprism
 
 Installed at: $CORTEX_DIR
 Run with:     cortex <command>

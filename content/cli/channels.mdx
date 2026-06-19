@@ -5,7 +5,7 @@ description: Communication channels — start and stop Discord integration for a
 
 # `cortex channels`
 
-Manage communication channels that connect Cortex agents to external messaging platforms. Currently supports Discord as a channel provider.
+Manage communication channels that connect Cortex agents to external messaging platforms. Supports 10 channel integrations: Discord, Slack, Telegram, Microsoft Teams, Mattermost, Rocket.Chat, WhatsApp, Google Chat, Lark, and the built-in Web UI.
 
 ## Usage
 
@@ -29,7 +29,7 @@ The channel system uses a plugin-based architecture where each messaging platfor
 |-------------|-------------|
 | `dm` | Direct message with a user |
 | `group` | Group message / multi-user chat |
-| `channel` | Discord server channel |
+| `channel` | Server/text channel |
 | `thread` | Thread within a channel |
 
 ### Message Features
@@ -39,16 +39,32 @@ The channel system uses a plugin-based architecture where each messaging platfor
 - Typing indicator support
 - Reaction handling
 
-## Discord Channel
+## Available Channels
 
-The Discord integration connects via Gateway WebSocket with heartbeat keep-alive. Messages are processed through prefix-based handling.
+| Channel | Setup requirements |
+|---------|--------------------|
+| **Web UI** | Built-in, no configuration needed |
+| **Discord** | Bot token from Discord Developer Portal |
+| **Slack** | Bot token (`xoxb-...`) + signing secret |
+| **Telegram** | Bot token from @BotFather |
+| **Microsoft Teams** | App ID + app secret + tenant ID |
+| **Mattermost** | Personal access token + `MATTERMOST_URL` env var |
+| **Rocket.Chat** | Personal access token + `ROCKETCHAT_URL` env var |
+| **WhatsApp** | WhatsApp Business API token |
+| **Google Chat** | Webhook URL |
+| **Lark** | App ID + app secret + verification token |
+
+All channels can be configured during initial setup via `cortex setup` (multi-select) or added later.
 
 ```bash
-# Start Discord channel
-cortex channels start
+# List configured channels
+cortex channels list
 
-# Stop Discord channel
-cortex channels stop
+# Start a channel
+cortex channels start <id>
+
+# Stop a channel
+cortex channels stop <id>
 ```
 
 ## Channel Events
@@ -63,9 +79,15 @@ Channels emit events that flow through the system:
 ## Examples
 
 ```bash
+# List configured channels
+cortex channels list
+
 # Start the Discord channel integration
-cortex channels start
+cortex channels start discord
+
+# Start Slack
+cortex channels start slack
 
 # Stop all active channels
-cortex channels stop
+cortex channels stop all
 ```
