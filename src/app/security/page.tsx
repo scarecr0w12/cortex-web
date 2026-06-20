@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   keywords: [
     "AI agent security",
     "enterprise AI security",
-    "secure AI agent runtime",
+    "secure AI agent operating system",
     "AES-256 credential vault",
     "AI tool validation",
     "sandboxed AI execution",

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CortexPrism Changelog — Release History & Commits",
     description:
-      "Recent commits from cortex engine and cortex-web repositories. Track changes, new features, bug fixes, and improvements in the open-source agentic harness.",
+      "Recent commits from cortex engine and cortex-web repositories. Track changes, new features, bug fixes, and improvements in the open-source AI Agent Operating System.",
     url: `${SITE_URL}/changelog`,
   },
   twitter: {

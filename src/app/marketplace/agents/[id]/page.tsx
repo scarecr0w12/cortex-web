@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? agent.description.length > 160
       ? agent.description.slice(0, 157) + "..."
       : agent.description
-    : `Use ${agent.name} — a pre-configured agent profile for the CortexPrism agentic harness`;
+    : `Use ${agent.name} — a pre-configured agent profile for the CortexPrism AI Agent Operating System`;
   return {
     title: `${agent.name} — CortexPrism Agent`,
     description: desc,

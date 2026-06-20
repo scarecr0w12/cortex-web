@@ -51,12 +51,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: "CortexPrism Documentation — Guides, CLI & Architecture",
       description:
-        "Comprehensive documentation for CortexPrism: CLI reference, architecture deep-dives, knowledge base, design docs, and developer guides for building agentic AI applications.",
+        "Comprehensive documentation for CortexPrism: CLI reference, architecture deep-dives, knowledge base, design docs, and developer guides for building AI agent applications.",
       alternates: { canonical: `${SITE_URL}/docs` },
       openGraph: {
         title: "CortexPrism Documentation — Guides, CLI & Architecture",
         description:
-          "CLI reference, architecture deep-dives, knowledge base, design docs, and developer guides. Everything you need to build with the CortexPrism agentic harness.",
+          "CLI reference, architecture deep-dives, knowledge base, design docs, and developer guides. Everything you need to build with the CortexPrism AI Agent Operating System.",
         url: `${SITE_URL}/docs`,
       },
       twitter: {
@@ -135,7 +135,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
       twitter: {
         title: `${h1} — ${sectionLabel}`,
-        description: `CortexPrism ${sectionLabel.toLowerCase()}: ${h1}. Part of the open-source agentic harness documentation.`,
+        description: `CortexPrism ${sectionLabel.toLowerCase()}: ${h1}. Part of the open-source AI Agent Operating System documentation.`,
       },
     };
   } catch {

@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? plugin.description.length > 160
       ? plugin.description.slice(0, 157) + "..."
       : plugin.description
-    : `Install ${plugin.name} v${plugin.version} — a ${plugin.kind.toUpperCase()} plugin for the CortexPrism agentic harness`;
+    : `Install ${plugin.name} v${plugin.version} — a ${plugin.kind.toUpperCase()} plugin for the CortexPrism AI Agent Operating System`;
   return {
     title: `${plugin.name} — CortexPrism Plugin`,
     description: desc,

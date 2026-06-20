@@ -4,20 +4,20 @@ import { Bug, BookOpen, Puzzle, MessageCircle, ExternalLink } from "lucide-react
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Contribute to CortexPrism — Open Source AI Agent Framework",
+  title: "Contribute to CortexPrism — Open Source AI Agent Operating System",
   description:
     "Contribute to the open-source CortexPrism project. Report issues, submit pull requests, develop plugins, or join the community. MIT licensed and community-driven.",
   alternates: { canonical: `${SITE_URL}/contribute` },
   openGraph: {
-    title: "Contribute to CortexPrism — Open Source AI Agent Framework",
+    title: "Contribute to CortexPrism — Open Source AI Agent Operating System",
     description:
-      "Help build the future of agentic AI. Report bugs, submit PRs, develop plugins for the marketplace, or join the Discord community.",
+      "Help build the future of AI agent technology. Report bugs, submit PRs, develop plugins for the marketplace, or join the Discord community.",
     url: `${SITE_URL}/contribute`,
   },
   twitter: {
-    title: "Contribute to CortexPrism — Open Source AI Agent Framework",
+    title: "Contribute to CortexPrism — Open Source AI Agent Operating System",
     description:
-      "Help build the future of agentic AI. Report bugs, submit PRs, develop plugins, or join the community.",
+      "Help build the future of AI agent technology. Report bugs, submit PRs, develop plugins, or join the community.",
   },
 };
 
@@ -58,7 +58,7 @@ export default function ContributePage() {
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">Contribute</h1>
         <p className="mt-4 text-lg text-[#9090a8]">
-          Help us build the future of agentic AI. Contributions of all kinds are welcome.
+          Help us build the future of AI agent technology. Contributions of all kinds are welcome.
         </p>
       </div>
 

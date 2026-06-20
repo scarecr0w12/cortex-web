@@ -14,11 +14,11 @@ import {
 
 export const metadata: Metadata = {
   title: {
-    default: "CortexPrism — Open-Source AI Agent Runtime",
+    default: "CortexPrism — Open-Source AI Agent Operating System",
     template: "%s",
   },
   description:
-    "CortexPrism is an open-source AI agent runtime with 24 LLM providers, 5-tier memory, MCP plugin marketplace, sandboxed code execution, and enterprise-grade security. Self-host your autonomous agents — MIT licensed.",
+    "CortexPrism is an open-source AI Agent Operating System with 24 LLM providers, 5-tier memory, MCP plugin marketplace, sandboxed code execution, and enterprise-grade security. Self-host your autonomous agents — MIT licensed.",
   keywords: SITE_KEYWORDS,
   authors: [{ name: "CortexPrism", url: SITE_URL }],
   creator: "CortexPrism",
@@ -31,9 +31,9 @@ export const metadata: Metadata = {
   },
   ...generateMetaBase(),
   openGraph: {
-    title: "CortexPrism — Open-Source AI Agent Runtime",
+    title: "CortexPrism — Open-Source AI Agent Operating System",
     description:
-      "Open-source AI agent runtime: 24 LLM providers, 5-tier memory, MCP plugins, sandboxed code execution, and parallax security. Self-host autonomous agents. MIT licensed.",
+      "Open-source AI Agent Operating System: 24 LLM providers, 5-tier memory, MCP plugins, sandboxed code execution, and parallax security. Self-host autonomous agents. MIT licensed.",
     type: "website",
     siteName: "CortexPrism",
     locale: "en_US",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: "CortexPrism — Open-Source AI Agent Runtime & Plugin Marketplace",
+        alt: "CortexPrism — Open-Source AI Agent Operating System & Plugin Marketplace",
       },
     ],
   } as Metadata["openGraph"],
@@ -51,9 +51,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@CortexPrism",
     creator: "@CortexPrism",
-    title: "CortexPrism — Open-Source AI Agent Runtime",
+    title: "CortexPrism — Open-Source AI Agent Operating System",
     description:
-      "Open-source AI agent runtime: 24 LLM providers, 5-tier memory, MCP plugins, sandboxed code execution, and parallax security. MIT licensed.",
+      "Open-source AI Agent Operating System: 24 LLM providers, 5-tier memory, MCP plugins, sandboxed code execution, and parallax security. MIT licensed.",
     images: [`${SITE_URL}/og-image.png`],
   } as Metadata["twitter"],
   alternates: {

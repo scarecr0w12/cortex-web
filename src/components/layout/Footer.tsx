@@ -49,7 +49,7 @@ export function Footer() {
               <span className="font-bold text-lg tracking-tight text-[#e2e2ea]">CortexPrism</span>
             </Link>
             <p className="text-sm text-[#55556a] leading-relaxed max-w-xs">
-              Open-source AI agent harness with persistent memory, 60+ tools, a full web UI, and layered Parallax security. Self-hosted, powered by Deno. MIT licensed.
+              Open-source AI Agent Operating System with persistent memory, 60+ tools, a full web UI, and layered Parallax security. Self-hosted, powered by Deno. MIT licensed.
             </p>
             {/* Social row */}
             <div className="flex items-center gap-3 mt-5">

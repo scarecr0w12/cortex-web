@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const extractedTitle = extractH1FromMdx(content) || slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   const rawTitle = (frontmatter.title as string) || extractedTitle || "Getting Started";
   const title = rawTitle.includes("CortexPrism") ? rawTitle : `${rawTitle} — CortexPrism`;
-  const desc = (frontmatter.description as string) || `Step-by-step guide for ${extractedTitle.toLowerCase()}. Learn how to get the most out of the CortexPrism agentic harness.`;
+  const desc = (frontmatter.description as string) || `Step-by-step guide for ${extractedTitle.toLowerCase()}. Learn how to get the most out of the CortexPrism AI Agent Operating System.`;
   const url = `${SITE_URL}/getting-started/${slug === "index" ? "" : slug}`;
   return {
     title,

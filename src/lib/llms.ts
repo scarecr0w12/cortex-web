@@ -32,9 +32,9 @@ export interface DocEntry {
 export function buildLlmsTxt(): string {
   const lines: string[] = [];
 
-  lines.push(`# ${SITE_NAME} — Open-Source AI Agent Runtime`);
+  lines.push(`# ${SITE_NAME} — Open-Source AI Agent Operating System`);
   lines.push("");
-  lines.push("> CortexPrism is an open-source AI agent runtime with 24 LLM providers, 5-tier memory system, MCP plugin marketplace, sandboxed code execution, and parallax enterprise-grade security. Self-host autonomous AI agents — MIT licensed.");
+  lines.push("> CortexPrism is an open-source AI Agent Operating System with 24 LLM providers, 5-tier memory system, MCP plugin marketplace, sandboxed code execution, and parallax enterprise-grade security. Self-host autonomous AI agents — MIT licensed.");
   lines.push("");
 
   lines.push("## Get Started");

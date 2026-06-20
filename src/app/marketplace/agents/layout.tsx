@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "CortexPrism Agents — Pre-Configured AI Agent Profiles",
   description:
-    "Browse and discover pre-configured agent profiles for the CortexPrism agentic harness. Filter by category and provider to find specialized AI agents for coding, analysis, and more.",
+    "Browse and discover pre-configured agent profiles for the CortexPrism AI Agent Operating System. Filter by category and provider to find specialized AI agents for coding, analysis, and more.",
   alternates: { canonical: `${SITE_URL}/marketplace/agents` },
   openGraph: {
     title: "CortexPrism Agents — Pre-Configured AI Agent Profiles",

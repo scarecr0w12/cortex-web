@@ -1,6 +1,6 @@
 # CortexPrism
 
-**Open-source agentic harness — CLI, API, web UI, and marketplace.**
+**Open-source AI Agent Operating System — CLI, API, web UI, and marketplace.**
 
 CortexPrism is a runtime for building, deploying, and managing AI agents. It provides a unified interface to 24 LLM providers, a 5-tier memory system with hybrid retrieval, sandboxed code execution, defense-in-depth security, and a plugin marketplace — all running locally on your machine.
 

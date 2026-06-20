@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "CortexPrism Plugins — ESM, MCP & WASM Extensions",
   description:
-    "Browse and search the CortexPrism plugin marketplace. Discover ESM modules, MCP servers, and WASM plugins to extend your agentic harness. Filter by category and plugin type.",
+    "Browse and search the CortexPrism plugin marketplace. Discover ESM modules, MCP servers, and WASM plugins to extend your AI Agent Operating System. Filter by category and plugin type.",
   alternates: { canonical: `${SITE_URL}/marketplace/plugins` },
   openGraph: {
     title: "CortexPrism Plugins — ESM, MCP & WASM Extensions",

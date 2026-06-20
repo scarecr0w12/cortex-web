@@ -4,14 +4,14 @@ import { ArrowRight, Shield, Zap, Globe, Github, Heart, Code2 } from "lucide-rea
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "About CortexPrism — Open-Source AI Agent Harness",
+  title: "About CortexPrism — Open-Source AI Agent Operating System",
   description:
-    "CortexPrism is an open-source, self-hosted AI agent harness built with TypeScript and Deno 2.x. Features 24 LLM providers, 5-tier memory, 60+ built-in tools, self-learning skills, code intelligence, voice pipeline, computer use, Parallax + LLM supervisor security, and an extensible plugin marketplace. MIT licensed, privacy-first, no telemetry.",
+    "CortexPrism is an open-source, self-hosted AI Agent Operating System built with TypeScript and Deno 2.x. Features 24 LLM providers, 5-tier memory, 60+ built-in tools, self-learning skills, code intelligence, voice pipeline, computer use, Parallax + LLM supervisor security, and an extensible plugin marketplace. MIT licensed, privacy-first, no telemetry.",
   keywords: [
     "about CortexPrism",
-    "open source AI agent runtime",
+    "open source AI agent operating system",
     "TypeScript AI framework",
-    "Deno AI runtime",
+    "Deno AI operating system",
     "MIT licensed AI tools",
     "privacy-first AI agent",
     "self-hosted AI platform",
@@ -19,15 +19,15 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${SITE_URL}/about` },
   openGraph: {
-    title: "About CortexPrism — Open-Source AI Agent Harness",
+    title: "About CortexPrism — Open-Source AI Agent Operating System",
     description:
-      "Open-source, self-hosted AI agent harness in TypeScript/Deno 2.x. 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, Parallax + LLM supervisor security. MIT licensed.",
+      "Open-source, self-hosted AI Agent Operating System in TypeScript/Deno 2.x. 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, Parallax + LLM supervisor security. MIT licensed.",
     url: `${SITE_URL}/about`,
   },
   twitter: {
-    title: "About CortexPrism — Open-Source AI Agent Harness",
+    title: "About CortexPrism — Open-Source AI Agent Operating System",
     description:
-      "Open-source, self-hosted AI agent harness in TypeScript/Deno 2.x. 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use. MIT licensed.",
+      "Open-source, self-hosted AI Agent Operating System in TypeScript/Deno 2.x. 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use. MIT licensed.",
   },
 };
 
@@ -39,7 +39,7 @@ export default function AboutPage() {
           About <span className="gradient-text">CortexPrism</span>
         </h1>
         <p className="mt-4 text-lg text-[#9090a8] max-w-4xl mx-auto">
-          The open-source AI agent harness — self-hosted, privacy-first, and powered by Deno 2.x.
+          The open-source AI Agent Operating System — self-hosted, privacy-first, and powered by Deno 2.x.
         </p>
       </div>
 
@@ -47,7 +47,7 @@ export default function AboutPage() {
         <h2 className="text-2xl font-bold text-[#e2e2ea] mb-4">What is CortexPrism?</h2>
         <div className="space-y-4 text-[#9090a8] leading-relaxed">
           <p>
-            CortexPrism is a single-process AI agent harness written in TypeScript and running on Deno 2.x. It exposes a CLI, a REST API + WebSocket server, and a full-featured web UI. All state is persisted in SQLite databases using WAL mode — no external database required.
+            CortexPrism is a single-process AI Agent Operating System written in TypeScript and running on Deno 2.x. It exposes a CLI, a REST API + WebSocket server, and a full-featured web UI. All state is persisted in SQLite databases using WAL mode — no external database required.
           </p>
           <p>
             At its core, CortexPrism is an agent loop that orchestrates LLM calls, tool execution, memory operations, and reflection. It supports 24 LLM providers through a unified interface, with intelligent model routing via cascade and threshold strategies, plus a self-learning Model Quartermaster that predicts the optimal model for each task.

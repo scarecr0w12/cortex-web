@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CortexPrism API Documentation — OpenAPI Specification",
     description:
-      "Browse the full OpenAPI specification for the CortexPrism agentic harness REST API. Agent management, sessions, memory, plugins, and more.",
+      "Browse the full OpenAPI specification for the CortexPrism AI Agent Operating System REST API. Agent management, sessions, memory, plugins, and more.",
     url: `${SITE_URL}/openapi`,
   },
   robots: {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   twitter: {
     title: "CortexPrism API Documentation — OpenAPI Specification",
     description:
-      "Browse the full OpenAPI specification for the CortexPrism agentic harness REST API. Agent management, sessions, memory, plugins, and more.",
+      "Browse the full OpenAPI specification for the CortexPrism AI Agent Operating System REST API. Agent management, sessions, memory, plugins, and more.",
   },
 };
 

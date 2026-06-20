@@ -2,6 +2,54 @@
 
 All notable changes to the CortexPrism website will be documented in this file.
 
+## [0.10.0] — 2026-06-20
+
+### Added
+- **Release watch system** — Discord bot commands and admin interface for tracking GitHub releases
+  - Slash commands: `/releasewatch add|remove|list|check|toggle` — manage per-channel release monitors
+  - Background GitHub release monitor (`github-release-monitor.ts`) that polls repo releases and posts updates to configured Discord channels
+  - Admin page at `/admin/release-watches` with table listing, add/delete/toggle controls
+  - `GET/POST/DELETE /api/admin/release-watches` — REST API for release watch CRUD with auth checks
+  - `ReleaseWatch` database model (repo URL, channel ID, custom message, enabled flag)
+- **GitHub org-based scanning** for plugin discovery
+  - `scanOrg`/`runOrgScan` in github-topic-scanner.ts — lists all repos in a GitHub org, checks for cortex manifests, creates DiscoveredRepo records
+  - `POST /api/admin/github-topic-scanner/org` — fire-and-forget org scan API route
+  - Org scan UI on admin GitHub scanner page with org name input and async completion polling
+- **5 new CLI documentation pages** synced from Cortex v0.45.3 wiki
+  - `a2a.mdx`, `agentlint.mdx`, `mcp-gateway.mdx`, `memori.mdx`, `chrome-bridge.mdx`
+  - All 5 commands added to sidebar navigation and CLI reference index
+- **Install script improvements** — `install.sh` and `install.ps1` updated for better reliability
+
+### Changed
+- **Version sync with Cortex v0.45.3** — all site references updated from 0.44.0 → 0.45.3
+- **Model name correction**: `claude-sonnet-4-20250514` → `claude-sonnet-4-5` across 10 documentation files
+- **Pipeline architecture corrected**: 12-stage → 10-stage pipeline, hooks table completely rewritten to match wiki
+- **Database migration count**: 23+ → 34+
+- **Code intelligence stats**: languages 14+ → 40+, node labels 14 → 12, resolver 6 → 7 strategies
+- **PBKDF2 iterations**: 100,000 → 200,000 (source-verified)
+- **MQM confidence thresholds**: 90/60% → 85/65%
+- **Memory tier reference fixed**: T5 → T3 in reflect.mdx
+- **Update channel name corrected**: `pre` → `pre-release` in update.mdx
+- **Memory `--type` options**: added `reflection` and `graph` to docs
+- **Documentation counts** in llms.ts: 41→47 CLI commands, 18→19 deep-dives, 10→11 guides, 15+→20+ features
+- **Discord invite URL**: `y7DkaEbPQC` → `wYxbmQeWY3`
+- **Site-wide terminology update** — "AI Agent Harness" / "agentic harness" → "AI Agent Operating System" across all pages, metadata, OG images, SEO descriptions, navbar, footer, FAQ, README, and AGENTS.md (32 files)
+  - Landing page hero, about page, features page, install page, contribute page, use-cases page, security page
+  - All marketplace pages (agents, plugins, detail, layout)
+  - Documentation metadata (docs, getting-started, openapi, changelog)
+  - FeatureGrid and Footer components
+  - FAQ: "What is an 'agentic harness'?" → "What is an AI Agent Operating System?"
+- **Enhanced page copy** across landing, features, about, security, use-cases, install, and getting-started pages
+
+### Fixed
+- **Duplicate plugin discovery on GitHub topic rescans** — already-imported repos no longer appear as "pending" in DiscoveredRepo
+  - `buildImportedRepoUrls()` batches 2 DB queries to check repository URLs and import ID patterns before scanning
+  - Already-imported repos automatically marked as "imported" instead of "pending"
+- **GitHub search pagination** — removed unreliable `total_count` termination check; now paginates until a page returns fewer than `perPage` items
+- **Manifest check optimization** — repos with cortex topic tags skip redundant `checkManifest` GitHub API calls
+- **Duplicate `migrate` entry** removed from CLI reference index
+- **Orphaned Reflection memory type** — added to `--type` options documentation
+
 ## [0.9.0] — 2026-06-18
 
 ### Added

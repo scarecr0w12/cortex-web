@@ -26,7 +26,7 @@ export default async function Image({ params }: { params: { id: string } }) {
   const providerBadge = agent.provider?.toUpperCase() || "AGENT";
   const description = agent.description
     ? (agent.description.length > 130 ? agent.description.slice(0, 127) + "…" : agent.description)
-    : `A pre-configured agent profile for the CortexPrism agentic harness`;
+    : `A pre-configured agent profile for the CortexPrism AI Agent Operating System`;
   const version = `v${agent.version}`;
   const authorInfo = agent.author ? `by ${agent.author}` : "";
 

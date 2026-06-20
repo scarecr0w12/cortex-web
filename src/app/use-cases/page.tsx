@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     "enterprise AI agent deployment",
     "CI/CD AI automation",
     "knowledge management AI",
-    "agentic AI workflow",
+    "AI agent operating system workflow",
     "autonomous agent examples",
     "voice AI agent",
     "GUI automation AI",

@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "CortexPrism Marketplace — AI Plugins, MCP Servers & Agent Configs",
   description:
-    "Browse the CortexPrism marketplace for AI plugins (ESM, MCP servers, WASM) and pre-configured agent profiles. Discover, install, and publish open-source extensions for the AI agent runtime.",
+    "Browse the CortexPrism marketplace for AI plugins (ESM, MCP servers, WASM) and pre-configured agent profiles. Discover, install, and publish open-source extensions for the AI Agent Operating System.",
   keywords: [
     "AI plugin marketplace",
     "MCP server plugins",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CortexPrism Marketplace — AI Plugins, MCP Servers & Agent Configs",
     description:
-      "Discover AI plugins (ESM modules, MCP servers, WASM runtimes) and pre-configured agent profiles. Community-driven marketplace for the open-source AI agent runtime.",
+      "Discover AI plugins (ESM modules, MCP servers, WASM runtimes) and pre-configured agent profiles. Community-driven marketplace for the open-source AI Agent Operating System.",
     url: `${SITE_URL}/marketplace`,
   },
   twitter: {

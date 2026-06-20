@@ -25,7 +25,7 @@ import {
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "CortexPrism Features — AI Agent Harness Capabilities",
+  title: "CortexPrism Features — AI Agent Operating System Capabilities",
   description:
     "Explore CortexPrism's full feature set: chat with 24 LLM providers, 5-tier memory, 60+ built-in tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugin system, Parallax security, sandboxed code execution, multi-agent orchestration, and workflow engine. All open source.",
   keywords: [
@@ -47,13 +47,13 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${SITE_URL}/features` },
   openGraph: {
-    title: "CortexPrism Features — AI Agent Harness Capabilities",
+    title: "CortexPrism Features — AI Agent Operating System Capabilities",
     description:
       "24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugins, Parallax security, sandboxed code execution, multi-agent orchestration. 100% open source.",
     url: `${SITE_URL}/features`,
   },
   twitter: {
-    title: "CortexPrism Features — AI Agent Harness Capabilities",
+    title: "CortexPrism Features — AI Agent Operating System Capabilities",
     description:
       "24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, A2A protocol, sandboxed execution, multi-agent orchestration.",
   },
@@ -363,7 +363,7 @@ export default function FeaturesPage() {
       <div className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">Features</h1>
         <p className="mt-4 text-lg text-[#9090a8] max-w-4xl mx-auto">
-          Everything you need to build, deploy, and manage agentic AI applications.
+          Everything you need to build, deploy, and manage AI agent applications.
         </p>
       </div>
 

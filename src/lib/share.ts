@@ -26,7 +26,7 @@ export function getShareUrls(url: string, title: string, text?: string): ShareUr
 
 export function getPluginShareText(name: string, description: string): string {
   const desc = description.length > 100 ? description.slice(0, 97) + "..." : description;
-  return `Check out "${name}" — a plugin for CortexPrism agentic harness: ${desc}`;
+  return `Check out "${name}" — a plugin for CortexPrism AI Agent Operating System: ${desc}`;
 }
 
 export function getAgentShareText(name: string, description: string): string {

@@ -158,7 +158,7 @@ export function FeatureGrid() {
           </p>
           <h2 className="text-3xl md:text-4xl font-bold text-[#e2e2ea]">
             Everything you need to build{" "}
-            <span className="gradient-text">agentic applications</span>
+            <span className="gradient-text">AI agent applications</span>
           </h2>
           <p className="mt-4 text-lg text-[#9090a8] max-w-2xl mx-auto">
             A comprehensive toolset for building, deploying, and managing AI agents at any scale.

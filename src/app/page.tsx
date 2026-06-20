@@ -11,34 +11,34 @@ import fs from "fs";
 import path from "path";
 
 export const metadata: Metadata = {
-  title: "CortexPrism — Open-Source AI Agent Harness with Memory, Tools & Web UI",
+  title: "CortexPrism — Open-Source AI Agent Operating System with Memory, Tools & Web UI",
   description:
-    "The open-source, self-hosted AI agent harness. 24 LLM providers, 5-tier memory, 60+ built-in tools, sandboxed code execution, full web UI, and layered Parallax security. Powered by Deno. MIT licensed.",
+    "The open-source, self-hosted AI Agent Operating System. 24 LLM providers, 5-tier memory, 60+ built-in tools, sandboxed code execution, full web UI, and layered Parallax security. Powered by Deno. MIT licensed.",
   keywords: [
     "open source AI agent",
-    "AI agent harness",
+    "AI agent operating system",
     "LLM orchestration",
     "self-hosted AI",
     "autonomous agents",
     "agent orchestration framework",
     "multi-provider LLM",
-    "agentic AI platform",
+    "AI agent operating system platform",
     "AI memory system",
-    "Deno AI runtime",
+    "Deno AI operating system",
   ],
   alternates: {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "CortexPrism — Open-Source AI Agent Harness with Memory, Tools & Web UI",
+    title: "CortexPrism — Open-Source AI Agent Operating System with Memory, Tools & Web UI",
     description:
-      "Self-hosted AI agent harness: 24 LLM providers, 5-tier memory, 60+ tools, sandboxed code execution, full web UI, and layered Parallax security. Powered by Deno. MIT licensed.",
+      "Self-hosted AI Agent Operating System: 24 LLM providers, 5-tier memory, 60+ tools, sandboxed code execution, full web UI, and layered Parallax security. Powered by Deno. MIT licensed.",
     url: SITE_URL,
   },
   twitter: {
-    title: "CortexPrism — Open-Source AI Agent Harness with Memory, Tools & Web UI",
+    title: "CortexPrism — Open-Source AI Agent Operating System with Memory, Tools & Web UI",
     description:
-      "Self-hosted AI agent harness: 24 LLM providers, 5-tier memory, 60+ tools, sandboxed code execution, and layered Parallax security. Powered by Deno. MIT licensed.",
+      "Self-hosted AI Agent Operating System: 24 LLM providers, 5-tier memory, 60+ tools, sandboxed code execution, and layered Parallax security. Powered by Deno. MIT licensed.",
   },
 };
 

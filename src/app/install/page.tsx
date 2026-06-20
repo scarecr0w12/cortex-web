@@ -4,38 +4,38 @@ import { SITE_URL, generateHowToSchema } from "@/lib/seo";
 import { StructuredData } from "@/components/seo/StructuredData";
 
 export const metadata: Metadata = {
-  title: "Install CortexPrism — Self-Host Your AI Agent Runtime in One Command",
+  title: "Install CortexPrism — Self-Host Your AI Agent Operating System in One Command",
   description:
-    "Install the CortexPrism open-source AI agent runtime on Linux, macOS, or Windows with a single command. Includes Deno setup, database initialization, and Docker support. Free, self-hosted, no cloud dependency.",
+    "Install the CortexPrism open-source AI Agent Operating System on Linux, macOS, or Windows with a single command. Includes Deno setup, database initialization, and Docker support. Free, self-hosted, no cloud dependency.",
   keywords: [
-    "install AI agent runtime",
+    "install AI agent operating system",
     "self-hosted AI setup",
     "open source AI install guide",
     "how to install CortexPrism",
     "self-host LLM agent",
     "AI framework installation",
     "Docker AI agent",
-    "Deno AI runtime setup",
+    "Deno AI operating system setup",
     "local AI agent install",
   ],
   alternates: { canonical: `${SITE_URL}/install` },
   openGraph: {
-    title: "Install CortexPrism — Self-Host Your AI Agent Runtime in One Command",
+    title: "Install CortexPrism — Self-Host Your AI Agent Operating System in One Command",
     description:
-      "One command to install the open-source AI agent runtime on Linux, macOS, or Windows. curl -fsSL https://cortexprism.io/install.sh | bash — fully self-hosted, no cloud required.",
+      "One command to install the open-source AI Agent Operating System on Linux, macOS, or Windows. curl -fsSL https://cortexprism.io/install.sh | bash — fully self-hosted, no cloud required.",
     url: `${SITE_URL}/install`,
   },
   twitter: {
-    title: "Install CortexPrism — Self-Host Your AI Agent Runtime",
+    title: "Install CortexPrism — Self-Host Your AI Agent Operating System",
     description:
       "One command to install CortexPrism on Linux, macOS, or Windows. Fully self-hosted, no cloud required.",
   },
 };
 
 const howToSchema = generateHowToSchema({
-  name: "How to Install CortexPrism AI Agent Runtime",
+  name: "How to Install CortexPrism AI Agent Operating System",
   description:
-    "Install CortexPrism, the open-source AI agent runtime, on Linux, macOS, or Windows with a single command.",
+    "Install CortexPrism, the open-source AI Agent Operating System, on Linux, macOS, or Windows with a single command.",
   url: `${SITE_URL}/install`,
   totalTime: "PT5M",
   steps: [

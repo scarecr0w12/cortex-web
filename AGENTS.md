@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-CortexPrism Web is the official website and marketplace for [CortexPrism](https://cortexprism.io), an open-source agentic harness runtime for building, deploying, and managing AI agents. The site serves as a marketing site, documentation portal (42+ MDX pages), plugin/agent marketplace with REST API, admin panel, and user system.
+CortexPrism Web is the official website and marketplace for [CortexPrism](https://cortexprism.io), an open-source AI Agent Operating System for building, deploying, and managing AI agents. The site serves as a marketing site, documentation portal (42+ MDX pages), plugin/agent marketplace with REST API, admin panel, and user system.
 
 ## Tech Stack
 

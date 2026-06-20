@@ -26,7 +26,7 @@ export default async function Image({ params }: { params: { id: string } }) {
   const initial = name.charAt(0).toUpperCase();
   const description = plugin.description
     ? (plugin.description.length > 130 ? plugin.description.slice(0, 127) + "…" : plugin.description)
-    : `A ${plugin.kind.toUpperCase()} plugin for the CortexPrism agentic harness`;
+    : `A ${plugin.kind.toUpperCase()} plugin for the CortexPrism AI Agent Operating System`;
   const version = `v${plugin.version}`;
   const authorInfo = plugin.author ? `by ${plugin.author}` : "";
 

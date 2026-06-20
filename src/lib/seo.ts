@@ -4,26 +4,26 @@ export const SITE_URL =
 export const SITE_NAME = "CortexPrism";
 
 export const SITE_DESCRIPTION =
-  "The open-source AI agent harness with persistent memory, 60+ built-in tools, a full-featured web UI, and layered security — powered by Deno. Self-host your AI agents with confidence.";
+  "The open-source AI Agent Operating System with persistent memory, 60+ built-in tools, a full-featured web UI, and layered security — powered by Deno. Self-host your AI agents with confidence.";
 
-const SITE_TAGLINE = "Open-Source AI Agent Harness — Powered by Deno";
+const SITE_TAGLINE = "Open-Source AI Agent Operating System — Powered by Deno";
 
 /**
  * Primary and secondary keyword targets for CortexPrism.
  *
  * Primary (high-volume, competitive):
  *   "open source AI agent", "AI agent framework", "LLM orchestration",
- *   "self-hosted AI", "agent runtime", "autonomous AI agents"
+ *   "self-hosted AI", "agent operating system", "autonomous AI agents"
  *
  * Secondary (medium-volume, more specific):
- *   "agentic harness", "multi-agent system", "MCP plugin", "Model Context Protocol",
+ *   "AI agent operating system", "multi-agent system", "MCP plugin", "Model Context Protocol",
  *   "AI memory system", "AI plugin marketplace", "vector memory",
  *   "sandboxed code execution", "LLM agent tools"
  *
  * Long-tail (low-volume, high intent):
- *   "TypeScript AI agent framework", "Deno AI runtime",
+ *   "TypeScript AI agent framework", "Deno AI operating system",
  *   "open source LangChain alternative", "self-hosted LLM platform",
- *   "AI agent workflow automation", "agentic AI platform MIT license"
+ *   "AI agent workflow automation", "AI agent operating system MIT license"
  */
 export const SITE_KEYWORDS = [
   // Primary
@@ -31,11 +31,11 @@ export const SITE_KEYWORDS = [
   "AI agent framework",
   "LLM orchestration",
   "self-hosted AI",
-  "agent runtime",
+  "agent operating system",
   "autonomous AI agents",
   // Secondary
-  "agentic harness",
-  "agentic AI platform",
+  "AI agent operating system",
+  "AI agent operating system platform",
   "multi-agent system",
   "MCP plugin",
   "Model Context Protocol",
@@ -49,11 +49,12 @@ export const SITE_KEYWORDS = [
   "AI security",
   // Long-tail
   "TypeScript AI agent",
-  "Deno AI runtime",
+  "Deno AI operating system",
   "open source LangChain alternative",
   "self-hosted LLM platform",
   "AI agent workflow automation",
   "agent orchestration framework",
+  "AI operating system for agents",
 ];
 
 export const OG_IMAGE_URL = `${SITE_URL}/og-image.png`;
@@ -114,7 +115,7 @@ export function generateSoftwareAppSchema() {
     url: SITE_URL,
     license: "https://opensource.org/licenses/MIT",
     keywords:
-      "open source AI agent, AI agent framework, LLM orchestration, self-hosted AI, agent runtime, MCP plugin marketplace",
+      "open source AI agent, AI agent framework, LLM orchestration, self-hosted AI, agent operating system, MCP plugin marketplace",
   };
 }
 
