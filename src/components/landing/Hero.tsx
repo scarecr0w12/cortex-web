@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { ArrowRight, Github, Terminal } from "lucide-react";
 import { InstallCommand } from "./InstallCommand";
 
@@ -47,17 +47,18 @@ export function Hero({ version }: HeroProps) {
 
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.08]">
-            <span className="text-[#e2e2ea]">The Open-Source </span>
-            <span className="gradient-text">AI Agent Operating System</span>
+            <span className="text-[#e2e2ea]">The Open-Source{" "}</span>
+            <span className="gradient-text">AI OS for Autonomous Agents</span>
             <br />
             <span className="text-[#e2e2ea]">with Memory, Tools &amp; Web UI</span>
           </h1>
 
           <p className="mt-6 text-lg md:text-xl text-[#9090a8] max-w-2xl mx-auto leading-relaxed">
-            A self-hosted, open-source AI Agent Operating System that turns any LLM
-            into a capable autonomous agent. Persistent 5-tier memory, 60+
+            An open-source, self-hosted AI Agent Operating System that turns any LLM into a
+            capable autonomous agent. This AI OS features persistent 5-tier memory, 60+
             built-in tools, sandboxed code execution, a full-featured web UI,
-            and enterprise-grade Parallax security — powered by Deno.
+            and enterprise-grade Parallax security — powered by Deno. Deploy your own
+            Agent Operating System in one command.
           </p>
 
           {/* CTAs */}

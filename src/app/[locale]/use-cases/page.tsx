@@ -4,10 +4,12 @@ import { ArrowRight, Bot, Beaker, TestTube, GitBranch, Search, Shield, Mic, Moni
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "CortexPrism Use Cases — Voice Agents, Dev Assistants, Automation & Enterprise AI",
+  title: "AI OS Use Cases — Voice Agents, Dev Assistants, Automation & Enterprise AI",
   description:
-    "See how CortexPrism powers voice-enabled AI assistants, personal AI with persistent memory, AI-assisted development and debugging, research automation, GUI automation, CI/CD workflows, knowledge management, and secure enterprise AI agent deployments.",
+    "See how the CortexPrism AI OS — an open-source Agent Operating System — powers voice-enabled AI assistants, personal AI with persistent memory, AI-assisted development and debugging, research automation, GUI automation, CI/CD workflows, knowledge management, and secure enterprise AI agent deployments.",
   keywords: [
+    "AI OS use cases",
+    "Agent OS use cases",
     "AI agent use cases",
     "AI automation use cases",
     "personal AI assistant with memory",
@@ -24,15 +26,15 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${SITE_URL}/use-cases` },
   openGraph: {
-    title: "CortexPrism Use Cases — Voice Agents, Dev Assistants, Automation & Enterprise AI",
+    title: "AI OS Use Cases — Voice Agents, Dev Assistants, Automation & Enterprise AI",
     description:
-      "From voice-enabled assistants and self-hosted personal AI with persistent memory to GUI automation and enterprise-grade secure agent deployments — CortexPrism adapts to any workflow.",
+      "The open-source AI OS in action: voice-enabled assistants, self-hosted personal AI with persistent memory, GUI automation, and enterprise-grade secure agent deployments — CortexPrism adapts to any workflow.",
     url: `${SITE_URL}/use-cases`,
   },
   twitter: {
-    title: "CortexPrism Use Cases — Voice Agents, Dev Assistants, Automation & Enterprise AI",
+    title: "AI OS Use Cases — Voice Agents, Dev Assistants, Automation & Enterprise AI",
     description:
-      "Voice-enabled assistants, self-hosted personal AI with persistent memory, AI-assisted development, GUI automation, and secure enterprise agent deployments.",
+      "The open-source AI OS in action: voice-enabled assistants, self-hosted personal AI with persistent memory, AI-assisted development, GUI automation, and secure enterprise agent deployments.",
   },
 };
 
@@ -160,9 +162,9 @@ export default function UseCasesPage() {
   return (
     <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 md:py-20">
       <div className="text-center mb-16">
-        <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">Use Cases</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">AI OS Use Cases</h1>
         <p className="mt-4 text-lg text-[#9090a8] max-w-4xl mx-auto">
-          CortexPrism adapts to your workflow. Here are some of the ways it can be used.
+          The open-source Agent Operating System adapts to your workflow. Here are some of the ways it can be used.
         </p>
       </div>
 
@@ -213,7 +215,7 @@ export default function UseCasesPage() {
           href="/getting-started"
           className="inline-flex items-center gap-2 px-6 py-3 text-base font-medium rounded-lg accent-gradient text-white hover:opacity-90 transition-opacity"
         >
-          Get Started with CortexPrism
+          Get Started with the AI OS
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>

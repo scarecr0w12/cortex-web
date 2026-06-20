@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Fuse from "fuse.js";
 import { SearchInput } from "@/components/shared/SearchInput";
 

@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useRouter, Link } from "@/i18n/routing";
 import { Button } from "@/components/shared/Button";
 import { useAuth } from "@/lib/AuthContext";
 

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getContentSlugs } from "@/lib/markdown";
 import { getKbSlugs } from "@/lib/knowledge-base";
 import { STATIC_PATHS, DOCS_SECTIONS } from "@/lib/site-urls";
+import { routing } from "@/i18n/routing";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://cortexprism.io";
@@ -36,59 +37,67 @@ const staticRoutes: StaticRoute[] = STATIC_PATHS.map((path) => {
   return { path, priority: meta.priority, changeFrequency: meta.changeFrequency };
 });
 
+function localeUrl(path: string, locale: string) {
+  if (locale === routing.defaultLocale) {
+    return `${SITE_URL}${path}`;
+  }
+  return `${SITE_URL}/${locale}${path}`;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
-  for (const route of staticRoutes) {
-    entries.push({
-      url: `${SITE_URL}${route.path}`,
-      lastModified: new Date(),
-      changeFrequency: route.changeFrequency,
-      priority: route.priority,
-    });
-  }
-
-  const docsEntries: MetadataRoute.Sitemap = [];
-
-  for (const dir of DOCS_SECTIONS) {
-    const slugs = getContentSlugs(dir);
-    for (const slug of slugs) {
-      const pathSegments = [dir, slug === "index" ? "" : slug]
-        .filter(Boolean)
-        .join("/");
-      docsEntries.push({
-        url: `${SITE_URL}/docs/${pathSegments}`,
+  for (const locale of routing.locales) {
+    for (const route of staticRoutes) {
+      entries.push({
+        url: localeUrl(route.path, locale),
         lastModified: new Date(),
-        changeFrequency: "monthly",
-        priority: slug === "index" ? 0.7 : 0.6,
+        changeFrequency: route.changeFrequency,
+        priority: route.priority,
       });
     }
-  }
 
-  docsEntries.push({
-    url: `${SITE_URL}/docs/knowledge-base`,
-    lastModified: new Date(),
-    changeFrequency: "weekly",
-    priority: 0.7,
-  });
-  const kbSlugs = await getKbSlugs();
-  for (const slug of kbSlugs) {
-    docsEntries.push({
-      url: `${SITE_URL}/docs/knowledge-base/${slug}`,
+    for (const dir of DOCS_SECTIONS) {
+      const slugs = getContentSlugs(dir);
+      for (const slug of slugs) {
+        const pathSegments = [dir, slug === "index" ? "" : slug]
+          .filter(Boolean)
+          .join("/");
+        entries.push({
+          url: localeUrl(`/docs/${pathSegments}`, locale),
+          lastModified: new Date(),
+          changeFrequency: "monthly",
+          priority: slug === "index" ? 0.7 : 0.6,
+        });
+      }
+    }
+
+    entries.push({
+      url: localeUrl("/docs/knowledge-base", locale),
       lastModified: new Date(),
       changeFrequency: "weekly",
-      priority: slug === "faq" ? 0.8 : 0.7,
+      priority: 0.7,
     });
-  }
 
-  const gettingStartedSlugs = getContentSlugs("getting-started");
-  for (const slug of gettingStartedSlugs) {
-    docsEntries.push({
-      url: `${SITE_URL}/getting-started/${slug === "index" ? "" : slug}`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: slug === "index" ? 0.95 : 0.7,
-    });
+    const kbSlugs = await getKbSlugs();
+    for (const slug of kbSlugs) {
+      entries.push({
+        url: localeUrl(`/docs/knowledge-base/${slug}`, locale),
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: slug === "faq" ? 0.8 : 0.7,
+      });
+    }
+
+    const gettingStartedSlugs = getContentSlugs("getting-started");
+    for (const slug of gettingStartedSlugs) {
+      entries.push({
+        url: localeUrl(`/getting-started/${slug === "index" ? "" : slug}`, locale),
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: slug === "index" ? 0.95 : 0.7,
+      });
+    }
   }
 
   const plugins = await prisma.plugin.findMany({
@@ -96,12 +105,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     select: { slug: true, updatedAt: true },
   });
   for (const plugin of plugins) {
-    entries.push({
-      url: `${SITE_URL}/marketplace/plugins/${plugin.slug}`,
-      lastModified: plugin.updatedAt,
-      changeFrequency: "weekly",
-      priority: 0.7,
-    });
+    for (const locale of routing.locales) {
+      entries.push({
+        url: localeUrl(`/marketplace/plugins/${plugin.slug}`, locale),
+        lastModified: plugin.updatedAt,
+        changeFrequency: "weekly",
+        priority: 0.7,
+      });
+    }
   }
 
   const agents = await prisma.agentConfig.findMany({
@@ -109,13 +120,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     select: { slug: true, updatedAt: true },
   });
   for (const agent of agents) {
-    entries.push({
-      url: `${SITE_URL}/marketplace/agents/${agent.slug}`,
-      lastModified: agent.updatedAt,
-      changeFrequency: "weekly",
-      priority: 0.7,
-    });
+    for (const locale of routing.locales) {
+      entries.push({
+        url: localeUrl(`/marketplace/agents/${agent.slug}`, locale),
+        lastModified: agent.updatedAt,
+        changeFrequency: "weekly",
+        priority: 0.7,
+      });
+    }
   }
 
-  return [...entries, ...docsEntries];
+  return entries;
 }

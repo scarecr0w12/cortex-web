@@ -25,10 +25,12 @@ import {
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "CortexPrism Features — AI Agent Operating System Capabilities",
+  title: "CortexPrism Features — AI OS Capabilities | Agent Operating System",
   description:
-    "Explore CortexPrism's full feature set: chat with 24 LLM providers, 5-tier memory, 60+ built-in tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugin system, Parallax security, sandboxed code execution, multi-agent orchestration, and workflow engine. All open source.",
+    "Explore the full AI OS feature set: chat with 24 LLM providers, 5-tier memory, 60+ built-in tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugin system, Parallax security, sandboxed code execution, multi-agent orchestration, and workflow engine. All open source.",
   keywords: [
+    "AI OS features",
+    "Agent OS capabilities",
     "AI agent framework features",
     "LLM orchestration tools",
     "multi-agent system",
@@ -47,15 +49,15 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${SITE_URL}/features` },
   openGraph: {
-    title: "CortexPrism Features — AI Agent Operating System Capabilities",
+    title: "CortexPrism Features — AI OS Capabilities | Agent Operating System",
     description:
-      "24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugins, Parallax security, sandboxed code execution, multi-agent orchestration. 100% open source.",
+      "The open-source AI OS: 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugins, Parallax security, sandboxed code execution, multi-agent orchestration.",
     url: `${SITE_URL}/features`,
   },
   twitter: {
-    title: "CortexPrism Features — AI Agent Operating System Capabilities",
+    title: "CortexPrism Features — AI OS Capabilities | Agent Operating System",
     description:
-      "24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, A2A protocol, sandboxed execution, multi-agent orchestration.",
+      "The open-source AI OS: 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, A2A protocol, sandboxed execution, multi-agent orchestration.",
   },
 };
 
@@ -361,9 +363,9 @@ export default function FeaturesPage() {
   return (
     <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 md:py-20">
       <div className="text-center mb-16">
-        <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">Features</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">AI OS Features</h1>
         <p className="mt-4 text-lg text-[#9090a8] max-w-4xl mx-auto">
-          Everything you need to build, deploy, and manage AI agent applications.
+          Everything you need to build, deploy, and manage AI agent applications — all in one open-source Agent Operating System.
         </p>
       </div>
 

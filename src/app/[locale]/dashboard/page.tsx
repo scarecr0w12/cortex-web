@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useRouter, Link } from "@/i18n/routing";
 import { Badge } from "@/components/shared/Badge";
 import { Plus, Package, Bot, GitBranch } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { Badge } from "@/components/shared/Badge";
 import { DownloadCount } from "@/components/shared/DownloadCount";
 import { StarRating } from "@/components/shared/StarRating";

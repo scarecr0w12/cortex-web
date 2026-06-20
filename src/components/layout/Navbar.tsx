@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { usePathname, Link } from "@/i18n/routing";
 import {
   Menu, X, ChevronDown, LogIn, LogOut,
   LayoutDashboard, User, Github,
@@ -11,28 +11,31 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/AuthContext";
 import { NavLogo } from "@/components/shared/NavLogo";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
-
-const navLinks = [
-  {
-    label: "Docs",
-    children: [
-      { href: "/getting-started",            label: "Getting Started",  desc: "Install and run your first agent" },
-      { href: "/docs/cli",                   label: "CLI Reference",    desc: "All commands and flags" },
-      { href: "/docs/architecture",          label: "Architecture",     desc: "How CortexPrism is built" },
-      { href: "/docs/developer-guide",       label: "Developer Guide",  desc: "Build plugins and extensions" },
-      { href: "/features",                   label: "All Features",     desc: "Full capability breakdown" },
-    ],
-  },
-  { href: "/marketplace", label: "Marketplace" },
-  { href: "/changelog",   label: "Changelog"   },
-];
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 
 export function Navbar() {
+  const t = useTranslations("nav");
+  const tc = useTranslations("common");
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const closeTimerRef = useRef<NodeJS.Timeout | null>(null);
   const { user, loading, logout } = useAuth();
+
+  const navLinks = [
+    {
+      label: t("docs"),
+      children: [
+        { href: "/getting-started",            label: t("gettingStarted"),  desc: t("gettingStartedDesc") },
+        { href: "/docs/cli",                   label: t("cliReference"),    desc: t("cliReferenceDesc") },
+        { href: "/docs/architecture",          label: t("architecture"),    desc: t("architectureDesc") },
+        { href: "/docs/developer-guide",       label: t("developerGuide"),  desc: t("developerGuideDesc") },
+        { href: "/features",                   label: t("allFeatures"),     desc: t("allFeaturesDesc") },
+      ],
+    },
+    { href: "/marketplace", label: t("marketplace") },
+    { href: "/changelog",   label: t("changelog")   },
+  ];
 
   const handleDropdownEnter = useCallback((label: string) => {
     if (closeTimerRef.current) {
@@ -49,12 +52,12 @@ export function Navbar() {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[rgba(255,255,255,0.07)] bg-[#0a0a0f]/85 backdrop-blur-xl" aria-label="Main navigation">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[rgba(255,255,255,0.07)] bg-[#0a0a0f]/85 backdrop-blur-xl" aria-label={tc("ariaMainNav")}>
       <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16">
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link href="/" className="shrink-0" aria-label="CortexPrism home">
+          <Link href="/" className="shrink-0" aria-label={tc("ariaHome")}>
             <NavLogo />
           </Link>
 
@@ -87,28 +90,32 @@ export function Navbar() {
 
                   {openDropdown === link.label && (
                     <div className="absolute top-full left-0 mt-1.5 w-64 glass-card p-1.5 shadow-2xl shadow-black/40">
-                      {link.children.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          className={cn(
-                            "flex flex-col px-3 py-2.5 rounded-lg transition-colors",
-                            pathname === child.href
-                              ? "bg-indigo-500/10"
-                              : "hover:bg-[#18181f]"
-                          )}
-                        >
-                          <span
+                      {link.children.map((child) => {
+                        const childHref = child.href;
+                        const isActive = pathname === childHref || pathname.startsWith(childHref + "/");
+                        return (
+                          <Link
+                            key={child.href}
+                            href={childHref}
                             className={cn(
-                              "text-sm font-medium",
-                              pathname === child.href ? "text-indigo-400" : "text-[#e2e2ea]"
+                              "flex flex-col px-3 py-2.5 rounded-lg transition-colors",
+                              isActive
+                                ? "bg-indigo-500/10"
+                                : "hover:bg-[#18181f]"
                             )}
                           >
-                            {child.label}
-                          </span>
-                          <span className="text-xs text-[#55556a] mt-0.5">{child.desc}</span>
-                        </Link>
-                      ))}
+                            <span
+                              className={cn(
+                                "text-sm font-medium",
+                                isActive ? "text-indigo-400" : "text-[#e2e2ea]"
+                              )}
+                            >
+                              {child.label}
+                            </span>
+                            <span className="text-xs text-[#55556a] mt-0.5">{child.desc}</span>
+                          </Link>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -131,6 +138,7 @@ export function Navbar() {
 
           {/* Desktop right actions */}
           <div className="hidden md:flex items-center gap-2">
+            <LanguageSwitcher />
             {user && <NotificationBell />}
             {/* Discord icon */}
             <a
@@ -176,20 +184,20 @@ export function Navbar() {
                       href="/dashboard"
                       className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg text-[#9090a8] hover:text-[#e2e2ea] hover:bg-[#18181f] transition-colors"
                     >
-                      <LayoutDashboard className="w-4 h-4" /> Dashboard
+                      <LayoutDashboard className="w-4 h-4" /> {t("dashboard")}
                     </Link>
                     <Link
                       href={`/profile/${user.username}`}
                       className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg text-[#9090a8] hover:text-[#e2e2ea] hover:bg-[#18181f] transition-colors"
                     >
-                      <User className="w-4 h-4" /> Profile
+                      <User className="w-4 h-4" /> {t("profile")}
                     </Link>
                     <div className="my-1 border-t border-[rgba(255,255,255,0.07)]" />
                     <button
                       onClick={() => { logout(); setOpenDropdown(null); }}
                       className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg text-[#9090a8] hover:text-red-400 hover:bg-[#18181f] transition-colors"
                     >
-                      <LogOut className="w-4 h-4" /> Sign Out
+                      <LogOut className="w-4 h-4" /> {t("signOut")}
                     </button>
                   </div>
                 )}
@@ -200,7 +208,7 @@ export function Navbar() {
                 className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg accent-gradient text-white hover:opacity-90 transition-opacity"
               >
                 <LogIn className="w-4 h-4" />
-                Sign In
+                {t("signIn")}
               </Link>
             )}
           </div>
@@ -209,7 +217,7 @@ export function Navbar() {
           <button
             className="md:hidden p-2 rounded-lg text-[#9090a8] hover:text-[#e2e2ea] hover:bg-[#111118] transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
+            aria-label={tc("ariaToggleMenu")}
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -222,7 +230,7 @@ export function Navbar() {
           <div className="px-4 py-4 space-y-1">
             {/* Docs section label */}
             <p className="px-3 pt-1 pb-0.5 text-xs font-semibold uppercase tracking-widest text-[#55556a]">
-              Docs
+              {t("docs")}
             </p>
             {navLinks[0].children!.map((child) => (
               <Link
@@ -267,27 +275,27 @@ export function Navbar() {
                   className="block px-3 py-2 text-sm rounded-lg text-[#9090a8] hover:text-[#e2e2ea] hover:bg-[#111118]"
                   onClick={() => setMobileOpen(false)}
                 >
-                  Dashboard
+                  {t("dashboard")}
                 </Link>
                 <Link
                   href="/dashboard/notifications"
                   className="block px-3 py-2 text-sm rounded-lg text-[#9090a8] hover:text-[#e2e2ea] hover:bg-[#111118]"
                   onClick={() => setMobileOpen(false)}
                 >
-                  Notifications
+                  {t("notifications")}
                 </Link>
                 <Link
                   href={`/profile/${user.username}`}
                   className="block px-3 py-2 text-sm rounded-lg text-[#9090a8] hover:text-[#e2e2ea] hover:bg-[#111118]"
                   onClick={() => setMobileOpen(false)}
                 >
-                  My Profile
+                  {t("myProfile")}
                 </Link>
                 <button
                   onClick={() => { logout(); setMobileOpen(false); }}
                   className="block w-full text-left px-3 py-2 text-sm rounded-lg text-[#9090a8] hover:text-red-400 hover:bg-[#111118]"
                 >
-                  Sign Out
+                  {t("signOut")}
                 </button>
               </>
             ) : (
@@ -296,7 +304,7 @@ export function Navbar() {
                 className="block px-3 py-2 text-sm font-medium rounded-lg text-indigo-400 hover:bg-indigo-500/10 transition-colors"
                 onClick={() => setMobileOpen(false)}
               >
-                Sign In →
+                {t("signInArrow")}
               </Link>
             )}
 

@@ -1,44 +1,50 @@
-import Link from "next/link";
+"use client";
+
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import { LogoMark } from "@/components/shared/LogoMark";
 
-const footerLinks = [
-  {
-    title: "Product",
-    links: [
-      { href: "/features",   label: "Features"   },
-      { href: "/use-cases",  label: "Use Cases"  },
-      { href: "/security",   label: "Security"   },
-      { href: "/marketplace",label: "Marketplace"},
-      { href: "/install",    label: "Install"    },
-      { href: "/about",      label: "About"      },
-    ],
-  },
-  {
-    title: "Docs",
-    links: [
-      { href: "/getting-started",        label: "Getting Started" },
-      { href: "/docs/cli",               label: "CLI Reference"   },
-      { href: "/docs/architecture",      label: "Architecture"    },
-      { href: "/docs/knowledge-base",    label: "Knowledge Base"  },
-      { href: "/docs/developer-guide",   label: "Developer Guide" },
-      { href: "/openapi",                label: "API Reference"   },
-    ],
-  },
-  {
-    title: "Community",
-    links: [
-      { href: "/changelog",  label: "Changelog"  },
-      { href: "/contribute", label: "Contribute" },
-      { href: "https://discord.gg/wYxbmQeWY3",          label: "Discord", external: true },
-      { href: "https://github.com/CortexPrism/cortex",  label: "GitHub",  external: true },
-      { href: "/marketplace/publish/plugin", label: "Publish Plugin" },
-    ],
-  },
-];
-
 export function Footer() {
+  const t = useTranslations("footer");
+  const tc = useTranslations("common");
+
+  const footerLinks = [
+    {
+      title: t("product"),
+      links: [
+        { href: "/features",   label: t("features")   },
+        { href: "/use-cases",  label: t("useCases")  },
+        { href: "/security",   label: t("security")   },
+        { href: "/marketplace",label: t("marketplace")},
+        { href: "/install",    label: t("install")    },
+        { href: "/about",      label: t("about")      },
+      ],
+    },
+    {
+      title: t("docs"),
+      links: [
+        { href: "/getting-started",        label: t("gettingStarted") },
+        { href: "/docs/cli",               label: t("cliReference")   },
+        { href: "/docs/architecture",      label: t("architecture")    },
+        { href: "/docs/knowledge-base",    label: t("knowledgeBase")  },
+        { href: "/docs/developer-guide",   label: t("developerGuide") },
+        { href: "/openapi",                label: t("apiReference")   },
+      ],
+    },
+    {
+      title: t("community"),
+      links: [
+        { href: "/changelog",  label: t("changelog")  },
+        { href: "/contribute", label: t("contribute") },
+        { href: "https://discord.gg/wYxbmQeWY3",          label: t("discord"), external: true },
+        { href: "https://github.com/CortexPrism/cortex",  label: t("github"),  external: true },
+        { href: "/marketplace/publish/plugin", label: t("publishPlugin") },
+      ],
+    },
+  ];
+
   return (
-    <footer className="border-t border-[rgba(255,255,255,0.07)]" aria-label="Site footer">
+    <footer className="border-t border-[rgba(255,255,255,0.07)]" aria-label={tc("ariaSiteFooter")}>
       <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-14">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
@@ -49,7 +55,7 @@ export function Footer() {
               <span className="font-bold text-lg tracking-tight text-[#e2e2ea]">CortexPrism</span>
             </Link>
             <p className="text-sm text-[#55556a] leading-relaxed max-w-xs">
-              Open-source AI Agent Operating System with persistent memory, 60+ tools, a full web UI, and layered Parallax security. Self-hosted, powered by Deno. MIT licensed.
+              {tc("siteDescription")}
             </p>
             {/* Social row */}
             <div className="flex items-center gap-3 mt-5">
@@ -87,7 +93,7 @@ export function Footer() {
               <ul className="space-y-2.5">
                 {group.links.map((link) => (
                   <li key={link.href}>
-                    {link.external ? (
+                    {(link as { external?: boolean }).external ? (
                       <a
                         href={link.href}
                         target="_blank"
@@ -114,10 +120,10 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 pt-6 border-t border-[rgba(255,255,255,0.06)] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-[#55556a]">
-            &copy; {new Date().getFullYear()} CortexPrism. MIT License.
+            {tc("copyright", { year: new Date().getFullYear().toString() })}
           </p>
           <p className="text-xs text-[#55556a]">
-            Powered by Deno
+            {tc("poweredBy")}
           </p>
         </div>
       </div>
