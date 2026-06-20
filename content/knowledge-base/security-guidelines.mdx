@@ -40,7 +40,7 @@ cortex vault store "openai-key" --service openai
 The vault uses AES-256-GCM encryption with PBKDF2 key derivation:
 
 - **Encryption**: AES-256-GCM (authenticated encryption)
-- **Key derivation**: PBKDF2 with 100,000 iterations
+- **Key derivation**: PBKDF2 with 200,000 iterations
 - **Key source**: `CORTEX_VAULT_KEY` environment variable
 - **Storage**: Encrypted SQLite database (`vault.db`)
 - **Access logging**: All vault access is logged to Lens

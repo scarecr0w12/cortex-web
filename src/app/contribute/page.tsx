@@ -33,7 +33,7 @@ const sections = [
     icon: MessageCircle,
     title: "Join the Community",
     description: "Chat with developers and users on Discord. Get help, share ideas, discuss features, and stay up to date with the latest development.",
-    link: "https://discord.gg/y7DkaEbPQC",
+    link: "https://discord.gg/wYxbmQeWY3",
     label: "Join Discord",
   },
   {

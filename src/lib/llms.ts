@@ -45,9 +45,11 @@ export function buildLlmsTxt(): string {
   lines.push("");
 
   lines.push("## Documentation");
-  lines.push(`- [CLI Reference](${SITE_URL}/docs/cli): Every CortexPrism command — agent, plugins, sessions, marketplace, and more (41 commands)`);
-  lines.push(`- [Architecture](${SITE_URL}/docs/architecture): Agent loop, channels, daemon, memory system, model router, pipeline, and security (18 deep-dives)`);
-  lines.push(`- [Developer Guide](${SITE_URL}/docs/developer-guide): Build ESM, MCP, and WASM plugins — agent development, best practices, publishing, submission standards (10 guides)`);
+  lines.push(`- [CLI Reference](${SITE_URL}/docs/cli): Every CortexPrism command — agent, plugins, sessions, marketplace, and more (47 commands)`);
+
+  lines.push(`- [Architecture](${SITE_URL}/docs/architecture): Agent loop, channels, daemon, memory system, model router, pipeline, and security (19 deep-dives)`);
+
+  lines.push(`- [Developer Guide](${SITE_URL}/docs/developer-guide): Build ESM, MCP, and WASM plugins — agent development, best practices, publishing, submission standards (11 guides)`);
   lines.push(`- [Knowledge Base](${SITE_URL}/docs/knowledge-base): FAQ, troubleshooting, migration guides, performance tuning, and security guidelines`);
   lines.push(`- [Design Docs](${SITE_URL}/docs/design-docs): Design decisions and RFCs`);
   lines.push("");
@@ -60,7 +62,7 @@ export function buildLlmsTxt(): string {
   lines.push("");
 
   lines.push("## Learn More");
-  lines.push(`- [Features](${SITE_URL}/features): 15+ features — multi-provider LLM, 5-tier memory, sandboxed code execution, parallax security`);
+  lines.push(`- [Features](${SITE_URL}/features): 20+ features — multi-provider LLM, 5-tier memory, sandboxed code execution, parallax security`);
   lines.push(`- [Use Cases](${SITE_URL}/use-cases): Real-world scenarios for CortexPrism agents`);
   lines.push(`- [Security](${SITE_URL}/security): Parallax security architecture — sandboxing, policy engine, and threat model`);
   lines.push(`- [Changelog](${SITE_URL}/changelog): Release history for CortexPrism and CortexPrism Web`);
@@ -72,7 +74,7 @@ export function buildLlmsTxt(): string {
   lines.push(`- [Full Documentation](${SITE_URL}/llms-full.txt): All documentation in a single file for LLM ingestion`);
   lines.push(`- [Per-Page Markdown](${SITE_URL}/api/docs/markdown): Individual doc pages as raw Markdown (e.g., /api/docs/markdown/cli/agent)`);
   lines.push(`- [Public Roadmap](https://github.com/CortexPrism/cortex): GitHub repository with issues and roadmap`);
-  lines.push(`- [Discord Community](https://discord.gg/y7DkaEbPQC): Get help and discuss with the community`);
+  lines.push(`- [Discord Community](https://discord.gg/wYxbmQeWY3): Get help and discuss with the community`);
 
   return lines.join("\n") + "\n";
 }

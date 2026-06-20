@@ -53,7 +53,7 @@ export default function AboutPage() {
             At its core, CortexPrism is an agent loop that orchestrates LLM calls, tool execution, memory operations, and reflection. It supports 24 LLM providers through a unified interface, with intelligent model routing via cascade and threshold strategies, plus a self-learning Model Quartermaster that predicts the optimal model for each task.
           </p>
           <p>
-            The system features a 5-tier memory architecture with hybrid FTS5 keyword + vector embedding retrieval, a self-learning skills system that auto-extracts reusable patterns, a code intelligence engine with tree-sitter WASM parsing across 14+ languages, voice interaction pipeline, GUI automation via virtual displays, browser automation, a defense-in-depth security model (Parallax + LLM supervisor) with encrypted credential vault and DLP guard, sandboxed code execution, a git workspace with agent-powered commits, a DSL-based workflow engine, and distributed remote agent execution via hub nodes — and it all ships as a single binary.
+            The system features a 5-tier memory architecture with hybrid FTS5 keyword + vector embedding retrieval, a self-learning skills system that auto-extracts reusable patterns, a code intelligence engine with tree-sitter WASM parsing across 40+ languages, voice interaction pipeline, GUI automation via virtual displays, browser automation, a defense-in-depth security model (Parallax + LLM supervisor) with encrypted credential vault and DLP guard, sandboxed code execution, a git workspace with agent-powered commits, a DSL-based workflow engine, and distributed remote agent execution via hub nodes — and it all ships as a single binary.
           </p>
         </div>
       </div>

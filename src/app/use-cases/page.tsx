@@ -145,9 +145,9 @@ const useCases = [
     icon: Code2,
     title: "Codebase Intelligence",
     subtitle: "Understand and navigate large codebases",
-    description: "Index your entire codebase with tree-sitter WASM parsing across 14+ languages. Navigate call graphs, trace execution paths, and analyze impact of changes.",
+    description: "Index your entire codebase with tree-sitter WASM parsing across 40+ languages. Navigate call graphs, trace execution paths, and analyze impact of changes.",
     bullets: [
-      "Multi-language parsing: TS, JS, Python, Go, Rust, Java, Kotlin, C, C++, Ruby, PHP, Swift, Lua, Bash",
+      "Multi-language parsing: TS, JS, Python, Go, Rust, Java, Kotlin, C, C++, C#, Ruby, PHP, Swift, Scala, Lua, Bash, SQL, and more",
       "Call graph resolution with cross-file import analysis",
       "Visual dependency graphs via D3.js in the Web UI",
       "Impact analysis and path tracing for change management",

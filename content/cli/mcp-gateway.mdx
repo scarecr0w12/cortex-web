@@ -1,0 +1,35 @@
+# `cortex mcp-gateway`
+
+Enterprise MCP server management with health checks, rate limiting, and audit logging.
+
+## Usage
+
+```bash
+cortex mcp-gateway status               # Show managed servers and health
+cortex mcp-gateway health               # Run health checks on all managed servers
+```
+
+## Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `status` | List all managed MCP servers with transport, tool count, and health status |
+| `health` | Run active health checks on all managed servers and report latency |
+
+## Features
+
+- Token-bucket rate limiter with configurable requests/min and burst size
+- HTTP health checking with tool-count comparison (healthy/degraded/unhealthy)
+- Audit logging with 10K-entry ring buffer
+- Risk assessment for tool calls (critical, high, medium)
+- Server registry with tag-based search and status filtering
+
+## Examples
+
+```bash
+# Show managed server status
+cortex mcp-gateway status
+
+# Run health checks
+cortex mcp-gateway health
+```

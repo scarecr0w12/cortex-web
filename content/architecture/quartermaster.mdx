@@ -41,9 +41,9 @@ The Model Quartermaster (MQM) is an adaptive model-selection engine that observe
 
 | Confidence | Action | Safe Tools | Unsafe Tools |
 |------------|--------|------------|--------------|
-| ≥ 90% | **Automate** | Auto-execute | Suggest |
-| 60–89% | **Suggest** | Suggest | Suggest |
-| < 60% | **Defer** | Defer | Defer |
+| ≥ 85% | **Enforce** | Auto-execute | Suggest |
+| 65–84% | **Suggest** | Suggest | Suggest |
+| < 65% | **Defer** | Defer | Defer |
 
 Safe tools are read-only, non-destructive operations. Unsafe tools (shell exec, file write, network) are never auto-executed.
 

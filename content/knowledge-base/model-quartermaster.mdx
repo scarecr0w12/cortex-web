@@ -15,9 +15,9 @@ Every time your agent needs to decide which model to use, the Quartermaster runs
 
 | Confidence | Action | Behavior |
 |------------|--------|----------|
-| ≥ 90% | **Automate** | Execute the tool automatically (safe tools only) |
-| 60–89% | **Suggest** | Recommend the tool to the agent |
-| < 60% | **Defer** | Let the agent decide entirely |
+| ≥ 85% | **Enforce** | Override model selection (safe operations only) |
+| 65–84% | **Suggest** | Recommend the model to the agent |
+| < 65% | **Defer** | Let the agent decide entirely |
 
 **Safety note**: Unsafe tools (shell execution, file writes, network access) are **never** auto-executed, regardless of confidence. The highest action for unsafe tools is "Suggest."
 
@@ -214,9 +214,9 @@ The asymmetry means the Quartermaster is **pessimistic by design** — it's quic
 
 Weights typically stabilize after **200–500 observations**. During the first 50 observations (learning-only mode), the MQM builds baselines but doesn't predict. Observations 50–200 are the active exploration phase where predictions start but weights fluctuate significantly. After ~200 observations, weights converge and predictions become stable.
 
-### The 90% Confidence Threshold
+### The 85% Confidence Threshold
 
-The 90% threshold for auto-execution is deliberately high. The Quartermaster must be nearly certain before it acts without confirmation:
+The 85% threshold for model override is deliberately high. The Quartermaster must be nearly certain before it enforces a model selection:
 
 ## CLI Quick Reference
 

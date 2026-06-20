@@ -74,7 +74,7 @@ export function generateOrganizationSchema() {
     logo: `${SITE_URL}/favicon.svg`,
     sameAs: [
       "https://github.com/CortexPrism/cortex",
-      "https://discord.gg/y7DkaEbPQC",
+      "https://discord.gg/wYxbmQeWY3",
     ],
     description: SITE_DESCRIPTION,
   };

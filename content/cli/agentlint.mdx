@@ -1,0 +1,36 @@
+# `cortex agentlint`
+
+Automated auditing of agent configurations, plugin manifests, tool definitions, and system prompts with 33+ checks across 4 categories.
+
+## Usage
+
+```bash
+cortex agentlint check                  # Run checks on default agent config
+cortex agentlint config                 # Lint current agent configuration from config file
+```
+
+## Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `check` | Run all checks on the default agent configuration |
+| `config` | Lint the current agent configuration from config file |
+
+## Check Categories
+
+- **Agent config**: Name length, description presence, system prompt validation, tool count, maxTurns range, provider validity, dangerous tool audit
+- **Tool definitions**: Name length, description quality, parameter count and descriptions, capability declarations
+- **Plugin manifests**: Version presence, capability scoping, WASM runtime warnings
+- **System prompts**: Instruction clarity, conflicting directives, token efficiency
+
+Output shows pass/warning/error counts with per-issue suggestions.
+
+## Examples
+
+```bash
+# Run default checks
+cortex agentlint check
+
+# Lint current config
+cortex agentlint config
+```

@@ -22,7 +22,7 @@ After each agent turn, the system performs:
 
 1. **Confidence assessment** — LLM self-evaluates response quality
 2. **Pattern extraction** — Identifies recurring themes and behaviors
-3. **Pattern storage** — Saved to `reflection_memory` table (T5 tier)
+3. **Pattern storage** — Saved to `reflection_memory` table (T3 tier)
 4. **Consolidation** — Batch meta-pattern extraction across stored reflections
 
 Reflection is fire-and-forget — the agent loop does not wait for reflection to complete before returning the response to the user.

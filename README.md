@@ -417,7 +417,7 @@ Contributions of all kinds are welcome — bug reports, feature requests, docume
 
 - **Issues**: [github.com/CortexPrism/cortex/issues](https://github.com/CortexPrism/cortex/issues)
 - **Pull Requests**: [github.com/CortexPrism/cortex/pulls](https://github.com/CortexPrism/cortex/pulls)
-- **Discord**: [Join the community](https://discord.gg/y7DkaEbPQC)
+- **Discord**: [Join the community](https://discord.gg/wYxbmQeWY3)
 - **Plugin Development**: See the [Developer Guide](/docs/developer-guide) and [Submission Standards](/docs/developer-guide/submission-standards)
 
 ---

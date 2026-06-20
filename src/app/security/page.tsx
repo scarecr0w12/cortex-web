@@ -40,10 +40,10 @@ const layers = [
     icon: Lock,
     title: "Encrypted Credential Vault",
     description:
-      "All sensitive credentials are encrypted using AES-256-GCM with PBKDF2 key derivation (100,000 iterations, SHA-256). The passphrase is never stored — only held in the environment variable at runtime.",
+      "All sensitive credentials are encrypted using AES-256-GCM with PBKDF2 key derivation (200,000 iterations, SHA-256). The passphrase is never stored — only held in the environment variable at runtime.",
     details: [
       "AES-256-GCM encryption for all stored secrets",
-      "PBKDF2 key derivation with 100,000 iterations",
+      "PBKDF2 key derivation with 200,000 iterations",
       "12-byte random IV per encryption operation",
       "Passphrase held only in environment variable (CORTEX_VAULT_KEY)",
       "Full access audit log (vault_access_log)",

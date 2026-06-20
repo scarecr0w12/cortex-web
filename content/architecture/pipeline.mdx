@@ -1,11 +1,11 @@
 ---
 title: Pipeline System Architecture
-description: 12-stage hook-based processing pipeline for the agent turn lifecycle
+description: 10-stage hook-based processing pipeline for the agent turn lifecycle
 ---
 
 # Pipeline System
 
-The pipeline system provides a hook-based processing framework that wraps every stage of the agent turn lifecycle. Core and plugin hooks execute at 12 distinct pipeline stages with configurable priority, timeout protection, and rich modification capabilities.
+The pipeline system provides a hook-based processing framework that wraps every stage of the agent turn lifecycle. Core and plugin hooks execute at 10 distinct pipeline stages with configurable priority, timeout protection, and rich modification capabilities.
 
 ## Architecture
 
@@ -13,9 +13,9 @@ The pipeline system provides a hook-based processing framework that wraps every 
 ┌──────────────────────────────────────────────────────────┐
 │                    Pipeline System                         │
 │                                                           │
-│  12 Pipeline Stages (in order):                            │
+│  10 Pipeline Stages (in order):                            │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐               │
-│  │pre-assess│→│post-assess│→│pre-reason │→ ...            │
+│  │pre-assess│→│post-assess│→│pre-reason│→ ...             │
 │  └──────────┘  └──────────┘  └──────────┘               │
 │       │              │              │                      │
 │       ▼              ▼              ▼                      │
@@ -26,18 +26,16 @@ The pipeline system provides a hook-based processing framework that wraps every 
 └──────────────────────────────────────────────────────────┘
 ```
 
-## 12 Pipeline Stages
+## 10 Pipeline Stages
 
 | Stage | When | Purpose |
 |-------|------|---------|
 | `pre-assess` | Before assessment | Pre-filter, context preparation |
 | `post-assess` | After assessment | Validate assessment output |
-| `pre-reason` | Before reasoning | Modify reasoning context |
-| `post-reason` | After reasoning | Validate reasoning output |
+| `pre-reason` | Before reasoning | Modify reasoning context / LLM request |
+| `post-reason` | After reasoning | Validate reasoning / process LLM response |
 | `pre-tool` | Before tool execution | Tool call filtering |
 | `post-tool` | After tool execution | Tool result processing |
-| `pre-llm` | Before LLM call | Modify LLM request |
-| `post-llm` | After LLM call | Process LLM response |
 | `pre-reflect` | Before reflection | Modify reflection context |
 | `post-reflect` | After reflection | Process reflection output |
 | `pre-output` | Before final output | Modify user-facing response |
@@ -67,16 +65,18 @@ interface HookResult {
 
 ## Built-in Core Hooks
 
-| Hook | Stage | Description |
-|------|-------|-------------|
-| **Injection Guard** | pre-reason, pre-tool | Prompt injection and content safety detection |
-| **MQM Routing** | pre-llm, post-llm | Route model selection via Quartermaster |
-| **Summarization** | pre-reason | Auto-compact context when approaching token limits |
-| **Output Truncation** | post-tool, post-output | Truncate tool results and responses |
-| **Loop Detection** | pre-tool | Detect repetitive tool calls and intervene |
-| **Tool Output Sandbox** | post-tool | Validate and sanitize tool outputs |
-| **Audit Log** | post-reason | Log LLM calls and decisions to Lens |
-| **Cost Tracker** | pre-tool, post-tool | Track per-tool and per-turn cost metrics |
+| Hook | Stage | Priority | Description |
+|------|-------|----------|-------------|
+| `@cortex/injection-guard` | pre-reason | 5 | Prompt injection detection |
+| `@cortex/model-quartermaster` | pre-reason, post-reason | 5 | MQM intelligent model selection |
+| `@cortex/quartermaster` | pre-tool, post-tool | 6 | Tool orchestration learning |
+| `@cortex/summarization` | pre-reason | 8 | Context compaction at 80K token threshold |
+| `@cortex/content-safety` | pre-output | 10 | Content filtering before output |
+| `@cortex/loop-detection` | pre-tool | 12 | Per-file edit tracking (warns after 5+ edits) |
+| `@cortex/tool-output-sandbox` | post-tool | 15 | Large output capture to session storage |
+| `@cortex/pre-completion-checklist` | post-reason | 20 | Build-Verify-Fix enforcement |
+| `@cortex/audit-log` | post-output | 150 | Session/turn logging (non-disableable) |
+| `@cortex/cost-tracker` | post-tool, post-output | 200 | Token/cost metrics |
 
 ## Hook Registration
 

@@ -1,0 +1,35 @@
+# `cortex a2a`
+
+Google Agent2Agent (A2A) v1.0 protocol bridge for cross-framework agent interoperability. Exposes Cortex agents as A2A endpoints on port 4220.
+
+## Usage
+
+```bash
+cortex a2a card                         # Display the Cortex agent card (JSON)
+cortex a2a skills                       # List registered A2A agent skills
+```
+
+## Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `card` | Display the Cortex agent card in JSON format |
+| `skills` | List registered A2A agent skills from the tool registry |
+
+## Protocol
+
+Implements A2A v1.0 with JSON-RPC 2.0 transport:
+- `SendMessage`, `SendStreamingMessage` (SSE), `GetTask`, `ListTasks`, `CancelTask`
+- SSE streaming for real-time agent-to-agent communication
+- Agent card caching with automatic retry on failure
+- Exposes the agent card at `/.well-known/agent-card.json`
+
+## Examples
+
+```bash
+# View the agent card
+cortex a2a card
+
+# List A2A skills
+cortex a2a skills
+```

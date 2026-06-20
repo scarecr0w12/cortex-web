@@ -29,7 +29,7 @@ const footerLinks = [
     links: [
       { href: "/changelog",  label: "Changelog"  },
       { href: "/contribute", label: "Contribute" },
-      { href: "https://discord.gg/y7DkaEbPQC",          label: "Discord", external: true },
+      { href: "https://discord.gg/wYxbmQeWY3",          label: "Discord", external: true },
       { href: "https://github.com/CortexPrism/cortex",  label: "GitHub",  external: true },
       { href: "/marketplace/publish/plugin", label: "Publish Plugin" },
     ],
@@ -65,7 +65,7 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="https://discord.gg/y7DkaEbPQC"
+                href="https://discord.gg/wYxbmQeWY3"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg border border-[rgba(255,255,255,0.07)] text-[#55556a] hover:text-[#e2e2ea] hover:border-[rgba(255,255,255,0.15)] transition-all"

@@ -134,7 +134,7 @@ export function Navbar() {
             {user && <NotificationBell />}
             {/* Discord icon */}
             <a
-              href="https://discord.gg/y7DkaEbPQC"
+              href="https://discord.gg/wYxbmQeWY3"
               target="_blank"
               rel="noopener noreferrer"
               title="Discord"
@@ -302,7 +302,7 @@ export function Navbar() {
 
             <div className="flex items-center gap-3 px-3 pt-2">
               <a
-                href="https://discord.gg/y7DkaEbPQC"
+                href="https://discord.gg/wYxbmQeWY3"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-[#9090a8] hover:text-indigo-400 transition-colors"

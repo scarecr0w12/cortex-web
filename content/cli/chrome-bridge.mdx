@@ -1,0 +1,55 @@
+# `cortex chrome-bridge`
+
+Manage the Chrome Bridge MCP server for real-browser automation via Chrome DevTools Protocol (CDP). Registers 60 `chrome_*` prefixed tools for navigation, interaction, DOM inspection, network monitoring, screenshots, and audits.
+
+## Usage
+
+```bash
+cortex chrome-bridge start               # Start chrome-bridge MCP server
+cortex chrome-bridge stop                # Stop chrome-bridge MCP server
+cortex chrome-bridge status              # Check connection state
+cortex chrome-bridge tools               # List registered chrome_* tools
+```
+
+## Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `start` | Start the chrome-bridge MCP server |
+| `stop` | Stop the chrome-bridge MCP server |
+| `status` | Check connection state and metrics |
+| `tools` | List all registered chrome-bridge tools |
+
+## Configuration
+
+Configure in `~/.cortex/config.json`:
+
+```json
+{
+  "chromeBridge": {
+    "enabled": true,
+    "nodePath": "node",
+    "serverPath": "/path/to/chrome-bridge-server.js",
+    "port": 9222,
+    "autoStart": true,
+    "autoRegisterTools": true,
+    "toolPrefix": "chrome"
+  }
+}
+```
+
+## Examples
+
+```bash
+# Start Chrome Bridge
+cortex chrome-bridge start
+
+# Check status
+cortex chrome-bridge status
+
+# List registered tools
+cortex chrome-bridge tools
+
+# Stop Chrome Bridge
+cortex chrome-bridge stop
+```

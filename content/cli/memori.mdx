@@ -1,0 +1,44 @@
+# `cortex memori`
+
+Persistent agent-state checkpointing for survival across restarts, crashes, and context window resets. Checkpoints capture messages, tool calls, tokens used, and optional goal snapshots.
+
+## Usage
+
+```bash
+cortex memori list                      # List all recent checkpoints
+cortex memori list <sessionId>          # List checkpoints for a specific session
+cortex memori prune <sessionId>         # Prune old checkpoints (keep last 5)
+cortex memori prune <sessionId> --keep 10 # Keep last 10 checkpoints
+```
+
+## Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `list` | List checkpoints — optionally filtered by session ID |
+| `prune` | Remove old checkpoints for a session (keep last N, default 5) |
+
+## Checkpoint Contents
+
+Each checkpoint captures:
+- **Conversation**: Messages, prompt, context window
+- **Memory**: Episodic, semantic, graph entities, active skills
+- **Tools**: Available tools, call history, pending approvals
+- **Reasoning**: Current goal, sub-goals, completed goals, confidence
+- **Workspace**: Working dir, open files, recent changes, git state
+
+## Examples
+
+```bash
+# List all recent checkpoints
+cortex memori list
+
+# List checkpoints for a specific session
+cortex memori list sess_abc123
+
+# Keep only last 5 checkpoints
+cortex memori prune sess_abc123
+
+# Keep last 10 checkpoints
+cortex memori prune sess_abc123 --keep 10
+```

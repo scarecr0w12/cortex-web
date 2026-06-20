@@ -183,7 +183,7 @@ export function PublishForm({ type }: PublishFormProps) {
             <div>
               <label className={labelClass}>Model</label>
               <input type="text" value={model} onChange={e => setModel(e.target.value)}
-                className={inputClass} placeholder="claude-sonnet-4-20250514" />
+                className={inputClass} placeholder="claude-sonnet-4-5" />
             </div>
             <div>
               <label className={labelClass}>Temperature</label>

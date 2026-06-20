@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   },
 };
 
-const CORTEX_VERSION_DEFAULT = "0.44.0";
+const CORTEX_VERSION_DEFAULT = "0.45.3";
 
 function getCortexVersion(): string {
   const envVersion = process.env.NEXT_PUBLIC_CORTEX_VERSION;
