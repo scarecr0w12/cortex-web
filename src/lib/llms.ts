@@ -75,6 +75,7 @@ export function buildLlmsTxt(): string {
   lines.push(`- [Per-Page Markdown](${SITE_URL}/api/docs/markdown): Individual doc pages as raw Markdown (e.g., /api/docs/markdown/cli/agent)`);
   lines.push(`- [Public Roadmap](https://github.com/CortexPrism/cortex): GitHub repository with issues and roadmap`);
   lines.push(`- [Discord Community](https://discord.gg/wYxbmQeWY3): Get help and discuss with the community`);
+  lines.push(`- [Reddit Community](https://reddit.com/r/CortexPrism): Join the discussion on Reddit`);
 
   return lines.join("\n") + "\n";
 }
