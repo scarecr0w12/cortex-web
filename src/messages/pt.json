@@ -61,7 +61,12 @@
     "discord": "Discord",
     "github": "GitHub",
     "reddit": "Reddit",
-    "publishPlugin": "Publish Plugin"
+    "publishPlugin": "Publish Plugin",
+    "newsletter": "Newsletter",
+    "newsletterDesc": "Get updates on new releases, plugins, and features.",
+    "subscribePlaceholder": "your@email.com",
+    "subscribe": "Subscribe",
+    "subscribed": "Check your inbox to confirm!"
   },
   "home": {
     "heroHeadline1": "The Open-Source",

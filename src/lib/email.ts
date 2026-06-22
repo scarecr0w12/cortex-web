@@ -1,9 +1,11 @@
 import sgMail from "@sendgrid/mail";
+import crypto from "crypto";
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || "";
 const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || "noreply@cortexprism.io";
 const FROM_NAME = process.env.SENDGRID_FROM_NAME || "CortexPrism";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://cortexprism.io";
+const NEWSLETTER_UNSUBSCRIBE_SECRET = process.env.NEWSLETTER_UNSUBSCRIBE_SECRET || process.env.JWT_SECRET || "";
 
 const isConfigured = !!SENDGRID_API_KEY;
 
@@ -33,7 +35,7 @@ export async function sendEmail(to: string, subject: string, html: string): Prom
   }
 }
 
-function wrapTemplate(title: string, bodyHtml: string, cta?: { text: string; url: string }) {
+function wrapTemplate(title: string, bodyHtml: string, cta?: { text: string; url: string }, footerHtml?: string) {
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -52,12 +54,34 @@ function wrapTemplate(title: string, bodyHtml: string, cta?: { text: string; url
         <tr><td style="padding:24px 16px 0;text-align:center;font-size:12px;color:#55556a">
           <p style="margin:0 0 4px 0">CortexPrism — Open-Source Agentic Harness</p>
           <p style="margin:0"><a href="${SITE_URL}" style="color:#6366f1;text-decoration:none">${SITE_URL}</a></p>
+          ${footerHtml || ""}
         </td></tr>
       </table>
     </td></tr>
   </table>
 </body>
 </html>`;
+}
+
+export function generateUnsubscribeToken(email: string): string {
+  if (!NEWSLETTER_UNSUBSCRIBE_SECRET) {
+    throw new Error("NEWSLETTER_UNSUBSCRIBE_SECRET or JWT_SECRET must be set to generate unsubscribe tokens");
+  }
+  return crypto.createHmac("sha256", NEWSLETTER_UNSUBSCRIBE_SECRET).update(`unsub:${email}`).digest("hex").slice(0, 32);
+}
+
+export function hashVerificationToken(token: string): string {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
+function sanitizeHtml(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
+    .replace(/ on\w+\s*=\s*"[^"]*"/gi, "")
+    .replace(/ on\w+\s*=\s*'[^']*'/gi, "")
+    .replace(/<object[\s\S]*?<\/object>/gi, "")
+    .replace(/<embed[\s\S]*?>/gi, "");
 }
 
 export function renderSubmissionApprovedEmail(username: string, itemType: string, itemName: string, itemUrl: string) {
@@ -100,4 +124,57 @@ export function renderWelcomeEmail(username: string) {
       { text: "Get Started", url: `${SITE_URL}/getting-started` }
     ),
   };
+}
+
+export function renderNewsletterVerificationEmail(email: string, token: string) {
+  const safeEmail = escapeHtml(email);
+  const verifyUrl = `${SITE_URL}/api/newsletter/verify?token=${encodeURIComponent(token)}`;
+  return {
+    subject: "Confirm your CortexPrism newsletter subscription",
+    html: wrapTemplate(
+      "Confirm your subscription",
+      `<p>Hi there,</p><p>Please confirm your newsletter subscription by clicking the button below:</p><p style="font-size:13px;color:#55556a">This email was requested for <strong style="color:#e2e2ea">${safeEmail}</strong>. If you didn't request this, you can safely ignore this email.</p>`,
+      { text: "Confirm Subscription", url: verifyUrl }
+    ),
+  };
+}
+
+export function renderNewsletterCampaignEmail(subject: string, content: string, unsubscribeToken: string) {
+  const unsubscribeUrl = `${SITE_URL}/api/newsletter/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`;
+  return {
+    subject,
+    html: wrapTemplate(
+      subject,
+      sanitizeHtml(content),
+      undefined,
+      `<p style="margin:8px 0 0 0;font-size:11px"><a href="${unsubscribeUrl}" style="color:#55556a;text-decoration:underline">Unsubscribe</a> from the CortexPrism newsletter</p>`
+    ),
+  };
+}
+
+export async function sendBulkEmails(
+  recipients: { email: string; unsubscribeToken: string }[],
+  subject: string,
+  content: string,
+  onProgress?: (sent: number, total: number) => void
+): Promise<{ sent: number; failed: number }> {
+  let sent = 0;
+  let failed = 0;
+
+  for (let i = 0; i < recipients.length; i++) {
+    const { email: to, unsubscribeToken } = recipients[i];
+    const emailHtml = renderNewsletterCampaignEmail(subject, content, unsubscribeToken).html;
+    const success = await sendEmail(to, subject, emailHtml);
+    if (success) {
+      sent++;
+    } else {
+      failed++;
+    }
+    onProgress?.(sent + failed, recipients.length);
+    if (i < recipients.length - 1) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+  }
+
+  return { sent, failed };
 }

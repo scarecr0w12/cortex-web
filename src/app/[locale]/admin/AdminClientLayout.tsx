@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname, Link } from "@/i18n/routing";
 import { useAuth } from "@/lib/AuthContext";
 import {
-  LayoutDashboard, Users, Shield, GitBranch, ClipboardList, Activity, Menu, X, ChevronRight, Search, Settings, MessageSquare, Mail, BookOpen, FileText, BarChart3,
+  LayoutDashboard, Users, Shield, GitBranch, ClipboardList, Activity, Menu, X, ChevronRight, Search, Settings, MessageSquare, Mail, BookOpen, FileText, BarChart3, Megaphone,
 } from "lucide-react";
 
 type NavItem = {
@@ -36,6 +36,7 @@ const navItems: NavItem[] = [
     ],
   },
   { href: "/admin/email", label: "Email", icon: Mail },
+  { href: "/admin/newsletter", label: "Newsletter", icon: Megaphone },
   { href: "/admin/blog", label: "Blog", icon: FileText },
   { href: "/admin/knowledge-base", label: "Knowledge Base", icon: BookOpen },
   { href: "/admin/settings", label: "Settings", icon: Settings },

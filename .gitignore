@@ -59,3 +59,4 @@ discord-bot/.env
 
 # kilo local config (contains API keys and tokens)
 .kilo/kilo.json
+.kilo/kilo.jsonc

@@ -375,6 +375,34 @@ model ReleaseWatch {
   @@map("ReleaseWatch")
 }
 
+model NewsletterSubscription {
+  id                    String    @id @default(cuid())
+  email                 String    @unique
+  status                String    @default("pending")
+  verificationTokenHash String?
+  unsubscribeTokenHash  String?
+  subscribedAt          DateTime?
+  unsubscribedAt        DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([status])
+  @@map("NewsletterSubscription")
+}
+
+model NewsletterCampaign {
+  id        String    @id @default(cuid())
+  subject   String
+  content   String
+  status    String    @default("draft")
+  sentAt    DateTime?
+  sentCount Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("NewsletterCampaign")
+}
+
 model Setting {
   id        String   @id @default(cuid())
   key       String   @unique

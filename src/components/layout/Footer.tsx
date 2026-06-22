@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { LogoMark } from "@/components/shared/LogoMark";
+import { NewsletterSignup } from "@/components/landing/NewsletterSignup";
 
 export function Footer() {
   const t = useTranslations("footer");
@@ -94,6 +95,15 @@ export function Footer() {
                   <path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2zm5.834 7.047a1.375 1.375 0 0 1 .455 2.679 4.9 4.9 0 0 1 .04.55c0 2.675-2.99 4.847-6.676 4.847-3.687 0-6.676-2.172-6.676-4.847 0-.184.016-.365.04-.54a1.375 1.375 0 1 1 1.372-1.313c.39 0 .74.163.997.426 1.375-.932 3.24-1.52 5.342-1.593l1.036-3.195 2.386.505a1.362 1.362 0 1 1-.18.543l-1.71-.362-.748 2.29c1.98.086 3.74.658 5.06 1.527a1.37 1.37 0 0 1 .964-.396zM9.27 15.413c-.217-1.02 1.347-1.854 2.73-1.854 1.383 0 2.946.834 2.73 1.854-.067.31-.415.51-.825.51h-3.81c-.41 0-.758-.2-.825-.51zm-1.14-2.847a1.06 1.06 0 1 1 0-2.122 1.06 1.06 0 0 1 0 2.122zm7.74 0a1.06 1.06 0 1 1 0-2.122 1.06 1.06 0 0 1 0 2.122z"/>
                 </svg>
               </a>
+            </div>
+            <div className="mt-6 pt-5 border-t border-[rgba(255,255,255,0.06)]">
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-[#9090a8] mb-3">{t("newsletter")}</h3>
+              <p className="text-xs text-[#55556a] mb-3">{t("newsletterDesc")}</p>
+              <NewsletterSignup
+                placeholder={t("subscribePlaceholder")}
+                buttonLabel={t("subscribe")}
+                successMessage={t("subscribed")}
+              />
             </div>
           </div>
 
