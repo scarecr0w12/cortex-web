@@ -4,7 +4,7 @@ export const SITE_URL =
 export const SITE_NAME = "CortexPrism";
 
 export const SITE_DESCRIPTION =
-  "The open-source AI Agent Operating System with persistent memory, 60+ built-in tools, a full-featured web UI, and layered security — powered by Deno. Self-host your AI agents with confidence.";
+  "CortexPrism v0.50.0 — the open-source AI Agent Operating System with persistent memory, 60+ built-in tools, an overhauled web UI with dark/light theme and experience levels, and layered security — powered by Deno. Self-host your AI agents with confidence.";
 
 const SITE_TAGLINE = "Open-Source AI Agent Operating System — Powered by Deno";
 

@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       template: "%s",
     },
     description:
-      "CortexPrism is the open-source AI OS — an Agent Operating System with 24 LLM providers, 5-tier memory, MCP plugin marketplace, sandboxed code execution, and enterprise-grade Parallax security. Self-host your autonomous AI agents. Apache 2.0 licensed.",
+      "CortexPrism v0.50.0 is the open-source AI OS — an Agent Operating System with 24 LLM providers, 5-tier memory, MCP plugin marketplace, sandboxed code execution, overhauled web UI with dark/light theme and experience levels, and enterprise-grade Parallax security. Self-host your autonomous AI agents. Apache 2.0 licensed.",
     keywords: SITE_KEYWORDS,
     authors: [{ name: "CortexPrism", url: SITE_URL }],
     creator: "CortexPrism",
@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: "CortexPrism — Open-Source AI OS | Agent Operating System",
       description:
-        "The open-source AI OS: an Agent Operating System with 24 LLM providers, 5-tier memory, MCP plugins, sandboxed code execution, and Parallax security. Self-host autonomous agents. Apache 2.0 licensed.",
+        "The open-source AI OS: an Agent Operating System with 24 LLM providers, 5-tier memory, MCP plugins, sandboxed code execution, overhauled web UI, and Parallax security. Self-host autonomous agents. Apache 2.0 licensed.",
       type: "website",
       siteName: "CortexPrism",
       locale: ogLocale,
@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       creator: "@CortexPrism",
       title: "CortexPrism — Open-Source AI OS | Agent Operating System",
       description:
-        "The open-source AI OS: an Agent Operating System with 24 LLM providers, 5-tier memory, MCP plugins, sandboxed code execution, and Parallax security. Apache 2.0 licensed.",
+        "The open-source AI OS: an Agent Operating System with 24 LLM providers, 5-tier memory, MCP plugins, sandboxed code execution, overhauled web UI, and Parallax security. Apache 2.0 licensed.",
       images: [`${SITE_URL}/og-image.png`],
     },
     alternates: {

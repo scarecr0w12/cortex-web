@@ -66,8 +66,8 @@ export async function GET() {
             lineHeight: 1.5,
           }}
         >
-          Multi-provider LLM support &middot; 5-tier memory &middot; Parallax
-          security &middot; Plugin marketplace &middot; Apache 2.0 licensed
+          Multi-provider LLM support &middot; 5-tier memory &middot; Overhauled Web UI
+          &middot; Parallax security &middot; Plugin marketplace &middot; Apache 2.0 licensed
         </div>
         <div
           style={{

@@ -56,7 +56,7 @@ export function Hero({ version }: HeroProps) {
           <p className="mt-6 text-lg md:text-xl text-[#9090a8] max-w-2xl mx-auto leading-relaxed">
             An open-source, self-hosted AI Agent Operating System that turns any LLM into a
             capable autonomous agent. This AI OS features persistent 5-tier memory, 60+
-            built-in tools, sandboxed code execution, a full-featured web UI,
+            built-in tools, sandboxed code execution, an overhauled web UI with dark/light theme and experience levels,
             and enterprise-grade Parallax security — powered by Deno. Deploy your own
             Agent Operating System in one command.
           </p>

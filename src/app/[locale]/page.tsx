@@ -14,7 +14,7 @@ import path from "path";
 export const metadata: Metadata = {
   title: "CortexPrism — Open-Source AI OS | Agent Operating System with Memory, Tools & Web UI",
   description:
-    "CortexPrism is the open-source AI OS — a self-hosted Agent Operating System with 24 LLM providers, 5-tier memory, 60+ built-in tools, sandboxed code execution, full web UI, and layered Parallax security. Powered by Deno. Apache 2.0 licensed.",
+    "CortexPrism v0.50.0 is the open-source AI OS — a self-hosted Agent Operating System with 24 LLM providers, 5-tier memory, 60+ built-in tools, sandboxed code execution, overhauled web UI with dark/light theme and experience levels, and layered Parallax security. Powered by Deno. Apache 2.0 licensed.",
   keywords: [
     "AI OS",
     "Agent OS",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CortexPrism — Open-Source AI OS | Agent Operating System with Memory, Tools & Web UI",
     description:
-      "The open-source AI OS: a self-hosted Agent Operating System with 24 LLM providers, 5-tier memory, 60+ tools, sandboxed code execution, full web UI, and Parallax security. Powered by Deno. Apache 2.0 licensed.",
+      "The open-source AI OS: a self-hosted Agent Operating System with 24 LLM providers, 5-tier memory, 60+ tools, sandboxed code execution, overhauled web UI with dark/light theme and experience levels, and Parallax security. Powered by Deno. Apache 2.0 licensed.",
     url: SITE_URL,
   },
   twitter: {
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   },
 };
 
-const CORTEX_VERSION_DEFAULT = "0.48.5";
+const CORTEX_VERSION_DEFAULT = "0.50.0";
 
 function getCortexVersion(): string {
   const envVersion = process.env.NEXT_PUBLIC_CORTEX_VERSION;

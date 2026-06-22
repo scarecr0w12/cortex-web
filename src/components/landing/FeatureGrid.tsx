@@ -125,7 +125,7 @@ const features = [
   {
     icon: GitGraph,
     title: "Code Intelligence",
-    description: "Tree-sitter WASM code graph across 40+ languages with call-graph traversal and impact analysis.",
+    description: "Tree-sitter WASM code graph across 14+ languages with call-graph traversal and impact analysis.",
     color: "text-lime-400",
     bg: "bg-lime-500/10",
     glow: "rgba(163,230,53,0.15)",

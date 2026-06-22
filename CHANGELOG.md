@@ -2,6 +2,16 @@
 
 All notable changes to the CortexPrism website will be documented in this file.
 
+## [0.13.0] — 2026-06-22
+
+### Changed
+- **Version sync with Cortex v0.50.0** — `CORTEX_VERSION_DEFAULT` updated from `0.48.5` to `0.50.0`, installation docs version output corrected, developer guide minimum version bumped to `v0.50.0+`
+- **Feature descriptions refreshed** — landing page, about page, layout metadata, SEO defaults, and hero component descriptions updated to highlight v0.50.0 UI overhaul (dark/light theme, experience levels, horizontal top nav), browser automation, A2A protocol, and MCP gateway
+- **Bugfix: "40+ languages" → "14+ languages"** — FeatureGrid code intelligence card corrected to match actual tree-sitter WASM parser coverage
+
+### Fixed
+- **About page license** — `"MIT licensed AI OS"` keyword corrected to `"Apache 2.0 licensed AI OS"`, metadata description also fixed (was missed in 0.12.0)
+
 ## [0.12.1] — 2026-06-22
 
 ### Fixed

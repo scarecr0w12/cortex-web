@@ -34,7 +34,7 @@ export function buildLlmsTxt(): string {
 
   lines.push(`# ${SITE_NAME} — Open-Source AI Agent Operating System`);
   lines.push("");
-  lines.push("> CortexPrism is an open-source AI Agent Operating System with 24 LLM providers, 5-tier memory system, MCP plugin marketplace, sandboxed code execution, and parallax enterprise-grade security. Self-host autonomous AI agents — Apache 2.0 licensed.");
+  lines.push("> CortexPrism v0.50.0 is an open-source AI Agent Operating System with 24 LLM providers, 5-tier memory system, MCP plugin marketplace, sandboxed code execution, overhauled web UI with dark/light theme, and parallax enterprise-grade security. Self-host autonomous AI agents — Apache 2.0 licensed.");
   lines.push("");
 
   lines.push("## Get Started");
@@ -62,7 +62,7 @@ export function buildLlmsTxt(): string {
   lines.push("");
 
   lines.push("## Learn More");
-  lines.push(`- [Features](${SITE_URL}/features): 20+ features — multi-provider LLM, 5-tier memory, sandboxed code execution, parallax security`);
+  lines.push(`- [Features](${SITE_URL}/features): 30+ features — multi-provider LLM, 5-tier memory, sandboxed code execution, parallax security, data import, A2A protocol, MCP gateway`);
   lines.push(`- [Use Cases](${SITE_URL}/use-cases): Real-world scenarios for CortexPrism agents`);
   lines.push(`- [Security](${SITE_URL}/security): Parallax security architecture — sandboxing, policy engine, and threat model`);
   lines.push(`- [Changelog](${SITE_URL}/changelog): Release history for CortexPrism and CortexPrism Web`);

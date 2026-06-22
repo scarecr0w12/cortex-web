@@ -2,16 +2,17 @@
 
 **Open-source AI Agent Operating System — CLI, API, web UI, and marketplace.**
 
-CortexPrism is a runtime for building, deploying, and managing AI agents. It provides a unified interface to 24 LLM providers, a 5-tier memory system with hybrid retrieval, sandboxed code execution, defense-in-depth security, and a plugin marketplace — all running locally on your machine.
+CortexPrism v0.50.0 is a runtime for building, deploying, and managing AI agents. It provides a unified interface to 24 LLM providers, a 5-tier memory system with hybrid retrieval, sandboxed code execution, defense-in-depth security, and a plugin marketplace — all running locally on your machine.
 
 - **Agent Loop** — Multi-turn reasoning with tool orchestration, memory injection, and reflection
 - **Multi-Provider** — Anthropic, OpenAI, Google, Groq, Mistral, DeepSeek, Ollama, and more
 - **Memory** — 5 tiers: episodic, semantic, reflection, graph, skills with FTS5 + vector hybrid retrieval
-- **Security** — Parallax 3-stage validation gate, encrypted vault, audit logging
+- **Security** — Parallax 3-stage validation gate, encrypted vault, audit logging, DLP guard, AI guardrails
+- **Web UI** — Overhauled dashboard with dark/light theme, experience levels, horizontal top nav, real-time streaming
 - **Plugins** — Extend via ESM modules, MCP servers, or WebAssembly
 - **Marketplace** — Discover and publish plugins and agent configs
-- **Web UI** — Dashboard, chat interface, memory browser, audit lens
 - **REST API** — Full HTTP API with OpenAPI 3.1 specification and Swagger UI
+- **Data Import** — Migration from OpenClaw, Hermes, and ZeroClaw with config, sessions, and memory
 
 ---
 
@@ -21,7 +22,7 @@ CortexPrism is a runtime for building, deploying, and managing AI agents. It pro
 git clone https://github.com/CortexPrism/cortex.git
 cd cortex
 deno run --allow-all src/main.ts setup
-cortex chat
+cortex agent chat
 ```
 
 Visit [cortexprism.io](https://cortexprism.io) to explore the marketplace and full documentation.
@@ -31,17 +32,24 @@ Visit [cortexprism.io](https://cortexprism.io) to explore the marketplace and fu
 ## Features
 
 ### Interactive Chat
-Chat with 24 LLM providers through a unified interface. Switch providers mid-session, configure fallback chains, stream responses.
+Chat with 24 LLM providers through a unified interface. Switch providers mid-session, configure fallback chains, stream responses. Uses the overhauled TUI with 12 slash commands.
 
 ```
-cortex chat --model claude-sonnet-4-20250514
+cortex agent chat --model claude-sonnet-4-20250514
 ```
 
 ### Tool Use & Approval Gates
-Agents use tools (code execution, file I/O, web search) through configurable approval gates. Audit every call.
+Agents use 60+ tools (code execution, file I/O, web search, browser automation) through configurable approval gates. Audit every call.
 
 ```
-cortex chat --tools all
+cortex agent chat
+```
+
+### Data Import & Migration
+Import config, sessions, and memory from OpenClaw, Hermes, and ZeroClaw. One command migrates your entire setup.
+
+```
+cortex import openclaw
 ```
 
 ### 5-Tier Memory System
@@ -59,10 +67,10 @@ cortex policy add --allow code.execute.python
 ```
 
 ### Sandboxed Code Execution
-Run Python, JavaScript, Wasm, and shell commands in isolated Docker sandboxes (subprocess fallback). Resource limits enforced.
+Run Python, JavaScript, Wasm, and shell commands in isolated Docker sandboxes (subprocess fallback). E2B and Daytona remote backends supported. Resource limits enforced.
 
 ```
-cortex run --sandbox python --script analyze.py
+cortex sandbox run --lang python --file analyze.py
 ```
 
 ### Model Router (RouteLLM)
@@ -73,10 +81,10 @@ cortex chat --router cost-optimized
 ```
 
 ### Plugin System
-Three plugin architectures: ESM modules (JS/TS), MCP servers (stdin/stdio or HTTP/SSE), WebAssembly (Rust, Go, C). Plugin marketplace for discovery.
+Three plugin architectures: ESM modules (JS/TS), MCP servers (stdin/stdio or HTTP/SSE), WebAssembly (Rust, Go, C). Supply chain verification with SHA-256 hashing. Plugin marketplace for discovery.
 
 ```
-cortex plugin install marketplace:cortexprism.io/plugins/python-executor
+cortex plugins install marketplace:cortexprism.io/plugins/python-executor
 ```
 
 ### Daemon Supervisor & Jobs
@@ -87,10 +95,10 @@ cortex daemon start && cortex jobs add --schedule "0 9 * * 1" --task weekly-repo
 ```
 
 ### Web UI & REST API
-Dark-theme web dashboard with chat, Lens, Memory, and Jobs tabs. REST API + WebSocket for real-time streaming.
+Overhauled web dashboard with dark/light theme toggle, horizontal top nav (5 categories, 40 pages), experience levels, chat, Lens, Memory, and Jobs tabs. REST API + WebSocket for real-time streaming.
 
 ```
-cortex serve --port 8080
+cortex server start --port 8080
 ```
 
 ### Agent Manager
@@ -106,9 +114,9 @@ cortex agent create --name code-reviewer --model claude-sonnet-4-20250514
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         CortexPrism                             │
+│                    CortexPrism v0.50.0                           │
 │                                                                 │
-│   CLI (cortex chat / run / serve / ...)                         │
+│   CLI (cortex agent / sandbox / server / import / ...)          │
 │          │                                                      │
 │          ▼                                                      │
 │   ┌─────────────────────────────────────────────┐              │
@@ -119,28 +127,30 @@ cortex agent create --name code-reviewer --model claude-sonnet-4-20250514
 │   │  → [episodic write] → [reflection]          │              │
 │   └─────────────────────────────────────────────┘              │
 │          │                                                      │
-│   ┌──────┼──────────────────────────────────────┐              │
-│   │      │         Subsystems                   │              │
-│   │  memory/   tools/   sandbox/   security/    │              │
-│   │  llm/      server/  scheduler/              │              │
-│   └──────────────────────────────────────────────┘             │
+│   ┌──────┼──────────────────────────────────────────────────────┐│
+│   │      │         Subsystems                                   ││
+│   │  memory/   tools/   sandbox/   security/   llm/             ││
+│   │  server/   scheduler/   plugins/   qm/   memori/            ││
+│   │  skills/   codegraph/   channels/   chrome-bridge/          ││
+│   └──────────────────────────────────────────────────────────────┘│
 │                                                                 │
 │   SQLite databases (WAL mode)                                   │
-│   cortex.db · memory.db · lens.db · vault.db · sess_*.db       │
+│   cortex.db · memory.db · lens.db · vault.db · sessions/*.db    │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 | Component | Description |
 |-----------|-------------|
-| **Agent Loop** | Core reasoning + tool loop — LLM calls, tool execution, memory, reflection |
-| **Memory System** | 5-tier memory with hybrid FTS5 + vector embedding retrieval |
-| **LLM Layer** | 24 providers with unified interface and CascadeRouter |
-| **Tool System** | Extensible registry for file I/O, shell, web, code execution |
-| **Security (Parallax)** | 3-stage policy gate, encrypted vault, audit logging |
-| **Sandbox** | Docker containers with resource limits and auto-fix loop |
-| **Daemon Supervisor** | Background process manager with auto-restart |
-| **HTTP Server** | REST API + WebSocket + web UI dashboard |
-| **Scheduler** | SQLite-persisted CRON job scheduler with retry |
+| **Agent Loop** | Core reasoning + tool loop — LLM calls, tool execution, memory, reflection, metacognition |
+| **Memory System** | 5-tier memory with hybrid FTS5 + vector embedding retrieval, entity graph, cross-agent context |
+| **LLM Layer** | 24 providers with unified interface, Model Quartermaster (6-signal prediction), cost optimizer |
+| **Tool System** | 60+ built-in tools with extensible registry, Quartermaster tool orchestration learning |
+| **Security (Parallax)** | 3-stage policy gate, LLM supervisor, encrypted vault, DLP guard, AI guardrails, audit logging |
+| **Sandbox** | Docker, subprocess, E2B, Daytona backends with resource limits |
+| **Web UI** | Overhauled dark/light theme dashboard with 40 pages, experience levels, horizontal top nav |
+| **Daemon Supervisor** | Background process manager with validator, executor, scheduler |
+| **HTTP Server** | REST API + WebSocket + real-time streaming |
+| **Scheduler** | SQLite-persisted CRON job scheduler with retry and stale recovery |
 
 ---
 

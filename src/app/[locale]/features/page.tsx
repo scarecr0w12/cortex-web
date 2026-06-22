@@ -27,7 +27,7 @@ import { SITE_URL } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "CortexPrism Features — AI OS Capabilities | Agent Operating System",
   description:
-    "Explore the full AI OS feature set: chat with 24 LLM providers, 5-tier memory, 60+ built-in tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugin system, Parallax security, sandboxed code execution, multi-agent orchestration, and workflow engine. All open source.",
+    "Explore the full AI OS feature set: chat with 24 LLM providers, 5-tier memory, 60+ built-in tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugin system, Parallax security, sandboxed code execution, multi-agent orchestration, UI overhaul with dark/light theme, data import from OpenClaw/Hermes, and workflow engine. All open source.",
   keywords: [
     "AI OS features",
     "Agent OS capabilities",
@@ -51,13 +51,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CortexPrism Features — AI OS Capabilities | Agent Operating System",
     description:
-      "The open-source AI OS: 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugins, Parallax security, sandboxed code execution, multi-agent orchestration.",
+      "The open-source AI OS: 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugins, Parallax security, sandboxed code execution, overhauled UI with dark/light theme, multi-agent orchestration.",
     url: `${SITE_URL}/features`,
   },
   twitter: {
     title: "CortexPrism Features — AI OS Capabilities | Agent Operating System",
     description:
-      "The open-source AI OS: 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, A2A protocol, sandboxed execution, multi-agent orchestration.",
+      "The open-source AI OS: 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, browser automation, A2A protocol, sandboxed execution, multi-agent orchestration.",
   },
 };
 
