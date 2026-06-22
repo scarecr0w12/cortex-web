@@ -21,7 +21,9 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
     const limit = Math.min(50, Math.max(1, parseInt(searchParams.get("limit") || "12")));
 
-    const where: Record<string, unknown> = { published: true };
+    const user = getAuthUser(request);
+    const isAdmin = requireAdmin(user);
+    const where: Record<string, unknown> = isAdmin ? {} : { published: true };
 
     if (search) {
       where.OR = [

@@ -61,6 +61,7 @@ export async function handleGuildSettings(interaction: ChatInputCommandInteracti
     }
 
     const logChannel = config.logChannelId ? `<#${config.logChannelId}>` : "Not set";
+    const blogChannel = config.blogChannelId ? `<#${config.blogChannelId}>` : "Not set";
     const modRole = config.modRoleId ? `<@&${config.modRoleId}>` : "Not set";
     const adminRole = config.adminRoleId ? `<@&${config.adminRoleId}>` : "Not set";
 
@@ -76,6 +77,7 @@ export async function handleGuildSettings(interaction: ChatInputCommandInteracti
         { name: "Auto Mod", value: config.autoModEnabled ? "Enabled" : "Disabled", inline: true },
         { name: "Welcome Messages", value: config.welcomeEnabled ? "Enabled" : "Disabled", inline: true },
         { name: "Leave Messages", value: config.leaveEnabled ? "Enabled" : "Disabled", inline: true },
+        { name: "Blog Channel", value: blogChannel, inline: true },
       )
       .setTimestamp();
 
@@ -92,7 +94,7 @@ export async function handleGuildSettings(interaction: ChatInputCommandInteracti
       return;
     }
 
-    const allowedKeys = ["log_channel", "mod_role", "admin_role", "max_warns", "slowmode", "auto_mod", "welcome", "leave"];
+    const allowedKeys = ["log_channel", "mod_role", "admin_role", "max_warns", "slowmode", "auto_mod", "welcome", "leave", "blog_channel"];
     if (!allowedKeys.includes(key)) {
       await interaction.editReply({ content: `Invalid key. Allowed: ${allowedKeys.join(", ")}` });
       return;
@@ -107,6 +109,7 @@ export async function handleGuildSettings(interaction: ChatInputCommandInteracti
       auto_mod: "autoModEnabled",
       welcome: "welcomeEnabled",
       leave: "leaveEnabled",
+      blog_channel: "blogChannelId",
     };
 
     const dbKey = dbKeyMap[key];

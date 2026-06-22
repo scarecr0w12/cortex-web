@@ -28,10 +28,12 @@ import { handlePollCreate, handlePollEnd } from "./commands/poll";
 import { handleTicketCreate, handleTicketClose, handleTicketClaim, handleTicketAdd, handleTicketRemove } from "./commands/ticket";
 import { handleNickname } from "./commands/nickname";
 import { handleReleaseWatchAdd, handleReleaseWatchRemove, handleReleaseWatchList, handleReleaseWatchCheck, handleReleaseWatchToggle } from "./commands/releasewatch";
+import { handleBlogPost, handleBlogChannelView, handleBlogChannelSet, handleBlogChannelClear } from "./commands/blog";
 import { checkAutoMod } from "./lib/auto-mod";
 import { isModerator } from "./lib/moderation";
 import { handleWelcome, handleLeave } from "./lib/events";
 import { startReleaseMonitor, stopReleaseMonitor } from "./lib/github-release-monitor";
+import { startBlogMonitor, stopBlogMonitor } from "./lib/blog-monitor";
 import { commandDefinitions } from "./commands/command-definitions";
 
 export const prisma = new PrismaClient();
@@ -77,6 +79,7 @@ client.once(Events.ClientReady, async (c) => {
   await trackStartTime();
   await updateHeartbeat();
   startReleaseMonitor(client).catch((err) => console.error("Failed to start release monitor:", err));
+  startBlogMonitor(client).catch((err) => console.error("Failed to start blog monitor:", err));
 });
 
 async function updateHeartbeat() {
@@ -338,6 +341,16 @@ client.on(Events.InteractionCreate, async (interaction) => {
         check: handleReleaseWatchCheck,
         toggle: handleReleaseWatchToggle,
       },
+      blog: {
+        post: handleBlogPost,
+        channel: (i) => {
+          const action = i.options.get("action")?.value as string;
+          if (action === "view") return handleBlogChannelView(i);
+          if (action === "set") return handleBlogChannelSet(i);
+          if (action === "clear") return handleBlogChannelClear(i);
+          return handleBlogChannelView(i);
+        },
+      },
     };
 
     const handler = cmdHandlers[interaction.commandName];
@@ -404,5 +417,5 @@ async function main() {
 
 main().catch(console.error);
 
-process.on("SIGTERM", () => { stopReleaseMonitor(); process.exit(0); });
-process.on("SIGINT", () => { stopReleaseMonitor(); process.exit(0); });
+process.on("SIGTERM", () => { stopReleaseMonitor(); stopBlogMonitor(); process.exit(0); });
+process.on("SIGINT", () => { stopReleaseMonitor(); stopBlogMonitor(); process.exit(0); });

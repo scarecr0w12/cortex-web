@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { useRouter } from "@/i18n/routing";
 import { slugify } from "@/lib/utils";
-import { Plus, Edit2, Trash2, Eye, Save, X, Globe, FileText } from "lucide-react";
+import { Plus, Edit2, Trash2, Eye, Save, X, Globe, FileText, Send } from "lucide-react";
 
 interface BlogPost {
   id: string;
@@ -16,6 +16,7 @@ interface BlogPost {
   tags: string[];
   published: boolean;
   publishedAt: string | null;
+  viewCount: number;
   createdAt: string;
   updatedAt: string;
   author: { username: string } | null;
@@ -42,6 +43,8 @@ export default function AdminBlogPage() {
   });
 
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [postingSlug, setPostingSlug] = useState<string | null>(null);
+  const [discordConfigured, setDiscordConfigured] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -68,7 +71,15 @@ export default function AdminBlogPage() {
   }, []);
 
   useEffect(() => {
-    if (user?.role === "admin") fetchPosts();
+    if (user?.role === "admin") {
+      fetchPosts();
+      fetch("/api/admin/blog/post-to-discord", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
+        .then((r) => r.json())
+        .then((d) => setDiscordConfigured(d.configured))
+        .catch(() => setDiscordConfigured(false));
+    }
   }, [user, fetchPosts]);
 
   function resetForm() {
@@ -163,6 +174,25 @@ export default function AdminBlogPage() {
       fetchPosts();
     } catch {
       setError("Failed to delete post");
+    }
+  }
+
+  async function handlePostToDiscord(slug: string) {
+    setPostingSlug(slug);
+    setError("");
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("/api/admin/blog/post-to-discord", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ slug }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to send");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Failed to post to Discord");
+    } finally {
+      setPostingSlug(null);
     }
   }
 
@@ -340,9 +370,23 @@ export default function AdminBlogPage() {
                   <span>{post.slug}</span>
                   {post.tags.length > 0 && <span>{post.tags.join(", ")}</span>}
                   {post.author && <span>by {post.author.username}</span>}
+                  <span className="flex items-center gap-1">
+                    <Eye className="w-3 h-3" />
+                    {post.viewCount}
+                  </span>
                 </div>
               </div>
-              <div className="flex items-center gap-1 ml-4">
+                <div className="flex items-center gap-1 ml-4">
+                {discordConfigured !== false && (
+                  <button
+                    onClick={() => handlePostToDiscord(post.slug)}
+                    disabled={postingSlug === post.slug}
+                    className="p-2 rounded-lg text-[#55556a] hover:text-[#5865F2] hover:bg-[#111118] transition-colors disabled:opacity-50"
+                    title={postingSlug === post.slug ? "Sending..." : "Post to Discord"}
+                  >
+                    <Send className={`w-4 h-4 ${postingSlug === post.slug ? "animate-pulse" : ""}`} />
+                  </button>
+                )}
                 <a
                   href={`/blog/${post.slug}`}
                   target="_blank"

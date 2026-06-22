@@ -48,7 +48,7 @@ export const commandDefinitions = [
         { name: "key", description: "Setting to change", type: 3, required: false, choices: [
           { name: "Log Channel", value: "log_channel" }, { name: "Mod Role", value: "mod_role" }, { name: "Admin Role", value: "admin_role" },
           { name: "Max Warns", value: "max_warns" }, { name: "Default Slowmode", value: "slowmode" },
-          { name: "Auto Mod", value: "auto_mod" }, { name: "Welcome", value: "welcome" }, { name: "Leave", value: "leave" },
+          { name: "Auto Mod", value: "auto_mod" }, { name: "Welcome", value: "welcome" }, { name: "Leave", value: "leave" }, { name: "Blog Channel", value: "blog_channel" },
         ]},
         { name: "value", description: "New value", type: 3, required: false },
       ]},
@@ -176,6 +176,23 @@ export const commandDefinitions = [
       ]},
       { name: "check", description: "Force check for new releases now", type: 1, options: [
         { name: "repo", description: "Specific repo to check (omit for all)", type: 3, required: false },
+      ]},
+    ],
+  },
+  {
+    name: "blog", description: "Post blog announcements to Discord",
+    options: [
+      { name: "post", description: "Post a blog article to the blog channel", type: 1, options: [
+        { name: "slug", description: "Blog post slug (e.g. my-post-slug)", type: 3, required: true },
+        { name: "channel", description: "Override target channel", type: 7, required: false },
+      ]},
+      { name: "channel", description: "View or set the blog announcement channel", type: 1, options: [
+        { name: "action", description: "view, set, or clear", type: 3, required: true, choices: [
+          { name: "view", value: "view" },
+          { name: "set", value: "set" },
+          { name: "clear", value: "clear" },
+        ]},
+        { name: "channel", description: "Channel for blog announcements", type: 7, required: false },
       ]},
     ],
   },

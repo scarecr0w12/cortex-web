@@ -13,7 +13,9 @@ import {
   generateMetaBase,
 } from "@/lib/seo";
 import { MdxContent } from "@/components/docs/MdxContent";
-import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
+import { BlogViewTracker } from "@/components/blog/BlogViewTracker";
+import { formatNumber } from "@/lib/utils";
+import { ArrowLeft, Calendar, User, Clock, Eye } from "lucide-react";
 
 interface Props {
   params: { slug: string };
@@ -112,6 +114,7 @@ export default async function BlogDetailPage({ params }: Props) {
       <StructuredData data={articleSchema} />
 
       <article className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
+        <BlogViewTracker slug={post.slug} />
         <Link
           href="/blog"
           className="inline-flex items-center gap-1.5 text-sm text-[#9090a8] hover:text-[#e2e2ea] transition-colors mb-8"
@@ -165,6 +168,10 @@ export default async function BlogDetailPage({ params }: Props) {
             <span className="flex items-center gap-1.5">
               <Clock className="w-4 h-4" />
               {readTime} min read
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Eye className="w-4 h-4" />
+              {formatNumber(post.viewCount)} {post.viewCount === 1 ? "view" : "views"}
             </span>
             <div className="ml-auto">
               <ShareButton

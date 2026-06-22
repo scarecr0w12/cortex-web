@@ -1,7 +1,7 @@
 import { Link } from "@/i18n/routing";
 import { Badge } from "@/components/shared/Badge";
-import { formatDate } from "@/lib/utils";
-import { Calendar, User, ArrowRight } from "lucide-react";
+import { formatDate, formatNumber } from "@/lib/utils";
+import { Calendar, User, ArrowRight, Eye } from "lucide-react";
 
 interface BlogCardProps {
   post: {
@@ -12,6 +12,7 @@ interface BlogCardProps {
     coverImage: string | null;
     tags: string[];
     publishedAt: string | null;
+    viewCount?: number;
     author: { username: string; avatar: string | null; displayName: string | null } | null;
   };
 }
@@ -73,6 +74,12 @@ export function BlogCard({ post }: BlogCardProps) {
               <span className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
                 {formatDate(post.publishedAt)}
+              </span>
+            )}
+            {post.viewCount !== undefined && post.viewCount > 0 && (
+              <span className="flex items-center gap-1">
+                <Eye className="w-3 h-3" />
+                {formatNumber(post.viewCount)}
               </span>
             )}
           </div>

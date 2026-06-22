@@ -28,6 +28,7 @@ async function getSettings() {
   result._env_discord_bot_token = process.env.DISCORD_BOT_TOKEN ? "set" : "not set";
   result._env_discord_guild_id = process.env.DISCORD_GUILD_ID ? "set" : "not set";
   result._env_discord_webhook_url = process.env.DISCORD_SUBMISSION_WEBHOOK_URL ? "set" : "not set";
+  result._env_discord_blog_webhook_url = process.env.DISCORD_BLOG_WEBHOOK_URL ? "set" : "not set";
   result._env_discord_admin_ids = process.env.DISCORD_ADMIN_IDS ? "set" : "not set";
 
   const heartbeat = await prisma.setting.findUnique({ where: { key: "discord_bot_heartbeat" } });
@@ -136,7 +137,7 @@ export async function POST(request: NextRequest) {
         if (!botToken) {
           return Response.json({ error: "No bot token configured" }, { status: 400 });
         }
-        execSync("npx tsx src/deploy-commands.ts", {
+        execSync(`"${process.execPath}" ./node_modules/.bin/tsx src/deploy-commands.ts`, {
           cwd: "/root/cortex-web/discord-bot",
           timeout: 15000,
           env: { ...process.env, DISCORD_BOT_TOKEN: botToken },
