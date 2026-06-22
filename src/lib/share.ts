@@ -29,6 +29,14 @@ export function getPluginShareText(name: string, description: string): string {
   return `Check out "${name}" — a plugin for CortexPrism AI Agent Operating System: ${desc}`;
 }
 
+export function getBlogShareText(title: string, excerpt?: string | null): string {
+  if (excerpt) {
+    const desc = excerpt.length > 100 ? excerpt.slice(0, 97) + "..." : excerpt;
+    return `Read "${title}" — ${desc}`;
+  }
+  return `Read "${title}" on the CortexPrism blog`;
+}
+
 export function getAgentShareText(name: string, description: string): string {
   const desc = description.length > 100 ? description.slice(0, 97) + "..." : description;
   return `Check out "${name}" — an AI agent profile for CortexPrism: ${desc}`;

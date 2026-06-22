@@ -4,12 +4,13 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/routing";
 import { Badge } from "@/components/shared/Badge";
 import { formatDate } from "@/lib/utils";
+import { ShareButton } from "@/components/shared/ShareButton";
+import { getBlogShareText, SITE_URL } from "@/lib/share";
 import { StructuredData } from "@/components/seo/StructuredData";
 import {
   generateBreadcrumbSchema,
   generateArticleSchema,
   generateMetaBase,
-  SITE_URL,
 } from "@/lib/seo";
 import { MdxContent } from "@/components/docs/MdxContent";
 import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
@@ -165,6 +166,15 @@ export default async function BlogDetailPage({ params }: Props) {
               <Clock className="w-4 h-4" />
               {readTime} min read
             </span>
+            <div className="ml-auto">
+              <ShareButton
+                url={`/blog/${post.slug}`}
+                title={post.title}
+                text={getBlogShareText(post.title, post.excerpt)}
+                variant="ghost"
+                size="sm"
+              />
+            </div>
           </div>
         </header>
 
