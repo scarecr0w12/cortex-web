@@ -5,14 +5,14 @@ Start an interactive streaming chat session with any supported LLM provider. Thi
 ## Usage
 
 ```bash
-cortex chat [options]
-cortex chat -m gpt-4o                 # Override model
-cortex chat -s sess_abc123            # Resume an existing session
-cortex chat --resume sess_abc123      # Resume (long flag)
-cortex chat --no-stream               # Disable streaming output
-cortex chat -p anthropic              # Select provider
-cortex chat -a code-reviewer          # Use a specific agent
-cortex chat --list-agents             # List available agents
+cortex agent chat [options]
+cortex agent chat -m gpt-4o                 # Override model
+cortex agent chat -s sess_abc123            # Resume an existing session
+cortex agent chat --resume sess_abc123      # Resume (long flag)
+cortex agent chat --no-stream               # Disable streaming output
+cortex agent chat -p anthropic              # Select provider
+cortex agent chat -a code-reviewer          # Use a specific agent
+cortex agent chat --list-agents             # List available agents
 ```
 
 ## Options
@@ -70,17 +70,17 @@ User types message
 
 ```bash
 # Start a basic chat session with default provider
-cortex chat
+cortex agent chat
 
 # Use a specific model
-cortex chat -m claude-sonnet-4-5
+cortex agent chat -m claude-sonnet-4-5
 
 # Resume a previous session
-cortex chat -s sess_a1b2c3d4
+cortex agent chat -s sess_a1b2c3d4
 
 # Use a specific agent
-cortex chat -a code-reviewer
+cortex agent chat -a code-reviewer
 
 # Chat without streaming
-cortex chat --no-stream
+cortex agent chat --no-stream
 ```

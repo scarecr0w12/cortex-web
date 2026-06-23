@@ -27,7 +27,7 @@ import { generateAlternates } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "CortexPrism Features — Agent Operating System Capabilities | AI OS Features",
   description:
-    "Explore the full Agent Operating System feature set: chat with 24 LLM providers, 5-tier memory, 60+ built-in tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugin system, Parallax security, sandboxed code execution, multi-agent orchestration, UI overhaul with dark/light theme, data import from OpenClaw/Hermes, and workflow engine. All open source.",
+    "Explore the full Agent Operating System feature set: chat with 30 LLM providers, 5-tier memory, 60+ built-in tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugin system, Parallax security, sandboxed code execution, multi-agent orchestration, UI overhaul with dark/light theme, data import from OpenClaw/Hermes, and workflow engine. All open source.",
   keywords: [
     "AI OS features",
     "Agent Operating System capabilities",
@@ -53,13 +53,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CortexPrism Features — Agent Operating System Capabilities | AI OS Features",
     description:
-      "The open-source Agent Operating System: 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugins, Parallax security, sandboxed code execution, overhauled UI with dark/light theme, multi-agent orchestration.",
+      "The open-source Agent Operating System: 30 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, A2A protocol, MCP & ESM plugins, Parallax security, sandboxed code execution, overhauled UI with dark/light theme, multi-agent orchestration.",
     url: "https://cortexprism.io/features",
   },
   twitter: {
     title: "CortexPrism Features — Agent Operating System Capabilities | AI OS Features",
     description:
-      "The open-source Agent Operating System: 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, browser automation, A2A protocol, sandboxed execution, multi-agent orchestration.",
+      "The open-source Agent Operating System: 30 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, browser automation, A2A protocol, sandboxed execution, multi-agent orchestration.",
   },
 };
 
@@ -69,14 +69,14 @@ const features = [
     title: "Interactive Chat",
     subtitle: "Multi-Provider LLM Support",
     description:
-      "Chat with 24 LLM providers through a unified interface. Switch between OpenAI, Anthropic Claude, Google Gemini, Groq, and more without changing your workflow.",
+      "Chat with 30 LLM providers through a unified interface. Switch between OpenAI, Anthropic Claude, Google Gemini, Groq, DeepSeek, and more without changing your workflow.",
     benefits: [
       "One interface for all major LLM providers",
       "Provider failover and fallback chains",
       "Streaming responses with real-time token display",
       "Conversation history with search and export",
     ],
-    example: "cortex chat -m claude-sonnet-4-5",
+    example: "cortex agent chat -m claude-sonnet-4-5",
   },
   {
     icon: Wrench,
@@ -90,7 +90,7 @@ const features = [
       "Policy-based automatic approval rules",
       "Full audit log of all tool calls",
     ],
-    example: "cortex chat -s sess_abc123",
+    example: "cortex agent chat -s sess_abc123",
   },
   {
     icon: Database,
@@ -147,7 +147,7 @@ const features = [
       "Cost optimization with confidence-based fallback between providers",
       "Graceful failover on provider outages",
     ],
-    example: "cortex chat -m gpt-4o",
+    example: "cortex agent chat -m gpt-4o",
   },
   {
     icon: Clock,
@@ -190,7 +190,7 @@ const features = [
       "WebSocket for real-time streaming",
       "Session management and monitoring",
     ],
-    example: "cortex serve --port 8080",
+    example: "cortex server start --port 8080",
   },
   {
     icon: Bot,
@@ -275,7 +275,7 @@ const features = [
       "Web UI activity dashboard with timeline view",
       "REST API for programmatic audit log access",
     ],
-    example: "cortex serve && open http://127.0.0.1:3000",
+    example: "cortex server start && open http://127.0.0.1:3000",
   },
   {
     icon: Sparkles,
@@ -289,7 +289,7 @@ const features = [
       "Automatic deduplication and merging of similar skills",
       "4-tier trust system controlling agent skill exposure",
     ],
-    example: "cortex serve && open http://127.0.0.1:3000/skills",
+    example: "cortex server start && open http://127.0.0.1:3000/skills",
   },
   {
     icon: GitGraph,
@@ -303,7 +303,7 @@ const features = [
       "12 node labels and 18 edge types in the graph database",
       "D3.js Web UI with symbol search, impact analysis, and path tracing",
     ],
-    example: "cortex serve && open http://127.0.0.1:3000/codegraph",
+    example: "cortex server start && open http://127.0.0.1:3000/codegraph",
   },
   {
     icon: Mic,
@@ -345,7 +345,7 @@ const features = [
       "Execute JavaScript on pages and wait for conditions",
       "All actions gated through policy validator with user approval",
     ],
-    example: 'cortex chat -m claude-sonnet-4-5',
+    example: 'cortex agent chat -m claude-sonnet-4-5',
   },
   {
     icon: Network,
@@ -359,7 +359,7 @@ const features = [
       "Client mode: consume external A2A agents as CortexPrism tools",
       "SSE streaming for real-time agent-to-agent communication",
     ],
-    example: "cortex serve && open http://127.0.0.1:3000/a2a",
+    example: "cortex server start && open http://127.0.0.1:3000/a2a",
   },
 ];
 

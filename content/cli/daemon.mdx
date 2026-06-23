@@ -30,7 +30,7 @@ cortex daemon status                 # Show running/stopped status for each daem
 
 ## Auto-Start Behavior
 
-`cortex chat` and `cortex serve` automatically call `ensureDaemons()` which pings the validator socket and starts the supervisor if needed.
+`cortex agent chat` and `cortex server start` automatically call `ensureDaemons()` which pings the validator socket and starts the supervisor if needed.
 
 ## Supervision Loop
 
@@ -51,14 +51,13 @@ All daemons communicate via Unix domain sockets:
 
 Messages are JSON-line format, connection-per-message. Heartbeat pings check liveness.
 
-## `cortex stop`
+## Stopping
 
-Also stops daemon processes:
+The daemon can be stopped via `cortex daemon stop`. The old `cortex stop` command was removed in v0.52.0. Server and daemon management are now separate commands:
 
 ```bash
-cortex stop                          # Stop server + daemons
-cortex stop --server-only            # Stop only the HTTP server
-cortex stop --daemon-only            # Stop only the daemon processes
+cortex daemon stop                   # Stop all daemon processes
+cortex server stop                   # Stop the HTTP server
 ```
 
 ## Examples
@@ -76,6 +75,6 @@ cortex daemon run
 # Stop all daemons
 cortex daemon stop
 
-# Stop only server, keep daemons running
-cortex stop --daemon-only
+# Stop only the server
+cortex server stop
 ```

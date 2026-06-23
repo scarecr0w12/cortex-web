@@ -1,0 +1,31 @@
+# Skills System
+
+The Skills system auto-extracts reusable procedural patterns from successful tool-call sequences and stores them as versioned, quality-scored skills. Skills are injected into the agent's system prompt when relevant to the current task.
+
+## Skill Lifecycle (6 States)
+
+| State | Description |
+|-------|-------------|
+| **candidate** | Newly extracted, pending verification |
+| **verified** | Passed quality checks and deduplication |
+| **released** | Available for agent injection |
+| **degraded** | Performance dropped below threshold |
+| **deprecated** | Replaced by better alternatives |
+| **archived** | Retained for historical reference only |
+
+## Trust Tiers (4 Levels)
+
+| Tier | Source | Description |
+|------|--------|-------------|
+| **1** | LLM-extracted | Auto-extracted from sessions, lowest trust |
+| **2** | Peer-reviewed | Verified by other agents or users |
+| **3** | Curated | Reviewed by maintainers |
+| **4** | Built-in | Vetted, shipped with CortexPrism |
+
+## Retrieval
+
+Skills are stored with embeddings and retrieved via cosine similarity against the user's query. Automatic deduplication merges similar skills, and dependency tracking ensures prerequisite skills are available.
+
+## SDK
+
+Skills can also be authored manually via `.cortex/skills/SKILL.md` with YAML frontmatter and Markdown instructions.

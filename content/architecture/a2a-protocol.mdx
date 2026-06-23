@@ -1,0 +1,28 @@
+# A2A Protocol Bridge
+
+Google Agent2Agent (A2A) v1.0 protocol for cross-framework agent collaboration. JSON-RPC 2.0 transport with SSE streaming.
+
+## Modes
+
+### Server Mode
+Exposes CortexPrism agents to external A2A clients with auto-generated agent cards, skills endpoints, and SSE streaming.
+
+### Client Mode
+Consumes external A2A agents as CortexPrism tools with agent discovery, tool wrapping, and session management.
+
+## Agent Card
+
+Each exposed agent gets an A2A agent card with name, description, capabilities, skills, and endpoint URL.
+
+## Streaming
+
+SSE streaming supported for real-time agent responses via `tasks/sendSubscribe`.
+
+## CLI
+
+```bash
+cortex mcp a2a serve                # Start A2A server
+cortex mcp a2a list-agents          # List available agents
+cortex mcp a2a discover <url>       # Discover remote agents
+cortex mcp a2a agent-card <id>      # Show agent card
+```

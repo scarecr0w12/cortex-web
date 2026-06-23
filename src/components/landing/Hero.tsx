@@ -111,7 +111,7 @@ export function Hero({ version }: HeroProps) {
                   <code>
                     <span className="text-[#55556a]">$ </span>
                     <span className="text-green-400">cortex</span>
-                    <span className="text-[#e2e2ea]"> chat -m claude-sonnet-4-5</span>
+                    <span className="text-[#e2e2ea]"> agent chat -m claude-sonnet-4-5</span>
                     {"\n"}
                     <span className="text-indigo-300/60 text-xs">  ✦ Connected to Anthropic · claude-sonnet-4-5 · context: 200k</span>
                     {"\n\n"}

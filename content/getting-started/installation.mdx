@@ -101,7 +101,7 @@ docker run -it --rm \
 docker run -d --rm \
   -p 3000:3000 \
   -v ~/.cortex:/home/cortex/.cortex \
-  cortexprism/cortex:latest serve
+  cortexprism/cortex:latest server start
 ```
 
 ## Verify Installation
@@ -112,7 +112,7 @@ cortex --version
 
 You should see the version number printed:
 ```
-cortex 0.51.0
+cortex 0.52.0
 ```
 
 ## Next Steps

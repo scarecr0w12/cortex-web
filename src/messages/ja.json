@@ -122,7 +122,11 @@
     "voicePipeline": "音声パイプライン",
     "voicePipelineDesc": "音声認識、音声合成、エネルギー検出 VAD、WebSocket 経由のリアルタイム音声ストリーミング。",
     "computerUse": "コンピューター操作",
-    "computerUseDesc": "仮想ディスプレイ経由のマウス、キーボード、スクリーンショットによる GUI 自動化。"
+    "computerUseDesc": "仮想ディスプレイ経由のマウス、キーボード、スクリーンショットによる GUI 自動化。",
+    "multiAgentOrch": "マルチエージェントオーケストレーション",
+    "multiAgentOrchDesc": "複雑なエージェントワークフローのための6つのオーケストレーション戦略（シーケンシャル、パラレル、ディベート、レビューループ、階層型、グラフDAG）。",
+    "swarmOrchestration": "スウォームオーケストレーション",
+    "swarmOrchestrationDesc": "A2Aベースの分散ノードクラスタリング。コーディネーター、ノードレジストリ、ハートビート監視、リソーススナップショットを含む。"
   },
   "notFound": {
     "title": "ページが見つかりません",

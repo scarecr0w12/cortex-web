@@ -1,37 +1,16 @@
 ---
-title: cortex restart
-description: Restart the Cortex HTTP server and/or background daemon processes
+title: cortex restart (deprecated)
+description: Removed in v0.52.0 — use cortex daemon restart or cortex server restart
 ---
 
-# `cortex restart`
+# `cortex restart` (removed in v0.52)
 
-Restart the Cortex HTTP server and background daemon processes.
+The `cortex restart` command was removed in v0.52.0. Server and daemon management are now separate:
 
-## Usage
+| Old Command | New Command |
+|-------------|-------------|
+| `cortex restart` | [`cortex daemon restart`](/docs/cli/daemon) + `cortex server restart` |
+| `cortex restart --server-only` | `cortex server restart` |
+| `cortex restart --daemon-only` | [`cortex daemon restart`](/docs/cli/daemon) |
 
-```bash
-cortex restart [options]
-```
-
-## Options
-
-| Option | Description |
-|--------|-------------|
-| `--port, -p` | Port of the server to restart (default: 3000) |
-| `--host, -H` | Host to bind to (default: 127.0.0.1) |
-| `--daemon-only` | Restart only the daemon processes |
-| `--server-only` | Restart only the HTTP server |
-| `--help` | Show help for this command |
-
-## Examples
-
-```bash
-# Restart everything
-cortex restart
-
-# Restart on custom port
-cortex restart -p 8080
-
-# Restart only the server
-cortex restart --server-only
-```
+See the [CLI Reference](/docs/cli) for the full command list.

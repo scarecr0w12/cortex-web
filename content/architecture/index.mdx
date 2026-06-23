@@ -8,7 +8,7 @@ CortexPrism is a single-process AI Agent Operating System written in TypeScript/
 ┌─────────────────────────────────────────────────────────────────┐
 │                         CortexPrism                             │
 │                                                                 │
-│   CLI (cortex chat / run / serve / ...)                         │
+│   CLI (cortex agent chat / sandbox run / server start / ...)       │
 │          │                                                      │
 │          ▼                                                      │
 │   ┌─────────────────────────────────────────────┐              │
@@ -41,7 +41,7 @@ CortexPrism is a single-process AI Agent Operating System written in TypeScript/
 | **Agent Loop** | 7-stage orchestrator with metacognition assessment, memory injection, MQM model selection, LLM call, tool execution, adversarial critique, and post-turn processing |
 | **Metacognition** | Pre-execution task assessment with confidence scoring, decision classification (direct/ask_first/delegate/plan_with_rollback/parallelize), and low-confidence auto-escalation |
 | **Memory System** | 5-tier memory with hybrid FTS5 keyword + vector embedding retrieval and exponential decay scoring |
-| **LLM Layer** | 24 provider implementations with unified `LLMProvider` interface and CascadeRouter |
+| **LLM Layer** | 30 provider implementations with unified `LLMProvider` interface and CascadeRouter |
 | **Tool System** | 60+ built-in tools with 5-format tool call parsing (XML + bare JSON fallback) and extensible plugin registry |
 | **Security (Parallax)** | Multi-layer defense with policy validation gate, LLM supervisor review for sensitive data, encrypted vault, regex deny rules, and full audit logging |
 | **Security Supervisor** | 3-layer access control: data classification → LLM review of agent intent → human approval gate with 1-hour session caching |
@@ -68,6 +68,14 @@ CortexPrism is a single-process AI Agent Operating System written in TypeScript/
 | **Evaluation Framework** | Agent benchmarking with 8 task categories, pattern scoring, and regression detection |
 | **Hub Node System** | Distributed hub with WebSocket-based node registry, capability tiers, and session routing |
 | **Lens Audit Log** | Immutable event log for all system actions — LLM calls, tool execution, policy decisions |
+| **Skills System** | Self-learning procedural knowledge extraction with 6-state lifecycle, embedding-based retrieval, and 4-tier trust system |
+| **Multi-Agent Orchestration** | 6 strategies (sequential, parallel, debate, review-loop, hierarchical, graph DAG) for coordinating multiple agents |
+| **Swarm Orchestration** | A2A-based distributed node clustering with coordinator, node registry, heartbeat monitoring, and resource snapshots |
+| **Code Intelligence (Codegraph)** | Tree-sitter WASM parsing for 14+ languages with call graph resolution, impact analysis, and D3.js visualization |
+| **Voice Pipeline** | Speech-to-text (Whisper), text-to-speech (OpenAI TTS / ElevenLabs), energy-based VAD, WebSocket streaming |
+| **Computer Use** | GUI automation via Xvfb virtual displays with mouse, keyboard, and screenshot actions |
+| **A2A Protocol Bridge** | Google Agent2Agent v1.0 with JSON-RPC 2.0, SSE streaming, server/client modes for cross-framework agent collaboration |
+| **HEXACO Personality** | 6-dimension personality model driving prompt injection, memory retrieval bias, response style, and MQM routing hints |
 
 ## Data Flow
 
@@ -100,3 +108,10 @@ CortexPrism is a single-process AI Agent Operating System written in TypeScript/
 - [MCP Server](/docs/architecture/mcp-server) — Model Context Protocol server
 - [Update System](/docs/architecture/update-system) — Binary/source updates and rollback
 - [Observability](/docs/architecture/observability) — Metrics and tracing
+- [Skills System](/docs/architecture/skills-system) — Self-learning procedural knowledge
+- [Multi-Agent Orchestration](/docs/architecture/multi-agent-orchestration) — 6 coordination strategies
+- [Swarm Orchestration](/docs/architecture/swarm-orchestration) — Distributed node clustering
+- [Codegraph](/docs/architecture/codegraph) — Code intelligence graph
+- [Voice Pipeline](/docs/architecture/voice-pipeline) — Speech-to-text and text-to-speech
+- [Computer Use](/docs/architecture/computer-use) — GUI automation
+- [A2A Protocol](/docs/architecture/a2a-protocol) — Cross-framework agent collaboration

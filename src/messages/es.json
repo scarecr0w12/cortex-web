@@ -122,7 +122,11 @@
     "voicePipeline": "Canal de voz",
     "voicePipelineDesc": "Voz a texto, texto a voz, VAD basado en energía y transmisión de audio en tiempo real por WebSocket.",
     "computerUse": "Uso de ordenador",
-    "computerUseDesc": "Automatización de GUI mediante pantallas virtuales con acciones de ratón, teclado y capturas de pantalla."
+    "computerUseDesc": "Automatización de GUI mediante pantallas virtuales con acciones de ratón, teclado y capturas de pantalla.",
+    "multiAgentOrch": "Orquestación Multi-Agente",
+    "multiAgentOrchDesc": "6 estrategias de orquestación (secuencial, paralelo, debate, bucle de revisión, jerárquico, gráfico DAG) para flujos de trabajo complejos.",
+    "swarmOrchestration": "Orquestación de Enjambre",
+    "swarmOrchestrationDesc": "Agrupación distribuida de nodos basada en A2A con coordinador, registro de nodos, monitoreo de latidos e instantáneas de recursos."
   },
   "notFound": {
     "title": "Página no encontrada",

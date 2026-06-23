@@ -111,11 +111,11 @@ cortex policy add allow --pattern "write:$HOME/tmp/*"
 
 ### Server Mode
 
-When running `cortex serve`, secure the HTTP server:
+When running `cortex server start`, secure the HTTP server:
 
 ```bash
 # Bind to localhost only (default)
-cortex serve --host 127.0.0.1
+cortex server start --host 127.0.0.1
 
 # Use a reverse proxy for public access (recommended)
 # nginx configuration:
@@ -186,7 +186,7 @@ cortex run script.py --no-sandbox  # Disables Docker sandbox
 
 All security events are logged to the Lens database and are accessible via the web UI:
 
-1. Start the server: `cortex serve`
+1. Start the server: `cortex server start`
 2. Open the Lens tab at `http://localhost:3000` to view the full activity audit timeline
 3. Filter by session, tool calls, or policy decisions
 4. Export data via the REST API at the `/api/lens/recent` endpoint
@@ -211,7 +211,7 @@ If you suspect a security incident:
 1. **Isolate**: Stop all CortexPrism processes
    ```bash
    cortex daemon stop
-   cortex serve -s
+   cortex server start -s
    ```
 2. **Audit**: Review Lens audit log via the web UI at `http://localhost:3000`
 3. **Contain**: Review and tighten policy rules

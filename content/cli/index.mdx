@@ -200,25 +200,25 @@ cortex <command> [options]
 
 ## Command Renames (since v0.46+)
 
-Several top-level commands were reorganized into command groups for better discoverability. The old names still work as backward-compatible aliases (redirecting to the new path):
+Several top-level commands were reorganized into command groups for better discoverability. Through v0.51, the old names still worked as backward-compatible aliases. **As of v0.52.0, the following aliases were removed:**
 
-| Old Command | New Command |
-|-------------|-------------|
-| `cortex chat` | [`cortex agent chat`](/docs/cli/chat) |
-| `cortex tui` | [`cortex agent tui`](/docs/cli/tui) |
-| `cortex serve` | `cortex server start` |
-| `cortex start` | `cortex daemon start` |
-| `cortex stop` | `cortex daemon stop` |
-| `cortex restart` | `cortex daemon restart` |
-| `cortex run` | [`cortex sandbox run`](/docs/cli/run) |
-| `cortex migrate` | [`cortex db migrate`](/docs/cli/migrate) |
-| `cortex sessions` | [`cortex agent sessions`](/docs/cli/sessions) |
-| `cortex eval` | [`cortex agent eval`](/docs/cli/eval) |
-| `cortex reflect` | [`cortex agent reflect`](/docs/cli/reflect) |
-| `cortex voice` | [`cortex agent voice`](/docs/cli/voice) |
-| `cortex agentlint` | [`cortex agent lint`](/docs/cli/agentlint) |
-| `cortex update` | [`cortex self update`](/docs/cli/update) |
-| `cortex install` | `cortex service install` |
-| `cortex uninstall` | `cortex service uninstall` |
-| `cortex a2a` | [`cortex mcp a2a`](/docs/cli/a2a) |
-| `cortex chrome-bridge` | [`cortex mcp chrome`](/docs/cli/chrome-bridge) |
+| Old Command | Status | New Command |
+|-------------|--------|-------------|
+| `cortex chat` | ❌ Removed in v0.52 | [`cortex agent chat`](/docs/cli/chat) |
+| `cortex tui` | ❌ Removed in v0.52 | [`cortex agent tui`](/docs/cli/tui) |
+| `cortex serve` | ❌ Removed in v0.52 | `cortex server start` |
+| `cortex start` | ❌ Removed in v0.52 | `cortex daemon start` |
+| `cortex stop` | ❌ Removed in v0.52 | `cortex daemon stop` |
+| `cortex restart` | ❌ Removed in v0.52 | `cortex daemon restart` |
+| `cortex sessions` | ✅ Still available | [`cortex agent sessions`](/docs/cli/sessions) |
+| `cortex eval` | ✅ Still available | [`cortex agent eval`](/docs/cli/eval) |
+| `cortex reflect` | ✅ Still available | [`cortex agent reflect`](/docs/cli/reflect) |
+| `cortex voice` | ✅ Still available | [`cortex agent voice`](/docs/cli/voice) |
+| `cortex agentlint` | ✅ Still available | [`cortex agent lint`](/docs/cli/agentlint) |
+| `cortex update` | ✅ Still available | [`cortex self update`](/docs/cli/update) |
+| `cortex install` | ✅ Still available | `cortex service install` |
+| `cortex uninstall` | ✅ Still available | `cortex service uninstall` |
+| `cortex a2a` | ✅ Still available | [`cortex mcp a2a`](/docs/cli/a2a) |
+| `cortex chrome-bridge` | ✅ Still available | [`cortex mcp chrome`](/docs/cli/chrome-bridge) |
+| `cortex run` | ✅ Still available | [`cortex sandbox run`](/docs/cli/run) |
+| `cortex migrate` | ✅ Still available | [`cortex db migrate`](/docs/cli/migrate) |

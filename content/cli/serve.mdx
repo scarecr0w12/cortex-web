@@ -5,11 +5,11 @@ Start the built-in HTTP server with REST API endpoints and WebSocket support for
 ## Usage
 
 ```bash
-cortex serve                         # http://127.0.0.1:3000 (foreground)
-cortex serve --port 8080 --host 0.0.0.0
-cortex serve -d                      # Run in the background (daemon mode)
-cortex serve -d -r                   # Restart background server on the same port
-cortex serve -s                      # Stop background server
+cortex server start                         # http://127.0.0.1:3000 (foreground)
+cortex server start --port 8080 --host 0.0.0.0
+cortex server start -d                      # Run in the background (daemon mode)
+cortex server start -d -r                   # Restart background server on the same port
+cortex server start -s                      # Stop background server
 ```
 
 ## Options
@@ -26,8 +26,8 @@ cortex serve -s                      # Stop background server
 ## Service Management
 
 ```bash
-cortex serve install      # Install as a system service
-cortex serve uninstall    # Uninstall the system service
+cortex service install      # Install as a system service
+cortex service uninstall    # Uninstall the system service
 ```
 
 ## REST API Endpoints
@@ -110,14 +110,14 @@ Session resume is supported: including an existing `sessionId` in a `chat` messa
 
 ```bash
 # Start server on default port in foreground
-cortex serve
+cortex server start
 
 # Start on a custom port in background
-cortex serve --port 8080 --host 0.0.0.0 -d
+cortex server start --port 8080 --host 0.0.0.0 -d
 
 # Restart a background server
-cortex serve -d -r
+cortex server start -d -r
 
 # Stop the background server
-cortex serve -s
+cortex server start -s
 ```

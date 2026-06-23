@@ -122,7 +122,11 @@
     "voicePipeline": "语音管道",
     "voicePipelineDesc": "语音转文字、文字转语音、基于能量的 VAD 以及通过 WebSocket 进行实时音频流传输。",
     "computerUse": "计算机操控",
-    "computerUseDesc": "通过虚拟显示器的 GUI 自动化，支持鼠标、键盘和截图操作。"
+    "computerUseDesc": "通过虚拟显示器的 GUI 自动化，支持鼠标、键盘和截图操作。",
+    "multiAgentOrch": "多智能体编排",
+    "multiAgentOrchDesc": "6种编排策略（顺序、并行、辩论、审查循环、层级、图DAG），用于复杂智能体工作流。",
+    "swarmOrchestration": "集群编排",
+    "swarmOrchestrationDesc": "基于A2A的分布式节点集群，包含协调器、节点注册表、心跳监控和资源快照。"
   },
   "notFound": {
     "title": "页面未找到",

@@ -122,7 +122,11 @@
     "voicePipeline": "Pipeline de Voz",
     "voicePipelineDesc": "Conversão de fala em texto, texto em fala, VAD baseado em energia e transmissão de áudio em tempo real via WebSocket.",
     "computerUse": "Utilização do Computador",
-    "computerUseDesc": "Automação de interface gráfica através de ecrãs virtuais com ações de rato, teclado e captura de ecrã."
+    "computerUseDesc": "Automação de interface gráfica através de ecrãs virtuais com ações de rato, teclado e captura de ecrã.",
+    "multiAgentOrch": "Orquestração Multi-Agente",
+    "multiAgentOrchDesc": "6 estratégias de orquestração (sequencial, paralelo, debate, ciclo de revisão, hierárquico, grafo DAG) para fluxos de trabalho complexos.",
+    "swarmOrchestration": "Orquestração de Enxame",
+    "swarmOrchestrationDesc": "Agrupamento distribuído de nós baseado em A2A com coordenador, registro de nós, monitoramento de heartbeat e snapshots de recursos."
   },
   "notFound": {
     "title": "Página não encontrada",

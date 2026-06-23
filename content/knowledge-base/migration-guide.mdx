@@ -63,7 +63,7 @@ To move your CortexPrism data to a new location:
 ```bash
 # Stop all cortex processes
 cortex daemon stop
-cortex serve -s
+cortex server start -s
 
 # Copy data
 cp -r ~/.cortex /new/location/.cortex
@@ -145,7 +145,7 @@ If you have an existing tool configuration, you can wrap it as a CortexPrism plu
 ## Post-Migration Checklist
 
 1. **Verify version** — `cortex --version`
-2. **Test chat** — `cortex chat "Hello" --model claude-sonnet-4-5`
+2. **Test chat** — `cortex agent chat "Hello" --model claude-sonnet-4-5`
 3. **Check plugins** — `cortex plugins list`
 4. **Verify data** — `cortex memory search "test"` (if you had memory)
 5. **Check logs** — Review Lens audit log for errors

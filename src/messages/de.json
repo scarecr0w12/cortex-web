@@ -122,7 +122,11 @@
     "voicePipeline": "Sprach-Pipeline",
     "voicePipelineDesc": "Spracherkennung, Sprachsynthese, energiebasierte VAD und Echtzeit-Audio-Streaming über WebSocket.",
     "computerUse": "Computer-Nutzung",
-    "computerUseDesc": "GUI-Automatisierung über virtuelle Anzeigen mit Maus-, Tastatur- und Screenshot-Aktionen."
+    "computerUseDesc": "GUI-Automatisierung über virtuelle Anzeigen mit Maus-, Tastatur- und Screenshot-Aktionen.",
+    "multiAgentOrch": "Multi-Agent-Orchestrierung",
+    "multiAgentOrchDesc": "6 Orchestrierungsstrategien (sequenziell, parallel, Debatte, Überprüfungsschleife, hierarchisch, Graph-DAG) für komplexe Agenten-Workflows.",
+    "swarmOrchestration": "Schwarm-Orchestrierung",
+    "swarmOrchestrationDesc": "A2A-basierte verteilte Knoten-Clusterung mit Koordinator, Knoten-Registry, Heartbeat-Überwachung und Ressourcen-Snapshots."
   },
   "notFound": {
     "title": "Seite nicht gefunden",

@@ -13,11 +13,12 @@ import {
   GitBranch,
   Workflow,
   BrainCircuit,
-  Search,
   Sparkles,
   GitGraph,
   Mic,
   MonitorSmartphone,
+  Users,
+  Network,
 } from "lucide-react";
 
 const featureKeys = [
@@ -32,11 +33,12 @@ const featureKeys = [
   { key: "gitWorkspace",      icon: GitBranch,        color: "text-orange-400", bg: "bg-orange-500/10", glow: "rgba(251,146,60,0.15)" },
   { key: "modelQuartermaster",icon: BrainCircuit,     color: "text-violet-400", bg: "bg-violet-500/10", glow: "rgba(167,139,250,0.15)" },
   { key: "workflowEngine",    icon: Workflow,         color: "text-teal-400",   bg: "bg-teal-500/10",   glow: "rgba(45,212,191,0.15)" },
-  { key: "cortexLens",        icon: Search,           color: "text-sky-400",    bg: "bg-sky-500/10",    glow: "rgba(56,189,248,0.15)" },
   { key: "selfLearning",      icon: Sparkles,         color: "text-rose-400",   bg: "bg-rose-500/10",   glow: "rgba(251,113,133,0.15)" },
   { key: "codeIntelligence",  icon: GitGraph,         color: "text-lime-400",   bg: "bg-lime-500/10",   glow: "rgba(163,230,53,0.15)" },
   { key: "voicePipeline",     icon: Mic,              color: "text-fuchsia-400", bg: "bg-fuchsia-500/10", glow: "rgba(232,121,249,0.15)" },
   { key: "computerUse",       icon: MonitorSmartphone, color: "text-yellow-400", bg: "bg-yellow-500/10", glow: "rgba(250,204,21,0.15)" },
+  { key: "multiAgentOrch",    icon: Users,            color: "text-cyan-400",   bg: "bg-cyan-500/10",   glow: "rgba(34,211,238,0.15)" },
+  { key: "swarmOrchestration",icon: Network,          color: "text-sky-400",    bg: "bg-sky-500/10",    glow: "rgba(56,189,248,0.15)" },
 ];
 
 export function FeatureGrid() {
@@ -59,8 +61,7 @@ export function FeatureGrid() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {featureKeys.map(({ key, icon: Icon, color, bg, glow }) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">          {featureKeys.map(({ key, icon: Icon, color, bg, glow }) => (
             <div
               key={key}
               className="feature-card group relative bg-[#111118] border border-[rgba(255,255,255,0.07)] rounded-xl p-6 cursor-default transition-all duration-200 hover:border-[rgba(255,255,255,0.14)] hover:bg-[#14141c]"

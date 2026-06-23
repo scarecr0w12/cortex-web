@@ -6,7 +6,7 @@ import { generateAlternates } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "About CortexPrism — Open-Source Agent Operating System | AI OS for Autonomous Agents",
   description:
-    "CortexPrism is an open-source, self-hosted Agent Operating System — an AI OS built with TypeScript and Deno 2.x. Features 24 LLM providers, 5-tier memory, 60+ built-in tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, Parallax + LLM supervisor security, A2A protocol, MCP gateway, and an extensible plugin marketplace. Apache 2.0 licensed, privacy-first, no telemetry.",
+    "CortexPrism is an open-source, self-hosted Agent Operating System — an AI OS built with TypeScript and Deno 2.x. Features 30 LLM providers, 5-tier memory, 60+ built-in tools, self-learning skills, code intelligence, voice pipeline, computer use, browser automation, Parallax + LLM supervisor security, A2A protocol, MCP gateway, and an extensible plugin marketplace. Apache 2.0 licensed, privacy-first, no telemetry.",
   keywords: [
     "about CortexPrism",
     "open source Agent Operating System",
@@ -26,13 +26,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "About CortexPrism — Open-Source Agent Operating System | AI OS for Autonomous Agents",
     description:
-      "Open-source, self-hosted Agent Operating System — an AI OS in TypeScript/Deno 2.x. 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, browser automation, Parallax + LLM supervisor security, A2A protocol, MCP gateway. Apache 2.0 licensed.",
+      "Open-source, self-hosted Agent Operating System — an AI OS in TypeScript/Deno 2.x. 30 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, browser automation, Parallax + LLM supervisor security, A2A protocol, MCP gateway. Apache 2.0 licensed.",
     url: "https://cortexprism.io/about",
   },
   twitter: {
     title: "About CortexPrism — Open-Source Agent Operating System | AI OS for Autonomous Agents",
     description:
-      "Open-source, self-hosted Agent Operating System — an AI OS in TypeScript/Deno 2.x. 24 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, browser automation. Apache 2.0 licensed.",
+      "Open-source, self-hosted Agent Operating System — an AI OS in TypeScript/Deno 2.x. 30 LLM providers, 5-tier memory, 60+ tools, self-learning skills, code intelligence, voice, computer use, browser automation. Apache 2.0 licensed.",
   },
 };
 
@@ -55,7 +55,7 @@ export default function AboutPage() {
             CortexPrism is an AI OS — a single-process AI Agent Operating System written in TypeScript and running on Deno 2.x. It exposes a CLI, a REST API + WebSocket server, and a full-featured web UI. All state is persisted in SQLite databases using WAL mode — no external database required.
           </p>
           <p>
-            At its core, CortexPrism is an agent loop that orchestrates LLM calls, tool execution, memory operations, and reflection. It supports 24 LLM providers through a unified interface, with intelligent model routing via cascade and threshold strategies, plus a self-learning Model Quartermaster that predicts the optimal model for each task.
+            At its core, CortexPrism is an agent loop that orchestrates LLM calls, tool execution, memory operations, and reflection. It supports 30 LLM providers through a unified interface, with intelligent model routing via cascade and threshold strategies, plus a self-learning Model Quartermaster that predicts the optimal model for each task.
           </p>
           <p>
             The system features a 5-tier memory architecture with hybrid FTS5 keyword + vector embedding retrieval, a self-learning skills system that auto-extracts reusable patterns, a code intelligence engine with tree-sitter WASM parsing across 14+ languages, voice interaction pipeline, GUI automation via virtual displays, browser automation, a defense-in-depth security model (Parallax + LLM supervisor) with encrypted credential vault and DLP guard, sandboxed code execution, a git workspace with agent-powered commits, a DSL-based workflow engine, and distributed remote agent execution via hub nodes — and it all ships as a single binary.

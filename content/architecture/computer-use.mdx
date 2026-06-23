@@ -1,0 +1,26 @@
+# Computer Use (GUI Automation)
+
+GUI automation via X11 virtual framebuffer (Xvfb) with mouse control, keyboard input, and screenshot capture. Supports Docker-isolated and native desktop environments.
+
+## Agent Actions (15 Tools)
+
+`screenshot`, `click`, `double_click`, `triple_click`, `type`, `key`, `key_down`, `key_up`, `scroll`, `mouse_move`, `drag`, `wait`, `get_position`, `get_screen_size`, `clipboard`
+
+## Runtime Options
+
+| Mode | Environment | Isolation |
+|------|-------------|-----------|
+| **Docker** | Container with Xvfb | Full isolation |
+| **Native** | Host X11 display | Direct desktop control |
+
+## Security
+
+All actions gated through the Parallax policy validator. Docker isolation prevents host system access in container mode. Configurable action allowlists per agent.
+
+## CLI
+
+```bash
+cortex desktop screenshot
+cortex desktop click <x> <y>
+cortex desktop type <text>
+```

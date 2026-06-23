@@ -51,7 +51,7 @@ const useCases = [
       "Tool integration — read files, search web, execute code",
       "Sandboxed code execution for data analysis and automation",
     ],
-    example: "cortex chat --model claude-sonnet-4-5",
+    example: "cortex agent chat --model claude-sonnet-4-5",
   },
   {
     icon: Beaker,
@@ -155,7 +155,7 @@ const useCases = [
       "Visual dependency graphs via D3.js in the Web UI",
       "Impact analysis and path tracing for change management",
     ],
-    example: "cortex serve && open http://127.0.0.1:3000/codegraph",
+    example: "cortex server start && open http://127.0.0.1:3000/codegraph",
   },
 ];
 

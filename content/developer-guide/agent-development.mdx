@@ -110,10 +110,10 @@ cortex agent export my-agent
 cortex agent remove my-agent
 
 # Use in chat
-cortex chat --agent research-assistant
+cortex agent chat --agent research-assistant
 
 # Or specify inline
-cortex chat --provider openai --model gpt-4o --system-prompt "You are a helpful coding assistant"
+cortex agent chat --provider openai --model gpt-4o --system-prompt "You are a helpful coding assistant"
 ```
 
 ## Publishing Agents
@@ -121,7 +121,7 @@ cortex chat --provider openai --model gpt-4o --system-prompt "You are a helpful 
 Agents can be published to the marketplace for others to use:
 
 1. Create your agent configuration
-2. Test it locally: `cortex chat --agent my-agent`
+2. Test it locally: `cortex agent chat --agent my-agent`
 3. Publish via the [Publish Agent](/marketplace/publish/agent) page or API
 
 ## Agent Tools

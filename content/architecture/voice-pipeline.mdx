@@ -1,0 +1,27 @@
+# Voice Pipeline
+
+Speech-based interaction with CortexPrism agents via a complete audio pipeline.
+
+## Pipeline
+
+```
+Microphone → VAD (energy-based) → Whisper STT → Agent Loop → TTS (OpenAI/ElevenLabs) → Speaker
+                         │
+                   WebSocket streaming
+```
+
+## Components
+
+- **Voice Activity Detection**: Energy-based with configurable silence threshold and duration
+- **Speech-to-Text**: OpenAI Whisper (`whisper-1`) with configurable language hints
+- **Text-to-Speech**: OpenAI TTS (alloy, echo, fable, onyx, nova, shimmer) or ElevenLabs
+- **WebSocket Streaming**: Full-duplex real-time audio streaming
+
+## CLI
+
+```bash
+cortex agent voice enable
+cortex agent voice disable
+cortex agent voice set-voice <voice-id>
+cortex agent voice set-speed <0.25-4.0>
+```

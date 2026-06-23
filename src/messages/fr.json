@@ -122,7 +122,11 @@
     "voicePipeline": "Pipeline vocal",
     "voicePipelineDesc": "Reconnaissance vocale, synthèse vocale, détection d'activité vocale basée sur l'énergie et streaming audio en temps réel via WebSocket.",
     "computerUse": "Utilisation de l'ordinateur",
-    "computerUseDesc": "Automatisation d'interface graphique via des écrans virtuels avec actions de souris, clavier et capture d'écran."
+    "computerUseDesc": "Automatisation d'interface graphique via des écrans virtuels avec actions de souris, clavier et capture d'écran.",
+    "multiAgentOrch": "Orchestration Multi-Agents",
+    "multiAgentOrchDesc": "6 stratégies d'orchestration (séquentielle, parallèle, débat, boucle de révision, hiérarchique, graphe DAG) pour des workflows d'agents complexes.",
+    "swarmOrchestration": "Orchestration en Essaim",
+    "swarmOrchestrationDesc": "Clustering distribué de nœuds basé sur A2A avec coordinateur, registre de nœuds, surveillance heartbeat et instantanés de ressources."
   },
   "notFound": {
     "title": "Page introuvable",

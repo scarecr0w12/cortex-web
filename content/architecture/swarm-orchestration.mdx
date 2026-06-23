@@ -1,0 +1,24 @@
+# Swarm Orchestration
+
+Swarm Orchestration enables distributed multi-instance agent coordination across nodes using the A2A protocol. Introduced in v0.52.0.
+
+## Components
+
+| Component | Description |
+|-----------|-------------|
+| **Coordinator** | Central orchestrator managing the swarm cluster |
+| **Node Registry** | Persistent registry of all active nodes with capabilities |
+| **Heartbeat Monitor** | Periodic health checks with configurable intervals |
+| **Resource Snapshots** | CPU, memory, disk, GPU, and session counts per node |
+
+## Work Distribution
+
+The coordinator distributes agent tasks across the swarm: round-robin, capability-based, resource-aware, and affinity-based routing for session continuity.
+
+## CLI
+
+```bash
+cortex node register <url>       # Register with a coordinator
+cortex node list                 # List registered nodes
+cortex node status               # Show swarm cluster status
+```

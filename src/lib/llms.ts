@@ -34,7 +34,7 @@ export function buildLlmsTxt(): string {
 
   lines.push(`# ${SITE_NAME} — Open-Source Agent Operating System`);
   lines.push("");
-  lines.push("> CortexPrism v0.51.0 is an open-source Agent Operating System with 24 LLM providers, 5-tier memory system, MCP plugin marketplace, sandboxed code execution, overhauled web UI with dark/light theme, and parallax enterprise-grade security. Self-host autonomous AI agents — Apache 2.0 licensed.");
+  lines.push("> CortexPrism v0.52.0 is an open-source Agent Operating System with 30 LLM providers, 5-tier memory system, MCP plugin marketplace, sandboxed code execution, overhauled web UI with dark/light theme, and parallax enterprise-grade security. Self-host autonomous AI agents — Apache 2.0 licensed.");
   lines.push("");
 
   lines.push("## Get Started");

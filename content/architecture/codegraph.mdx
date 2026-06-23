@@ -1,0 +1,26 @@
+# Code Intelligence (Codegraph)
+
+Multi-language code intelligence using tree-sitter WASM parsers across 14+ languages. Builds a graph database of code symbols, resolves call targets, and enables impact analysis.
+
+## Supported Languages
+
+TypeScript, JavaScript, Python, Go, Rust, Java, Kotlin, C, C++, Ruby, PHP, Swift, Lua, Bash
+
+## Agent Tools
+
+| Tool | Description |
+|------|-------------|
+| `code_index` | Index a file or directory into the codegraph |
+| `code_search_symbol` | Search for symbols by name or type |
+| `code_trace_path` | Trace call paths between two symbols |
+| `code_get_architecture` | Extract architectural overview |
+| `code_analyze_impact` | Analyze impact of changing a symbol |
+| `code_list_projects` | List all indexed projects |
+
+## Call Target Resolution (6 Strategies)
+
+Direct import, re-export chain, class method, interface implementation, dynamic import, and global scope fallback.
+
+## Web UI
+
+D3.js force-directed graph with pan/zoom, symbol search, call path expansion, impact highlighting, and SVG/PNG export.

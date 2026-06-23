@@ -2,6 +2,27 @@
 
 All notable changes to the CortexPrism website will be documented in this file.
 
+## [0.14.0] — 2026-06-23
+
+### Changed
+- **Version sync with Cortex v0.52.0** — `CORTEX_VERSION_DEFAULT` updated from `0.51.0` to `0.52.0`, installation docs version output corrected, `SITE_DESCRIPTION` and `llms.txt` content updated
+- **Provider count updated (24 → 30)** — landing page metadata, SEO defaults, translations, about page, features page, and blog posts all updated to reflect the 6 new LLM providers added in v0.52 (DeepInfra, Hyperbolic, MiniMax, Zhipu/GLM, Replicate, Cloudflare Workers AI)
+
+### Removed
+- **Dead CLI alias docs** — `cortex chat`, `cortex tui`, `cortex serve`, `cortex start`, `cortex stop`, `cortex restart` aliases removed in v0.52.0; corresponding dedicated CLI docs (`start.mdx`, `stop.mdx`, `restart.mdx`) rewritten as deprecated redirect pages; CLI index rename table updated with removal status
+
+### Fixed
+- **CLI command references** — 31 files (24 MDX, 5 TSX, 2 lib) updated to replace removed command aliases with current command paths (`cortex chat` → `cortex agent chat`, `cortex serve` → `cortex server start`, `cortex tui` → `cortex agent tui`, etc.)
+- **Docker command in installation docs** — `cortex serve` corrected to `cortex server start`
+- **Database content sync** — 35 KnowledgeBaseArticle records and 2 BlogPost records updated with correct command names and provider counts; 3 deprecated CLI article records rewritten
+
+### Added
+- **FeatureGrid updates** — Multi-Agent Orchestration and Swarm Orchestration added to landing page feature cards, replacing Cortex Lens Audit
+- **Architecture index expanded** — 9 new subsystem entries added to architecture overview (Skills System, Multi-Agent Orchestration, Swarm Orchestration, Codegraph, Voice Pipeline, Computer Use, A2A Protocol Bridge, HEXACO Personality, Memori Checkpoints) with updated provider count
+- **7 new architecture MDX docs**: `skills-system.mdx`, `swarm-orchestration.mdx`, `codegraph.mdx`, `voice-pipeline.mdx`, `computer-use.mdx`, `multi-agent-orchestration.mdx`, `a2a-protocol.mdx`
+- **7 new KnowledgeBaseArticle DB entries** for the same topics, accessible via `/docs/knowledge-base/`
+- **10-locale i18n** — new feature translation keys added to all locale files (en, zh, es, hi, ar, pt, ru, ja, de, fr)
+
 ## [0.13.0] — 2026-06-22
 
 ### Changed
