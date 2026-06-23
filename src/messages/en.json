@@ -118,7 +118,7 @@
     "selfLearning": "Self-Learning Skills",
     "selfLearningDesc": "Auto-extracts reusable patterns from tool calls with 6-state lifecycle and trust tiering.",
     "codeIntelligence": "Code Intelligence",
-    "codeIntelligenceDesc": "Tree-sitter WASM code graph across 40+ languages with call-graph traversal and impact analysis.",
+    "codeIntelligenceDesc": "Tree-sitter WASM code graph across 14+ languages with call-graph traversal and impact analysis.",
     "voicePipeline": "Voice Pipeline",
     "voicePipelineDesc": "Speech-to-text, text-to-speech, energy-based VAD, and real-time audio streaming over WebSocket.",
     "computerUse": "Computer Use",
