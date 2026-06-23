@@ -23,7 +23,7 @@ export async function notifySubmissionAction(
 
   if (action === "approved") {
     const { subject, html } = renderSubmissionApprovedEmail(user.username, type, record.name, itemUrl);
-    if (notify) await sendEmail(user.email, subject, html);
+    if (notify) await sendEmail(user.email, subject, html, undefined, { type: "submission_approved", userId: user.id });
     await createNotification({
       userId: user.id,
       type: "submission_approved",
@@ -33,7 +33,7 @@ export async function notifySubmissionAction(
     });
   } else {
     const { subject, html } = renderSubmissionRejectedEmail(user.username, type, record.name, notes);
-    if (notify) await sendEmail(user.email, subject, html);
+    if (notify) await sendEmail(user.email, subject, html, undefined, { type: "submission_rejected", userId: user.id });
     await createNotification({
       userId: user.id,
       type: "submission_rejected",

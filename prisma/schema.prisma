@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+  model User {
   id                    String                 @id @default(cuid())
   email                 String                 @unique
   username              String                 @unique
@@ -39,6 +39,7 @@ model User {
   knowledgeBaseArticles KnowledgeBaseArticle[]
   kbArticleComments     KbArticleComment[]
   blogPosts             BlogPost[]
+  emailLogs             EmailLog[]
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
 }
@@ -414,20 +415,55 @@ model NewsletterSubscription {
 }
 
 model NewsletterCampaign {
-  id           String    @id @default(cuid())
+  id           String      @id @default(cuid())
   subject      String
   content      String
-  status       String    @default("draft")
+  status       String      @default("draft")
   sentAt       DateTime?
-  sentCount    Int       @default(0)
-  opens        Int       @default(0)
-  clicks       Int       @default(0)
-  unsubscribes Int       @default(0)
-  bounces      Int       @default(0)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  sentCount    Int         @default(0)
+  opens        Int         @default(0)
+  clicks       Int         @default(0)
+  unsubscribes Int         @default(0)
+  bounces      Int         @default(0)
+  emailLogs    EmailLog[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
   @@map("NewsletterCampaign")
+}
+
+model EmailLog {
+  id                String              @id @default(cuid())
+  to                String
+  subject           String
+  type              String              // "welcome" | "submission_approved" | "submission_rejected" | "newsletter_verification" | "newsletter_welcome" | "newsletter_campaign" | "system"
+  status            String              @default("sent") // sent | delivered | opened | clicked | bounced | spam | failed | deferred | unsubscribed
+  messageId         String?             @unique // our own tracking ID for pixel/click links
+  sendgridMessageId String?             // x-message-id from SendGrid response
+  campaignId        String?
+  campaign          NewsletterCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  userId            String?
+  user              User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  errorMessage      String?
+  metadata          String?             // JSON
+  openIp            String?
+  openUserAgent     String?
+  clickIp           String?
+  clickUserAgent    String?
+  clickUrl          String?
+  sentAt            DateTime            @default(now())
+  deliveredAt       DateTime?
+  openedAt          DateTime?
+  clickedAt         DateTime?
+  bouncedAt         DateTime?
+  createdAt         DateTime            @default(now())
+
+  @@index([status])
+  @@index([campaignId])
+  @@index([userId])
+  @@index([to])
+  @@index([sentAt])
+  @@map("EmailLog")
 }
 
 model Setting {

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { updateEmailStatus } from "@/lib/email";
 
 function parseCampaignId(event: Record<string, unknown>): string | undefined {
   if (typeof event.campaign_id === "string") return event.campaign_id;
@@ -15,6 +16,26 @@ function parseCampaignId(event: Record<string, unknown>): string | undefined {
   }
 }
 
+function parseSendgridMessageId(event: Record<string, unknown>): string | undefined {
+  if (typeof event.sg_message_id === "string") return event.sg_message_id;
+  return undefined;
+}
+
+function mapEventToStatus(eventType: string): string | null {
+  switch (eventType) {
+    case "processed": return "sent";
+    case "delivered": return "delivered";
+    case "open": return "opened";
+    case "click": return "clicked";
+    case "bounce":
+    case "blocked": return "bounced";
+    case "spamreport": return "spam";
+    case "unsubscribe": return "unsubscribed";
+    case "deferred": return "deferred";
+    default: return null;
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const events = await request.json();
@@ -24,6 +45,8 @@ export async function POST(request: NextRequest) {
       const eventType = event.event as string;
       const campaignId = parseCampaignId(event);
       const email = typeof event.email === "string" ? event.email.toLowerCase().trim() : null;
+      const sgMessageId = parseSendgridMessageId(event);
+      const status = mapEventToStatus(eventType);
 
       if (campaignId) {
         const campaign = await prisma.newsletterCampaign.findUnique({
@@ -100,6 +123,39 @@ export async function POST(request: NextRequest) {
           where: { email },
           data: { status: "unsubscribed", unsubscribedAt: new Date() },
         });
+      }
+
+      if (status || sgMessageId) {
+        const ip = typeof event.ip === "string" ? event.ip : undefined;
+        const userAgent = typeof event.useragent === "string" ? event.useragent : undefined;
+        const url = typeof event.url === "string" ? event.url : undefined;
+
+        if (sgMessageId) {
+          const logBySg = await prisma.emailLog.findFirst({
+            where: { sendgridMessageId: sgMessageId },
+            select: { id: true, messageId: true, status: true },
+          });
+          if (logBySg && status) {
+            await updateEmailStatus({
+              messageId: logBySg.messageId || undefined,
+              status,
+              ip,
+              userAgent,
+              clickUrl: url,
+            });
+          }
+        }
+
+        if (email && campaignId && status) {
+          await updateEmailStatus({
+            to: email,
+            campaignId,
+            status,
+            ip,
+            userAgent,
+            clickUrl: url,
+          });
+        }
       }
     }
 

@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     const token = signToken({ userId: user.id, role: user.role });
 
     const { subject, html } = renderWelcomeEmail(user.username);
-    await sendEmail(user.email, subject, html);
+    await sendEmail(user.email, subject, html, undefined, { type: "welcome", userId: user.id });
 
     await createNotification({
       userId: user.id,

@@ -1,5 +1,7 @@
 import sgMail from "@sendgrid/mail";
 import crypto from "crypto";
+import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || "";
 const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || "noreply@cortexprism.io";
@@ -11,6 +13,128 @@ const isConfigured = !!SENDGRID_API_KEY;
 
 if (SENDGRID_API_KEY) {
   sgMail.setApiKey(SENDGRID_API_KEY);
+}
+
+export function generateMessageId(): string {
+  return crypto.randomBytes(16).toString("hex");
+}
+
+function trackingPixel(messageId: string): string {
+  const trackUrl = `${SITE_URL}/api/email/track/open?id=${encodeURIComponent(messageId)}`;
+  return `<img src="${trackUrl}" width="1" height="1" alt="" style="display:block;max-height:1px;max-width:1px;visibility:hidden;overflow:hidden;mso-hide:all;" />`;
+}
+
+export function clickTrackingUrl(messageId: string, url: string): string {
+  return `${SITE_URL}/api/email/track/click?id=${encodeURIComponent(messageId)}&url=${encodeURIComponent(url)}`;
+}
+
+async function logEmail(params: {
+  to: string;
+  subject: string;
+  type: string;
+  messageId: string;
+  campaignId?: string;
+  userId?: string;
+  metadata?: Record<string, string>;
+  error?: string;
+}): Promise<void> {
+  try {
+    await prisma.emailLog.create({
+      data: {
+        to: params.to,
+        subject: params.subject,
+        type: params.type,
+        status: params.error ? "failed" : "sent",
+        messageId: params.messageId,
+        campaignId: params.campaignId || null,
+        userId: params.userId || null,
+        errorMessage: params.error || null,
+        metadata: params.metadata ? JSON.stringify(params.metadata) : null,
+      },
+    });
+  } catch (e) {
+    console.error("[email] Failed to log email:", e);
+  }
+}
+
+export async function updateEmailSendgridId(messageId: string, sendgridMessageId: string): Promise<void> {
+  try {
+    await prisma.emailLog.updateMany({
+      where: { messageId },
+      data: { sendgridMessageId },
+    });
+  } catch (e) {
+    console.error("[email] Failed to update SendGrid message ID:", e);
+  }
+}
+
+export async function updateEmailStatus(params: {
+  messageId?: string;
+  to?: string;
+  campaignId?: string;
+  status: string;
+  ip?: string;
+  userAgent?: string;
+  clickUrl?: string;
+  occurredAt?: Date;
+}): Promise<void> {
+  try {
+    const where: Record<string, unknown> = {};
+    if (params.messageId) {
+      where.messageId = params.messageId;
+    } else if (params.to && params.campaignId) {
+      where.to = params.to;
+      where.campaignId = params.campaignId;
+    } else {
+      return;
+    }
+
+    const existing = await prisma.emailLog.findMany({
+      where: where as Prisma.EmailLogWhereInput,
+      select: { id: true, status: true },
+      orderBy: { sentAt: "desc" },
+      take: 1,
+    });
+
+    if (existing.length === 0) return;
+
+    const record = existing[0];
+    const statusOrder = ["sent", "deferred", "delivered", "opened", "clicked"];
+    const currentRank = statusOrder.indexOf(record.status);
+    const newRank = statusOrder.indexOf(params.status);
+
+    if (newRank <= currentRank) return;
+
+    const data: Record<string, unknown> = { status: params.status };
+
+    switch (params.status) {
+      case "delivered":
+        data.deliveredAt = params.occurredAt || new Date();
+        break;
+      case "opened":
+        data.openedAt = params.occurredAt || new Date();
+        data.openIp = params.ip || null;
+        data.openUserAgent = params.userAgent || null;
+        break;
+      case "clicked":
+        data.clickedAt = params.occurredAt || new Date();
+        data.clickIp = params.ip || null;
+        data.clickUserAgent = params.userAgent || null;
+        data.clickUrl = params.clickUrl || null;
+        break;
+      case "bounced":
+      case "spam":
+        data.bouncedAt = params.occurredAt || new Date();
+        break;
+    }
+
+    await prisma.emailLog.update({
+      where: { id: record.id },
+      data: data as Prisma.EmailLogUpdateInput,
+    });
+  } catch (e) {
+    console.error("[email] Failed to update email status:", e);
+  }
 }
 
 function escapeHtml(str: string): string {
@@ -37,21 +161,68 @@ function buildEmail(
   };
 }
 
+export interface SendEmailOptions {
+  type?: string;
+  userId?: string;
+  campaignId?: string;
+  metadata?: Record<string, string>;
+}
+
 export async function sendEmail(
   to: string,
   subject: string,
   html: string,
-  customArgs?: Record<string, string>
+  customArgs?: Record<string, string>,
+  options?: SendEmailOptions
 ): Promise<boolean> {
+  const messageId = generateMessageId();
+  const htmlWithTracking = html.replace(
+    "</body>",
+    `${trackingPixel(messageId)}</body>`
+  );
+
   if (!isConfigured) {
     console.log(`[email] Skipping email to ${to}: "${subject}" (SendGrid not configured)`);
+    await logEmail({
+      to,
+      subject,
+      type: options?.type || "system",
+      messageId,
+      campaignId: options?.campaignId,
+      userId: options?.userId,
+      metadata: options?.metadata,
+      error: "SendGrid not configured",
+    });
     return false;
   }
   try {
-    await sgMail.send(buildEmail(to, subject, html, customArgs));
+    const [response] = await sgMail.send(buildEmail(to, subject, htmlWithTracking, customArgs));
+    const sendgridMessageId = response?.headers?.["x-message-id"];
+    await logEmail({
+      to,
+      subject,
+      type: options?.type || "system",
+      messageId,
+      campaignId: options?.campaignId,
+      userId: options?.userId,
+      metadata: options?.metadata,
+    });
+    if (sendgridMessageId) {
+      await updateEmailSendgridId(messageId, sendgridMessageId);
+    }
     return true;
   } catch {
     console.error(`[email] Failed to send email to ${to}: "${subject}"`);
+    await logEmail({
+      to,
+      subject,
+      type: options?.type || "system",
+      messageId,
+      campaignId: options?.campaignId,
+      userId: options?.userId,
+      metadata: options?.metadata,
+      error: "SendGrid send failed",
+    });
     return false;
   }
 }
@@ -328,7 +499,11 @@ export async function sendBulkEmails(
     const emailHtml = renderNewsletterCampaignEmail(subject, content, unsubscribeToken, campaignId).html;
     const customArgs: Record<string, string> = { subscriber_email: to };
     if (campaignId) customArgs.campaign_id = campaignId;
-    const success = await sendEmail(to, subject, emailHtml, customArgs);
+    const success = await sendEmail(to, subject, emailHtml, customArgs, {
+      type: "newsletter_campaign",
+      campaignId,
+      metadata: { subscriber_email: to },
+    });
     if (success) {
       sent++;
     } else {

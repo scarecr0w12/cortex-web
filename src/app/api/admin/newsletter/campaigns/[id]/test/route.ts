@@ -46,7 +46,8 @@ export async function POST(
       testEmail,
       `[TEST] ${rendered.subject}`,
       rendered.html,
-      { campaign_id: params.id, subscriber_email: testEmail, test_send: "true" }
+      { campaign_id: params.id, subscriber_email: testEmail, test_send: "true" },
+      { type: "newsletter_campaign", campaignId: params.id, metadata: { subscriber_email: testEmail, test_send: "true" } }
     );
 
     if (!success) {

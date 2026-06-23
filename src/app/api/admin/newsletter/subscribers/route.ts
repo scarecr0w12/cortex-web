@@ -148,7 +148,9 @@ export async function PUT(request: NextRequest) {
       await sendEmail(
         sub.email,
         renderNewsletterVerificationEmail(sub.email, verificationToken).subject,
-        renderNewsletterVerificationEmail(sub.email, verificationToken).html
+        renderNewsletterVerificationEmail(sub.email, verificationToken).html,
+        undefined,
+        { type: "newsletter_verification" }
       );
 
       return Response.json({ message: "Verification email sent" });

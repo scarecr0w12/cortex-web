@@ -73,7 +73,9 @@ export async function POST(request: NextRequest) {
         await sendEmail(
           normalizedEmail,
           renderNewsletterVerificationEmail(normalizedEmail, verificationToken).subject,
-          renderNewsletterVerificationEmail(normalizedEmail, verificationToken).html
+          renderNewsletterVerificationEmail(normalizedEmail, verificationToken).html,
+          undefined,
+          { type: "newsletter_verification" }
         );
         return Response.json({ message: "Verification email sent" });
       }
@@ -92,7 +94,9 @@ export async function POST(request: NextRequest) {
     await sendEmail(
       normalizedEmail,
       renderNewsletterVerificationEmail(normalizedEmail, verificationToken).subject,
-      renderNewsletterVerificationEmail(normalizedEmail, verificationToken).html
+      renderNewsletterVerificationEmail(normalizedEmail, verificationToken).html,
+      undefined,
+      { type: "newsletter_verification" }
     );
 
     return Response.json({ message: "Verification email sent" }, { status: 201 });

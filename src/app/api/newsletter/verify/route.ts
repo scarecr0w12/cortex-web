@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   });
 
   const welcome = renderNewsletterWelcomeEmail();
-  sendEmail(sub.email, welcome.subject, welcome.html).catch(() => {});
+  sendEmail(sub.email, welcome.subject, welcome.html, undefined, { type: "newsletter_welcome" }).catch(() => {});
 
   return Response.redirect(new URL("/?subscribed=1", request.url));
 }
