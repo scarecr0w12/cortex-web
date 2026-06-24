@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { Bell, CheckCheck, Check, ExternalLink, Package, Bot, Info } from "lucide-react";
 import { cn, formatDate } from "@/lib/utils";
 import { useAuth } from "@/lib/AuthContext";
@@ -17,6 +18,7 @@ interface Notification {
 }
 
 export function NotificationBell() {
+  const t = useTranslations("components");
   const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -107,8 +109,8 @@ export function NotificationBell() {
       <button
         onClick={() => { setOpen(!open); if (!open) fetchNotifications(); }}
         className="relative p-2 rounded-lg text-[#9090a8] hover:text-[#e2e2ea] hover:bg-[#111118] transition-colors"
-        title="Notifications"
-        aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
+        title={t("notifications")}
+        aria-label={`${t("notifications")}${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
       >
         <Bell className="w-4 h-4" />
         {unreadCount > 0 && (
@@ -121,22 +123,22 @@ export function NotificationBell() {
       {open && (
         <div className="absolute top-full right-0 mt-1.5 w-80 glass-card shadow-2xl shadow-black/40 overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(255,255,255,0.07)]">
-            <span className="text-sm font-semibold text-[#e2e2ea]">Notifications</span>
+            <span className="text-sm font-semibold text-[#e2e2ea]">{t("notifications")}</span>
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
                 className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
               >
-                <CheckCheck className="w-3 h-3" /> Mark all read
+                <CheckCheck className="w-3 h-3" /> {t("markAllRead")}
               </button>
             )}
           </div>
 
           <div className="max-h-80 overflow-y-auto">
             {loading && notifications.length === 0 ? (
-              <div className="p-6 text-center text-sm text-[#55556a]">Loading...</div>
+              <div className="p-6 text-center text-sm text-[#55556a]">{t("loading")}</div>
             ) : notifications.length === 0 ? (
-              <div className="p-6 text-center text-sm text-[#55556a]">No notifications yet</div>
+              <div className="p-6 text-center text-sm text-[#55556a]">{t("noNotifications")}</div>
             ) : (
               notifications.map((n) => (
                 <div
@@ -154,7 +156,7 @@ export function NotificationBell() {
                         <button
                           onClick={() => markRead(n.id)}
                           className="shrink-0 p-0.5 rounded text-[#55556a] hover:text-indigo-400 transition-colors"
-                          title="Mark as read"
+                          title={t("markAllRead")}
                         >
                           <Check className="w-3 h-3" />
                         </button>
@@ -171,7 +173,7 @@ export function NotificationBell() {
                           onClick={() => setOpen(false)}
                           className="text-[10px] text-indigo-400 hover:text-indigo-300 flex items-center gap-0.5"
                         >
-                          View <ExternalLink className="w-2.5 h-2.5" />
+                          {t("view")} <ExternalLink className="w-2.5 h-2.5" />
                         </Link>
                       )}
                     </div>
@@ -187,7 +189,7 @@ export function NotificationBell() {
               onClick={() => setOpen(false)}
               className="block px-4 py-2.5 text-center text-xs text-indigo-400 hover:text-indigo-300 border-t border-[rgba(255,255,255,0.07)] transition-colors"
             >
-              View all notifications
+              {t("viewAllNotifications")}
             </Link>
           )}
         </div>

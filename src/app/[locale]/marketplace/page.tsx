@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { ArrowRight, Puzzle, Bot, Sparkles, TrendingUp, Zap } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
@@ -42,12 +43,14 @@ export default async function MarketplacePage() {
     prisma.agentConfig.count({ where: { status: "approved" } }),
   ]);
 
+  const t = await getTranslations("marketplaceHub");
+
   return (
     <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 md:py-20">
       <div className="text-center mb-16">
-        <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">Marketplace</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">{t("heading")}</h1>
         <p className="mt-4 text-lg text-[#9090a8] max-w-4xl mx-auto">
-          Discover plugins and agent configurations for the CortexPrism ecosystem.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -59,17 +62,17 @@ export default async function MarketplacePage() {
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 mb-4 group-hover:bg-emerald-500/30 transition-colors">
                 <Puzzle className="w-6 h-6" />
               </div>
-              <h2 className="text-xl font-bold text-[#e2e2ea] mb-2 group-hover:text-white transition-colors">Plugins</h2>
+              <h2 className="text-xl font-bold text-[#e2e2ea] mb-2 group-hover:text-white transition-colors">{t("plugins")}</h2>
               <p className="text-[#9090a8] mb-6">
-                Extend CortexPrism with powerful plugins. ESM modules, MCP servers, and WASM runtimes.
+                {t("pluginsDesc")}
               </p>
               <div className="flex items-center justify-between">
                 <div className="flex flex-col">
                   <span className="text-2xl font-bold gradient-text">{pluginCount}</span>
-                  <span className="text-xs text-[#55556a]">plugins available</span>
+                  <span className="text-xs text-[#55556a]">{t("pluginsAvailable")}</span>
                 </div>
                 <span className="inline-flex items-center gap-1 text-sm text-emerald-400 group-hover:gap-2 transition-all">
-                  Browse <ArrowRight className="w-4 h-4" />
+                  {t("browse")} <ArrowRight className="w-4 h-4" />
                 </span>
               </div>
             </div>
@@ -83,17 +86,17 @@ export default async function MarketplacePage() {
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 mb-4 group-hover:bg-purple-500/30 transition-colors">
                 <Bot className="w-6 h-6" />
               </div>
-              <h2 className="text-xl font-bold text-[#e2e2ea] mb-2 group-hover:text-white transition-colors">Agents</h2>
+              <h2 className="text-xl font-bold text-[#e2e2ea] mb-2 group-hover:text-white transition-colors">{t("agents")}</h2>
               <p className="text-[#9090a8] mb-6">
-                Discover pre-configured agent profiles for various tasks and domains.
+                {t("agentsDesc")}
               </p>
               <div className="flex items-center justify-between">
                 <div className="flex flex-col">
                   <span className="text-2xl font-bold gradient-text">{agentCount}</span>
-                  <span className="text-xs text-[#55556a]">agents available</span>
+                  <span className="text-xs text-[#55556a]">{t("agentsAvailable")}</span>
                 </div>
                 <span className="inline-flex items-center gap-1 text-sm text-purple-400 group-hover:gap-2 transition-all">
-                  Browse <ArrowRight className="w-4 h-4" />
+                  {t("browse")} <ArrowRight className="w-4 h-4" />
                 </span>
               </div>
             </div>
@@ -101,7 +104,6 @@ export default async function MarketplacePage() {
         </Link>
       </div>
 
-      {/* Marketplace Overview */}
       <div className="grid md:grid-cols-3 gap-6 mb-8">
         <div className="glass-card p-6">
           <div className="flex items-start gap-3 mb-4">
@@ -110,12 +112,12 @@ export default async function MarketplacePage() {
             </div>
             <div>
               <div className="text-2xl font-bold gradient-text">{pluginCount}</div>
-              <div className="text-xs text-[#55556a] uppercase tracking-wider">Plugins Available</div>
+              <div className="text-xs text-[#55556a] uppercase tracking-wider">{t("overviewPlugins")}</div>
             </div>
           </div>
-          <p className="text-xs text-[#9090a8] mb-4">ESM modules, MCP servers, and WASM runtimes</p>
+          <p className="text-xs text-[#9090a8] mb-4">{t("overviewPluginsDesc")}</p>
           <Link href="/marketplace/plugins" className="text-xs text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1">
-            Browse All <ArrowRight className="w-3 h-3" />
+            {t("browse")} All <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
 
@@ -126,12 +128,12 @@ export default async function MarketplacePage() {
             </div>
             <div>
               <div className="text-2xl font-bold gradient-text">{agentCount}</div>
-              <div className="text-xs text-[#55556a] uppercase tracking-wider">Agent Profiles</div>
+              <div className="text-xs text-[#55556a] uppercase tracking-wider">{t("overviewAgents")}</div>
             </div>
           </div>
-          <p className="text-xs text-[#9090a8] mb-4">Pre-configured agent profiles for various tasks</p>
+          <p className="text-xs text-[#9090a8] mb-4">{t("overviewAgentsDesc")}</p>
           <Link href="/marketplace/agents" className="text-xs text-purple-400 hover:text-purple-300 font-medium flex items-center gap-1">
-            Browse All <ArrowRight className="w-3 h-3" />
+            {t("browse")} All <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
 
@@ -144,48 +146,47 @@ export default async function MarketplacePage() {
               <div className="text-2xl font-bold gradient-text">
                 {formatNumber(pluginCount + agentCount)}
               </div>
-              <div className="text-xs text-[#55556a] uppercase tracking-wider">Total Items</div>
+              <div className="text-xs text-[#55556a] uppercase tracking-wider">{t("overviewTotal")}</div>
             </div>
           </div>
-          <p className="text-xs text-[#9090a8] mb-4">Community-curated extensions & profiles</p>
+          <p className="text-xs text-[#9090a8] mb-4">{t("communityCurated")}</p>
           <div className="flex flex-col gap-2">
             <Link href="/marketplace/publish/plugin" className="text-xs text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1">
-              Share a Plugin <ArrowRight className="w-3 h-3" />
+              {t("sharePlugin")} <ArrowRight className="w-3 h-3" />
             </Link>
             <Link href="/marketplace/publish/agent" className="text-xs text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1">
-              Share an Agent <ArrowRight className="w-3 h-3" />
+              {t("shareAgent")} <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Features Highlight */}
       <div className="glass-card p-8">
         <div className="flex items-center gap-3 mb-8">
           <Sparkles className="w-5 h-5 text-indigo-400" />
-          <h2 className="text-lg font-semibold text-[#e2e2ea]">Why Use the Marketplace?</h2>
+          <h2 className="text-lg font-semibold text-[#e2e2ea]">{t("whyTitle")}</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="rounded-lg border border-[rgba(255,255,255,0.07)] bg-[#0a0a0f] p-6">
             <div className="flex items-center gap-2 mb-3">
               <Zap className="w-4 h-4 text-indigo-400" />
-              <h3 className="font-semibold text-[#e2e2ea]">Easy Integration</h3>
+              <h3 className="font-semibold text-[#e2e2ea]">{t("easyIntegration")}</h3>
             </div>
-            <p className="text-xs text-[#9090a8]">Quickly integrate plugins and agents into your CortexPrism setup with standardized installation commands.</p>
+            <p className="text-xs text-[#9090a8]">{t("easyIntegrationDesc")}</p>
           </div>
           <div className="rounded-lg border border-[rgba(255,255,255,0.07)] bg-[#0a0a0f] p-6">
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="w-4 h-4 text-emerald-400" />
-              <h3 className="font-semibold text-[#e2e2ea]">Community-Driven</h3>
+              <h3 className="font-semibold text-[#e2e2ea]">{t("communityDriven")}</h3>
             </div>
-            <p className="text-xs text-[#9090a8]">Discover and share community-built extensions that solve real-world problems and extend platform capabilities.</p>
+            <p className="text-xs text-[#9090a8]">{t("communityDrivenDesc")}</p>
           </div>
           <div className="rounded-lg border border-[rgba(255,255,255,0.07)] bg-[#0a0a0f] p-6">
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="w-4 h-4 text-purple-400" />
-              <h3 className="font-semibold text-[#e2e2ea]">Curated Quality</h3>
+              <h3 className="font-semibold text-[#e2e2ea]">{t("curatedQuality")}</h3>
             </div>
-            <p className="text-xs text-[#9090a8]">All marketplace items are reviewed for quality, security, and compatibility with the CortexPrism ecosystem.</p>
+            <p className="text-xs text-[#9090a8]">{t("curatedQualityDesc")}</p>
           </div>
         </div>
       </div>

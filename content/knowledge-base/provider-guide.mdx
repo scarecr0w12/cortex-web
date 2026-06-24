@@ -170,3 +170,258 @@ ollama pull llama3.2
 ```
 
 Ollama runs entirely locally — no API key needed.
+
+## Cerebras
+
+```bash
+# 1. Get your API key from https://cloud.cerebras.ai
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "cerebras": { "kind": "cerebras", "model": "llama3.1-8b", "apiKey": "..." }
+}
+```
+
+## Fireworks AI
+
+```bash
+# 1. Get your API key from https://fireworks.ai/api-keys
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "fireworks": { "kind": "fireworks", "model": "accounts/fireworks/models/llama-v3p1-70b-instruct", "apiKey": "..." }
+}
+```
+
+## Perplexity
+
+```bash
+# 1. Get your API key from https://docs.perplexity.ai
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "perplexity": { "kind": "perplexity", "model": "llama-3.1-sonar-large-128k-online", "apiKey": "..." }
+}
+```
+
+Perplexity supports `searchRecencyFilter` for month/week/day/hour search freshness.
+
+## NVIDIA NIM
+
+```bash
+# 1. Get your API key from https://build.nvidia.com
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "nvidia": { "kind": "nvidia", "model": "meta/llama-3.1-405b-instruct", "apiKey": "..." }
+}
+```
+
+## Moonshot (Kimi)
+
+```bash
+# 1. Get your API key from https://platform.moonshot.cn
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "moonshot": { "kind": "moonshot", "model": "moonshot-v1-8k", "apiKey": "..." }
+}
+```
+
+## Novita AI
+
+```bash
+# 1. Get your API key from https://novita.ai
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "novita": { "kind": "novita", "model": "meta-llama/llama-3.1-8b-instruct", "apiKey": "..." }
+}
+```
+
+## LM Studio (Local)
+
+```bash
+# 1. Install LM Studio from https://lmstudio.ai
+# 2. Load a model and start the local server
+# 3. Configure:
+```
+
+```json
+{
+  "lmstudio": { "kind": "lmstudio", "model": "local-model", "baseUrl": "http://localhost:1234/v1" }
+}
+```
+
+LM Studio runs entirely locally — no API key needed.
+
+## LiteLLM (Proxy)
+
+```bash
+# 1. Set up LiteLLM proxy from https://docs.litellm.ai
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "litellm": { "kind": "litellm", "model": "gpt-4o", "baseUrl": "http://localhost:4000/v1", "apiKey": "..." }
+}
+```
+
+## Hugging Face
+
+```bash
+# 1. Get your API token from https://huggingface.co/settings/tokens
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "huggingface": { "kind": "huggingface", "model": "meta-llama/Llama-3.1-8B-Instruct", "apiKey": "hf_..." }
+}
+```
+
+## Alibaba (Qwen)
+
+```bash
+# 1. Get your API key from https://dashscope.console.aliyun.com
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "alibaba": { "kind": "alibaba", "model": "qwen-max", "apiKey": "sk-..." }
+}
+```
+
+## Venice AI
+
+```bash
+# 1. Get your API key from https://venice.ai/settings/api
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "venice": { "kind": "venice", "model": "llama-3.3-70b", "apiKey": "..." }
+}
+```
+
+Venice AI is privacy-focused with no logging.
+
+## DeepInfra
+
+```bash
+# 1. Get your API key from https://deepinfra.com/dash/api_keys
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "deepinfra": { "kind": "deepinfra", "model": "meta-llama/Llama-3.3-70B-Instruct", "apiKey": "..." }
+}
+```
+
+DeepInfra offers serverless GPU inference with competitive pricing.
+
+## Hyperbolic
+
+```bash
+# 1. Get your API key from https://app.hyperbolic.xyz
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "hyperbolic": { "kind": "hyperbolic", "model": "deepseek-ai/DeepSeek-V3", "apiKey": "..." }
+}
+```
+
+Hyperbolic provides ~80% cheaper inference than competing cloud providers.
+
+## MiniMax
+
+```bash
+# 1. Get your API key from https://platform.minimaxi.com
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "minimax": { "kind": "minimax", "model": "MiniMax-M3", "apiKey": "..." }
+}
+```
+
+MiniMax M3 achieves 80.5% on SWE-bench at $0.30/$1.20 per 1M tokens.
+
+## Zhipu (GLM)
+
+```bash
+# 1. Get your API key from https://open.bigmodel.cn
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "zhipu": { "kind": "zhipu", "model": "glm-4-flash", "apiKey": "..." }
+}
+```
+
+Zhipu offers a free tier with the `glm-4-flash` model.
+
+## Replicate
+
+```bash
+# 1. Get your API token from https://replicate.com/account/api-tokens
+# 2. Configure:
+```
+
+```json
+{
+  "replicate": { "kind": "replicate", "model": "meta/meta-llama-3.1-405b-instruct", "apiKey": "r8_..." }
+}
+```
+
+Replicate uses a predictions-based API with SSE streaming.
+
+## Cloudflare Workers AI
+
+```bash
+# 1. Get your Cloudflare Account ID and API token from https://dash.cloudflare.com
+# 2. Configure:
+```
+
+```json
+{
+  "cloudflare": { "kind": "cloudflare", "model": "@cf/meta/llama-3.1-8b-instruct", "apiKey": "...", "accountId": "..." }
+}
+```
+
+Cloudflare Workers AI runs inference at the edge. Requires Account ID + API token.
+
+## Kilo AI
+
+```bash
+# 1. Get your API key from https://kilo.ai
+# 2. Configure (OpenAI-compatible):
+```
+
+```json
+{
+  "kilo": { "kind": "kilo", "model": "kilo-default", "apiKey": "..." }
+}
+```
+
+Kilo provides hosted model inference with an OpenAI-compatible API.

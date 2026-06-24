@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { getRepoMetadata, getRepoReadme } from "@/lib/github";
 import { AgentDetailView } from "@/components/marketplace/AgentDetail";
@@ -11,10 +12,11 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const t = await getTranslations("marketplaceList");
   const agent = await prisma.agentConfig.findFirst({
     where: { status: "approved", OR: [{ id: params.id }, { slug: params.id }] },
   });
-  if (!agent) return { title: "Agent Not Found" };
+  if (!agent) return { title: t("agentNotFound") };
   const desc = agent.description?.length
     ? agent.description.length > 160
       ? agent.description.slice(0, 157) + "..."
@@ -55,6 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function AgentDetailPage({ params }: Props) {
+  const t = await getTranslations("marketplaceList");
   const agent = await prisma.agentConfig.findFirst({
     where: { status: "approved", OR: [{ id: params.id }, { slug: params.id }] },
     include: { category: true, screenshots: { orderBy: { order: "asc" } }, versions: { orderBy: { createdAt: "desc" }, take: 10 } },
@@ -68,9 +71,9 @@ export default async function AgentDetailPage({ params }: Props) {
   ]);
 
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "Home", url: SITE_URL },
-    { name: "Marketplace", url: `${SITE_URL}/marketplace` },
-    { name: "Agents", url: `${SITE_URL}/marketplace/agents` },
+    { name: t("home"), url: SITE_URL },
+    { name: t("breadcrumbMarketplace"), url: `${SITE_URL}/marketplace` },
+    { name: t("breadcrumbAgents"), url: `${SITE_URL}/marketplace/agents` },
     { name: agent.name, url: `${SITE_URL}/marketplace/agents/${agent.slug}` },
   ]);
 

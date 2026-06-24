@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Terminal, Cpu, Package } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { generateAlternates, generateHowToSchema, SITE_URL } from "@/lib/seo";
 import { StructuredData } from "@/components/seo/StructuredData";
 
@@ -58,25 +59,27 @@ const howToSchema = generateHowToSchema({
   ],
 });
 
-export default function InstallPage() {
+export default async function InstallPage() {
+  const t = await getTranslations("installPage");
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 md:py-20">
       <StructuredData data={howToSchema} />
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">
-          Install <span className="gradient-text">CortexPrism</span>
+          {t("heading")}
         </h1>
         <p className="mt-4 text-lg text-[#9090a8]">
-          One command to get started on Linux, macOS, or Windows.
+          {t("subtitle")}
         </p>
       </div>
 
-      <h2 className="text-xl font-bold text-[#e2e2ea] mb-4">Quick Install</h2>
+      <h2 className="text-xl font-bold text-[#e2e2ea] mb-4">{t("quickInstall")}</h2>
 
       <div className="grid md:grid-cols-3 gap-6 mb-10">
         <div className="glass-card p-6">
           <h3 className="text-sm font-semibold text-[#e2e2ea] mb-3">
-            macOS
+            {t("macosLabel")}
           </h3>
           <div className="glass-card p-3">
             <pre className="text-xs font-mono whitespace-pre-wrap break-all">
@@ -91,7 +94,7 @@ export default function InstallPage() {
 
         <div className="glass-card p-6">
           <h3 className="text-sm font-semibold text-[#e2e2ea] mb-3">
-            Linux / WSL
+            {t("linuxWslLabel")}
           </h3>
           <div className="glass-card p-3">
             <pre className="text-xs font-mono whitespace-pre-wrap break-all">
@@ -106,7 +109,7 @@ export default function InstallPage() {
 
         <div className="glass-card p-6">
           <h3 className="text-sm font-semibold text-[#e2e2ea] mb-3">
-            Windows (PowerShell)
+            {t("windowsPsLabel")}
           </h3>
           <div className="glass-card p-3">
             <pre className="text-xs font-mono whitespace-pre-wrap break-all">
@@ -125,12 +128,12 @@ export default function InstallPage() {
           <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-green-500/10 text-green-400 mb-4">
             <Cpu className="w-5 h-5" />
           </div>
-          <h3 className="text-sm font-semibold text-[#e2e2ea] mb-2">Prerequisites</h3>
+          <h3 className="text-sm font-semibold text-[#e2e2ea] mb-2">{t("prerequisitesTitle")}</h3>
           <ul className="text-sm text-[#9090a8] space-y-1">
-            <li className="flex items-start gap-2"><span className="text-green-400">◆</span>Linux, macOS, or Windows</li>
-            <li className="flex items-start gap-2"><span className="text-green-400">◆</span>Deno 2.x (installer handles this)</li>
-            <li className="flex items-start gap-2"><span className="text-green-400">◆</span>Git (for source mode)</li>
-            <li className="flex items-start gap-2"><span className="text-green-400">◆</span>Docker (optional, for sandboxes)</li>
+            <li className="flex items-start gap-2"><span className="text-green-400">◆</span>{t("prerequisitesItem1")}</li>
+            <li className="flex items-start gap-2"><span className="text-green-400">◆</span>{t("prerequisitesItem2")}</li>
+            <li className="flex items-start gap-2"><span className="text-green-400">◆</span>{t("prerequisitesItem3")}</li>
+            <li className="flex items-start gap-2"><span className="text-green-400">◆</span>{t("prerequisitesItem4")}</li>
           </ul>
         </div>
 
@@ -138,12 +141,12 @@ export default function InstallPage() {
           <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 mb-4">
             <Package className="w-5 h-5" />
           </div>
-          <h3 className="text-sm font-semibold text-[#e2e2ea] mb-2">What it does</h3>
+          <h3 className="text-sm font-semibold text-[#e2e2ea] mb-2">{t("whatItDoesTitle")}</h3>
           <ul className="text-sm text-[#9090a8] space-y-1">
-            <li className="flex items-start gap-2"><span className="text-indigo-400">◆</span>Installs Deno runtime</li>
-            <li className="flex items-start gap-2"><span className="text-indigo-400">◆</span>Clones the CortexPrism repo</li>
-            <li className="flex items-start gap-2"><span className="text-indigo-400">◆</span>Initializes databases</li>
-            <li className="flex items-start gap-2"><span className="text-indigo-400">◆</span>Configures the system</li>
+            <li className="flex items-start gap-2"><span className="text-indigo-400">◆</span>{t("whatItDoesItem1")}</li>
+            <li className="flex items-start gap-2"><span className="text-indigo-400">◆</span>{t("whatItDoesItem2")}</li>
+            <li className="flex items-start gap-2"><span className="text-indigo-400">◆</span>{t("whatItDoesItem3")}</li>
+            <li className="flex items-start gap-2"><span className="text-indigo-400">◆</span>{t("whatItDoesItem4")}</li>
           </ul>
         </div>
 
@@ -151,24 +154,24 @@ export default function InstallPage() {
           <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 mb-4">
             <Terminal className="w-5 h-5" />
           </div>
-          <h3 className="text-sm font-semibold text-[#e2e2ea] mb-2">After install</h3>
+          <h3 className="text-sm font-semibold text-[#e2e2ea] mb-2">{t("afterInstallTitle")}</h3>
           <ul className="text-sm text-[#9090a8] space-y-1">
-            <li className="flex items-start gap-2"><span className="text-purple-400">◆</span>Run <code className="text-xs">cortex setup</code></li>
-            <li className="flex items-start gap-2"><span className="text-purple-400">◆</span>Run <code className="text-xs">cortex agent chat</code></li>
-            <li className="flex items-start gap-2"><span className="text-purple-400">◆</span>Run <code className="text-xs">cortex server start</code></li>
-            <li className="flex items-start gap-2"><span className="text-purple-400">◆</span>Visit docs for more</li>
+            <li className="flex items-start gap-2"><span className="text-purple-400">◆</span>{t("afterInstallItem1")}</li>
+            <li className="flex items-start gap-2"><span className="text-purple-400">◆</span>{t("afterInstallItem2")}</li>
+            <li className="flex items-start gap-2"><span className="text-purple-400">◆</span>{t("afterInstallItem3")}</li>
+            <li className="flex items-start gap-2"><span className="text-purple-400">◆</span>{t("afterInstallItem4")}</li>
           </ul>
         </div>
       </div>
 
       <div className="glass-card p-8 mb-10">
-        <h2 className="text-xl font-bold text-[#e2e2ea] mb-4">Manual Installation</h2>
+        <h2 className="text-xl font-bold text-[#e2e2ea] mb-4">{t("manualInstallation")}</h2>
         <p className="text-sm text-[#9090a8] mb-4">
-          Clone the repo directly and run with Deno:
+          {t("manualInstallDesc")}
         </p>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="glass-card p-4">
-            <h3 className="text-sm font-semibold text-[#e2e2ea] mb-2">macOS / Linux</h3>
+            <h3 className="text-sm font-semibold text-[#e2e2ea] mb-2">{t("manualMacLinux")}</h3>
             <pre className="text-sm font-mono">
               <code>
                 <span className="text-[#55556a]"># Clone and setup</span>
@@ -193,7 +196,7 @@ export default function InstallPage() {
             </pre>
           </div>
           <div className="glass-card p-4">
-            <h3 className="text-sm font-semibold text-[#e2e2ea] mb-2">Windows (PowerShell)</h3>
+            <h3 className="text-sm font-semibold text-[#e2e2ea] mb-2">{t("manualWindowsPs")}</h3>
             <pre className="text-sm font-mono">
               <code>
                 <span className="text-[#55556a]"># Clone and setup</span>
@@ -216,9 +219,9 @@ export default function InstallPage() {
       </div>
 
       <div className="glass-card p-8 mb-10">
-        <h2 className="text-xl font-bold text-[#e2e2ea] mb-4">Pre-compiled Binary</h2>
+        <h2 className="text-xl font-bold text-[#e2e2ea] mb-4">{t("precompiledBinary")}</h2>
         <p className="text-sm text-[#9090a8] mb-4">
-          Download the latest binary from the GitHub Releases page. All binaries include SHA-256 checksums and optional GPG signatures.
+          {t("precompiledDesc")}
         </p>
         <div className="glass-card p-4">
           <pre className="text-sm font-mono">
@@ -249,9 +252,9 @@ export default function InstallPage() {
       </div>
 
       <div className="glass-card p-8">
-        <h2 className="text-xl font-bold text-[#e2e2ea] mb-4">Post-Install</h2>
+        <h2 className="text-xl font-bold text-[#e2e2ea] mb-4">{t("postInstall")}</h2>
         <p className="text-sm text-[#9090a8] mb-4">
-          After installing, run these commands to get started:
+          {t("postInstallDesc")}
         </p>
         <div className="glass-card p-4">
           <pre className="text-sm font-mono">

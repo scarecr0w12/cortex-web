@@ -1,0 +1,225 @@
+# Multi-User Collaboration
+
+CortexPrism v0.53.0 introduces full multi-user support with user accounts, teams, API tokens, and instance federation.
+
+## Key Concepts
+
+| Concept | Description |
+|---------|-------------|
+| **Users** | Individual accounts with PBKDF2 password hashing |
+| **Teams** | Group users together with admin/member roles and join policies |
+| **API Tokens** | Scoped tokens for programmatic access with expiration support |
+| **Resource Sharing** | Cross-user resource sharing with ownership validation |
+| **Federation** | Instance-to-instance trust for cross-instance collaboration |
+
+## Getting Started
+
+On first run, an auto-admin user is created:
+
+```
+Username: admin
+Password: admin
+```
+
+**Change the password immediately after first login.**
+
+### CLI Login
+
+```bash
+# Login with username and password
+cortex login --username admin
+
+# Login with an API token
+cortex login --token <your-api-token>
+
+# Check current identity
+cortex whoami
+
+# Logout
+cortex logout
+```
+
+Auth tokens are stored in `~/.cortex/auth.json`.
+
+## User Management
+
+### Creating Users
+
+```bash
+# Instance admin only
+cortex users create alice
+cortex users create bob --team devops
+```
+
+### Managing Users
+
+```bash
+# List all users
+cortex users list
+
+# Disable a user
+cortex users disable alice
+
+# Re-enable a user
+cortex users enable alice
+```
+
+### API Endpoints
+
+- `GET /api/users` — List users (instance admin)
+- `POST /api/users` — Create user (instance admin)
+- `POST /api/users/:id/disable` — Disable user
+- `POST /api/users/:id/enable` — Enable user
+
+## Team Management
+
+### Creating Teams
+
+```bash
+cortex teams create engineering
+cortex teams create design --policy invite
+```
+
+Join policies:
+- `open` — Anyone can join
+- `invite` — Team admin must invite
+- `closed` — No new members
+
+### Managing Teams
+
+```bash
+# List teams
+cortex teams list
+
+# Add a member
+cortex teams add-member engineering bob --role admin
+
+# Remove a member
+cortex teams remove-member engineering bob
+```
+
+### API Endpoints
+
+- `GET /api/teams` — List teams
+- `POST /api/teams` — Create team
+- `GET /api/teams/:id` — Get team details
+- `PATCH /api/teams/:id` — Update team
+- `DELETE /api/teams/:id` — Delete team
+- `GET /api/teams/:id/members` — List team members
+- `POST /api/teams/:id/members` — Add member
+- `PATCH /api/teams/:id/members/:memberId` — Update member role
+- `DELETE /api/teams/:id/members/:memberId` — Remove member
+- `GET /api/teams/:id/agents` — List team-scoped agents
+- `POST /api/teams/:id/agents` — Create team-scoped agent
+
+## API Tokens
+
+API tokens provide programmatic access without username+password authentication.
+
+### Creating Tokens
+
+```bash
+# Via API
+curl -X POST http://localhost:3000/api/auth/tokens \
+  -H "Authorization: Bearer <session-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "ci-token", "expiresAt": "2026-12-31T23:59:59Z", "teamIds": ["team-id"]}'
+```
+
+### Using Tokens
+
+```bash
+# CLI login with token
+cortex login --token cpt_xxxx
+
+# API requests
+curl http://localhost:3000/api/agents \
+  -H "Authorization: Bearer cpt_xxxx"
+```
+
+### Managing Tokens
+
+- `GET /api/auth/tokens` — List your tokens
+- `POST /api/auth/tokens` — Create token
+- `DELETE /api/auth/tokens/:id` — Revoke token
+
+Tokens can be team-scoped, have expiration dates, and track last-used timestamps.
+
+## Resource Sharing
+
+Share resources (agents, plugins, sessions) between users:
+
+### Sharing a Resource
+
+```bash
+curl -X POST http://localhost:3000/api/shares \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"resourceType": "agent", "resourceId": "agent-id", "recipientUserId": "user-id"}'
+```
+
+### Listing Shares
+
+```bash
+# Shares you've created
+GET /api/shares/given
+
+# Shares you've received
+GET /api/shares/received
+```
+
+### Revoking Shares
+
+```bash
+DELETE /api/shares/:shareId
+```
+
+## Instance Federation
+
+Federation allows two CortexPrism instances to establish trust for cross-instance coordination.
+
+### Pairing
+
+```bash
+# On Instance A: generate a pairing token
+curl -X POST http://instance-a:3000/api/federation/generate-pairing-token
+
+# On Instance B: pair with Instance A
+curl -X POST http://instance-b:3000/api/federation/pair \
+  -H "Content-Type: application/json" \
+  -d '{"instanceUrl": "http://instance-a:3000", "pairingToken": "token-from-A"}'
+```
+
+### Managing Peers
+
+- `GET /api/federation/peers` — List federated peers
+- `DELETE /api/federation/peers/:id` — Remove a peer
+
+## Agent Scoping
+
+Agents are now scoped at three levels:
+
+1. **User-scoped** — Only the owning user can access
+2. **Team-scoped** — All team members can access
+3. **Instance-scoped** — All authenticated users can access (built-in agents)
+
+Built-in agents (Assistant, Developer, Researcher, etc.) are instance-scoped and available to all users.
+
+## Authorization Guards
+
+The 0.53.0 release introduces granular authorization:
+
+| Guard | Purpose |
+|-------|---------|
+| `requireInstanceAdmin()` | Admin-level operations (user/team management) |
+| `requireTeamAdmin()` | Team management operations |
+| `requireTeamMember()` | Team-scoped agent access |
+| `requireResourceOwner()` | Resource modification/deletion |
+
+These guards ensure users can only access resources they own or have been granted access to via teams or shares.
+
+## See Also
+
+- [Security Guidelines](/docs/knowledge-base/security-guidelines) — Multi-user security best practices
+- [CLI Reference](/docs/cli) — Full CLI command reference
+- [Architecture Overview](/docs/architecture) — System design documentation

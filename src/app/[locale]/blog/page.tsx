@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { SearchInput } from "@/components/shared/SearchInput";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { Pagination } from "@/components/shared/Pagination";
@@ -42,6 +43,8 @@ function SkeletonCard() {
 }
 
 export default function BlogListingPage() {
+  const t = useTranslations("blogList");
+
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
   const [page, setPage] = useState(1);
@@ -104,10 +107,10 @@ export default function BlogListingPage() {
     <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
       <div className="mb-10">
         <h1 className="text-3xl sm:text-4xl font-bold text-[#e2e2ea] mb-3">
-          Blog
+          {t("heading")}
         </h1>
         <p className="text-[#9090a8] max-w-2xl">
-          Insights, tutorials, and updates from the CortexPrism team.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -115,7 +118,7 @@ export default function BlogListingPage() {
         <SearchInput
           value={search}
           onChange={setSearch}
-          placeholder="Search articles..."
+          placeholder={t("searchPlaceholder")}
           className="flex-1 max-w-md"
         />
       </div>
@@ -128,7 +131,7 @@ export default function BlogListingPage() {
               className="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors"
             >
               <X className="w-3 h-3" />
-              Clear filter
+              {t("clearFilters")}
             </button>
           )}
           {allTags.map((tag) => (
@@ -155,28 +158,28 @@ export default function BlogListingPage() {
         </div>
       ) : error ? (
         <div className="text-center py-16">
-          <p className="text-[#9090a8] mb-4">Failed to load posts.</p>
+          <p className="text-[#9090a8] mb-4">{t("loadFailed")}</p>
           <button
             onClick={() => setRetryCount((c) => c + 1)}
             className="px-4 py-2 text-sm rounded-lg accent-gradient text-white hover:opacity-90 transition-opacity"
           >
-            Retry
+            {t("retry")}
           </button>
         </div>
       ) : data && data.posts.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-[#9090a8] text-lg mb-2">No posts found</p>
+          <p className="text-[#9090a8] text-lg mb-2">{t("noPosts")}</p>
           <p className="text-[#55556a] text-sm">
             {debouncedSearch || selectedTag
-              ? "Try adjusting your search or filters."
-              : "Check back soon for new content."}
+              ? t("noPostsDesc")
+              : t("checkBack")}
           </p>
           {(debouncedSearch || selectedTag) && (
             <button
               onClick={() => { setSearch(""); setSelectedTag(""); }}
               className="mt-4 px-4 py-2 text-sm rounded-lg border border-[rgba(255,255,255,0.12)] text-[#9090a8] hover:text-[#e2e2ea] hover:bg-[#111118] transition-colors"
             >
-              Clear all filters
+              {t("clearFilters")}
             </button>
           )}
         </div>

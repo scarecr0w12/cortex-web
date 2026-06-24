@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter, Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/shared/Button";
 import { useAuth } from "@/lib/AuthContext";
 
 export default function RegisterPage() {
+  const t = useTranslations("auth");
   const router = useRouter();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
@@ -18,7 +20,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("passwordsDontMatch"));
       return;
     }
     setLoading(true);
@@ -30,44 +32,44 @@ export default function RegisterPage() {
         body: JSON.stringify({ email, username, password }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(typeof data.error === 'string' ? data.error : 'Validation error'); setLoading(false); return; }
+      if (!res.ok) { setError(typeof data.error === 'string' ? data.error : t("validationError")); setLoading(false); return; }
       login(data.token, data.user);
       router.push("/dashboard");
     } catch {
-      setError("Connection error"); setLoading(false);
+      setError(t("connectionError")); setLoading(false);
     }
   };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="w-full max-w-sm glass-card p-8">
-        <h1 className="text-2xl font-bold text-[#e2e2ea] mb-6 text-center">Create Account</h1>
+        <h1 className="text-2xl font-bold text-[#e2e2ea] mb-6 text-center">{t("createAccount")}</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm text-[#9090a8] mb-1">Email</label>
+            <label className="block text-sm text-[#9090a8] mb-1">{t("email")}</label>
             <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
               className="w-full px-3 py-2 bg-[#0a0a0f] border border-[rgba(255,255,255,0.07)] rounded-lg text-sm text-[#e2e2ea] focus:outline-none focus:border-indigo-500/50" />
           </div>
           <div>
-            <label className="block text-sm text-[#9090a8] mb-1">Username</label>
+            <label className="block text-sm text-[#9090a8] mb-1">{t("username")}</label>
             <input type="text" required minLength={3} value={username} onChange={e => setUsername(e.target.value)}
               className="w-full px-3 py-2 bg-[#0a0a0f] border border-[rgba(255,255,255,0.07)] rounded-lg text-sm text-[#e2e2ea] focus:outline-none focus:border-indigo-500/50" />
           </div>
           <div>
-            <label className="block text-sm text-[#9090a8] mb-1">Password (min 8 chars)</label>
+            <label className="block text-sm text-[#9090a8] mb-1">{t("passwordMinChars")}</label>
             <input type="password" required minLength={8} value={password} onChange={e => setPassword(e.target.value)}
               className="w-full px-3 py-2 bg-[#0a0a0f] border border-[rgba(255,255,255,0.07)] rounded-lg text-sm text-[#e2e2ea] focus:outline-none focus:border-indigo-500/50" />
           </div>
           <div>
-            <label className="block text-sm text-[#9090a8] mb-1">Confirm Password</label>
+            <label className="block text-sm text-[#9090a8] mb-1">{t("confirmPassword")}</label>
             <input type="password" required minLength={8} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
               className="w-full px-3 py-2 bg-[#0a0a0f] border border-[rgba(255,255,255,0.07)] rounded-lg text-sm text-[#e2e2ea] focus:outline-none focus:border-indigo-500/50" />
           </div>
           {error && <p className="text-sm text-red-400">{error}</p>}
-          <Button type="submit" className="w-full" disabled={loading}>{loading ? "Creating account..." : "Create Account"}</Button>
+          <Button type="submit" className="w-full" disabled={loading}>{loading ? t("creatingAccount") : t("createAccount")}</Button>
         </form>
         <p className="mt-4 text-sm text-center text-[#55556a]">
-          Already have an account? <Link href="/login" className="text-indigo-400 hover:text-indigo-300">Sign In</Link>
+          {t("haveAccount")} <Link href="/login" className="text-indigo-400 hover:text-indigo-300">{t("signIn")}</Link>
         </p>
       </div>
     </div>

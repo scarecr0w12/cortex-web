@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { generateAlternates } from "@/lib/seo";
 import { ProfileActions } from "@/components/profile/ProfileActions";
@@ -14,10 +15,11 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const t = await getTranslations("profilePage");
   const user = await prisma.user.findUnique({
     where: { username: params.username },
   });
-  if (!user) return { title: "Profile Not Found" };
+  if (!user) return { title: t("notFound") };
 
   const displayName = user.displayName || user.username;
   return {
@@ -41,6 +43,7 @@ function formatSocialLinks(links: string | null): Record<string, string> {
 }
 
 export default async function ProfilePage({ params }: Props) {
+  const t = await getTranslations("profilePage");
   const user = await prisma.user.findUnique({
     where: { username: params.username },
     include: {
@@ -71,15 +74,14 @@ export default async function ProfilePage({ params }: Props) {
   const hasContent = user.plugins.length > 0 || user.agents.length > 0;
 
   const socialPlatforms: Record<string, { label: string; icon: string; url: string }> = {
-    twitter: { label: "Twitter / X", icon: "𝕏", url: "" },
+    twitter: { label: t("twitterX"), icon: "𝕏", url: "" },
     github: { label: "GitHub", icon: "⌘", url: "" },
     discord: { label: "Discord", icon: "◆", url: "" },
-    linkedin: { label: "LinkedIn", icon: "▣", url: "" },
+    linkedin: { label: t("linkedin"), icon: "▣", url: "" },
   };
 
   return (
     <div className="max-w-page-narrow mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
-      {/* Profile header */}
       <div className="glass-card p-8 mb-8">
         <div className="flex flex-col sm:flex-row items-start gap-6">
           <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-2xl sm:text-3xl font-bold text-white shrink-0">
@@ -90,7 +92,7 @@ export default async function ProfilePage({ params }: Props) {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-[#e2e2ea]">{displayName}</h1>
-                <p className="text-[#9090a8]">@{user.username}{user.role === "admin" && <Badge variant="indigo" className="ml-2">Admin</Badge>}</p>
+                <p className="text-[#9090a8]">@{user.username}{user.role === "admin" && <Badge variant="indigo" className="ml-2">{t("admin")}</Badge>}</p>
               </div>
               <ProfileActions username={params.username} />
             </div>
@@ -98,17 +100,16 @@ export default async function ProfilePage({ params }: Props) {
             {user.bio && <p className="text-[#e2e2ea] mt-3">{user.bio}</p>}
 
             <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-[#55556a]">
-              <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> Joined {joinedDate}</span>
+              <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {t("joined")} {joinedDate}</span>
               {user.location && <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" />{user.location}</span>}
               {user.website && (
                 <a href={user.website} target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-1.5 text-indigo-400 hover:text-indigo-300">
-                  <Globe className="w-3.5 h-3.5" /> Website <ExternalLink className="w-3 h-3" />
+                  <Globe className="w-3.5 h-3.5" /> {t("website")} <ExternalLink className="w-3 h-3" />
                 </a>
               )}
             </div>
 
-            {/* Social links */}
             {Object.keys(socialLinks).length > 0 && (
               <div className="flex flex-wrap items-center gap-3 mt-4">
                 {Object.entries(socialLinks).map(([platform, url]) => {
@@ -130,29 +131,27 @@ export default async function ProfilePage({ params }: Props) {
           </div>
         </div>
 
-        {/* Stats row */}
         <div className="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-[rgba(255,255,255,0.07)]">
           <div className="text-center">
             <div className="text-2xl font-bold text-[#e2e2ea]">{user.plugins.length}</div>
-            <div className="text-xs text-[#55556a] flex items-center justify-center gap-1 mt-1"><Package className="w-3 h-3" /> Plugins</div>
+            <div className="text-xs text-[#55556a] flex items-center justify-center gap-1 mt-1"><Package className="w-3 h-3" /> {t("plugins")}</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-[#e2e2ea]">{user.agents.length}</div>
-            <div className="text-xs text-[#55556a] flex items-center justify-center gap-1 mt-1"><Bot className="w-3 h-3" /> Agents</div>
+            <div className="text-xs text-[#55556a] flex items-center justify-center gap-1 mt-1"><Bot className="w-3 h-3" /> {t("agents")}</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-[#e2e2ea]">{totalDownloads.toLocaleString()}</div>
-            <div className="text-xs text-[#55556a] flex items-center justify-center gap-1 mt-1"><Download className="w-3 h-3" /> Downloads</div>
+            <div className="text-xs text-[#55556a] flex items-center justify-center gap-1 mt-1"><Download className="w-3 h-3" /> {t("downloads")}</div>
           </div>
         </div>
       </div>
 
-      {/* Published content */}
-      <h2 className="text-xl font-bold text-[#e2e2ea] mb-6">Published Content</h2>
+      <h2 className="text-xl font-bold text-[#e2e2ea] mb-6">{t("publishedContent")}</h2>
 
       {!hasContent ? (
         <div className="glass-card p-12 text-center">
-          <p className="text-[#55556a]">No published plugins or agents yet.</p>
+          <p className="text-[#55556a]">{t("noContent")}</p>
         </div>
       ) : (
         <div className="space-y-8">
@@ -160,7 +159,7 @@ export default async function ProfilePage({ params }: Props) {
             <section>
               <div className="flex items-center gap-2 mb-4">
                 <Package className="w-5 h-5 text-indigo-400" />
-                <h3 className="text-lg font-semibold text-[#e2e2ea]">Plugins ({user.plugins.length})</h3>
+                <h3 className="text-lg font-semibold text-[#e2e2ea]">{t("plugins")} ({user.plugins.length})</h3>
               </div>
               <div className="grid sm:grid-cols-2 gap-3">
                 {user.plugins.map(p => (
@@ -186,7 +185,7 @@ export default async function ProfilePage({ params }: Props) {
             <section>
               <div className="flex items-center gap-2 mb-4">
                 <Bot className="w-5 h-5 text-purple-400" />
-                <h3 className="text-lg font-semibold text-[#e2e2ea]">Agents ({user.agents.length})</h3>
+                <h3 className="text-lg font-semibold text-[#e2e2ea]">{t("agents")} ({user.agents.length})</h3>
               </div>
               <div className="grid sm:grid-cols-2 gap-3">
                 {user.agents.map(a => (

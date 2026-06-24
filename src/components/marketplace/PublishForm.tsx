@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/shared/Button";
 
 interface PublishFormProps {
@@ -13,6 +14,7 @@ interface Category {
 }
 
 export function PublishForm({ type }: PublishFormProps) {
+  const t = useTranslations("marketplaceList");
   const router = useRouter();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -103,16 +105,16 @@ export function PublishForm({ type }: PublishFormProps) {
     return (
       <div className="glass-card p-8 text-center">
         <div className="text-4xl mb-4">&#127881;</div>
-        <h2 className="text-xl font-bold text-[#e2e2ea] mb-2">Submission Received</h2>
+        <h2 className="text-xl font-bold text-[#e2e2ea] mb-2">{t("submissionReceived")}</h2>
         <p className="text-[#9090a8] mb-6">
-          Your {type} has been submitted for review. You can track its status on your dashboard.
+          {t("submissionDescDynamic", { type })}
         </p>
         <div className="flex items-center justify-center gap-4">
           <Link href="/dashboard" className="text-sm text-indigo-400 hover:text-indigo-300">
-            View Dashboard &rarr;
+            {t("viewDashboard")}
           </Link>
           <Link href={`/marketplace/${type === "plugin" ? "plugins" : "agents"}`} className="text-sm text-[#55556a] hover:text-[#e2e2ea]">
-            Browse Marketplace
+            {t("browseMarketplace")}
           </Link>
         </div>
       </div>
@@ -128,21 +130,21 @@ export function PublishForm({ type }: PublishFormProps) {
       {error && <p className="text-sm text-red-400 bg-red-500/10 rounded-lg p-3">{error}</p>}
 
       <div className={sectionClass}>
-        <h3 className="text-sm font-semibold text-indigo-400 uppercase tracking-wider">Basic Information</h3>
+        <h3 className="text-sm font-semibold text-indigo-400 uppercase tracking-wider">{t("basicInfo")}</h3>
         <div>
-          <label className={labelClass}>Name *</label>
+          <label className={labelClass}>{t("fieldName")}</label>
           <input type="text" required value={name} onChange={e => setName(e.target.value)}
-            className={inputClass} placeholder="My Awesome Plugin" />
+            className={inputClass} placeholder={t("fieldNamePlaceholder")} />
         </div>
         <div>
-          <label className={labelClass}>Version *</label>
+          <label className={labelClass}>{t("fieldVersion")}</label>
           <input type="text" required value={version} onChange={e => setVersion(e.target.value)}
-            className={inputClass} placeholder="1.0.0" />
+            className={inputClass} placeholder={t("fieldVersionPlaceholder")} />
         </div>
         <div>
-          <label className={labelClass}>Description *</label>
+          <label className={labelClass}>{t("fieldDescription")}</label>
           <textarea required rows={3} value={description} onChange={e => setDescription(e.target.value)}
-            className={inputClass} placeholder="A brief description of your submission..." />
+            className={inputClass} placeholder={t("fieldDescriptionPlaceholder")} />
         </div>
       </div>
 
@@ -150,13 +152,13 @@ export function PublishForm({ type }: PublishFormProps) {
 
       <div className={sectionClass}>
         <h3 className="text-sm font-semibold text-indigo-400 uppercase tracking-wider">
-          {type === "plugin" ? "Plugin Details" : "Agent Configuration"}
+          {type === "plugin" ? t("pluginDetails") : t("agentConfig")}
         </h3>
 
         {type === "plugin" && (
           <>
             <div>
-              <label className={labelClass}>Kind *</label>
+              <label className={labelClass}>{t("fieldKind")}</label>
               <select value={kind} onChange={e => setKind(e.target.value)} className={inputClass}>
                 <option value="esm">ESM</option>
                 <option value="mcp">MCP</option>
@@ -164,10 +166,10 @@ export function PublishForm({ type }: PublishFormProps) {
               </select>
             </div>
             <div>
-              <label className={labelClass}>Capabilities (comma-separated)</label>
+              <label className={labelClass}>{t("fieldCapabilities")}</label>
               <input type="text" value={capabilitiesStr} onChange={e => setCapabilitiesStr(e.target.value)}
-                className={inputClass} placeholder="python:execute, python:install, python:list-packages" />
-              <p className="text-xs text-[#55556a] mt-1">List the capability identifiers your plugin provides</p>
+                className={inputClass} placeholder={t("capabilitiesPlaceholder")} />
+              <p className="text-xs text-[#55556a] mt-1">{t("capabilitiesHelp")}</p>
             </div>
           </>
         )}
@@ -175,104 +177,102 @@ export function PublishForm({ type }: PublishFormProps) {
         {type === "agent" && (
           <>
             <div>
-              <label className={labelClass}>Provider</label>
+              <label className={labelClass}>{t("fieldProvider")}</label>
               <input type="text" value={provider} onChange={e => setProvider(e.target.value)}
-                className={inputClass} placeholder="anthropic" />
+                className={inputClass} placeholder={t("fieldProviderPlaceholder")} />
             </div>
             <div>
-              <label className={labelClass}>Model</label>
+              <label className={labelClass}>{t("fieldModel")}</label>
               <input type="text" value={model} onChange={e => setModel(e.target.value)}
-                className={inputClass} placeholder="claude-sonnet-4-5" />
+                className={inputClass} placeholder={t("fieldModelPlaceholder")} />
             </div>
             <div>
-              <label className={labelClass}>Temperature</label>
+              <label className={labelClass}>{t("fieldTemperature")}</label>
               <input type="number" step="0.1" min="0" max="2" value={temperature} onChange={e => setTemperature(e.target.value)}
                 className={inputClass} placeholder="0.7" />
             </div>
             <div>
-              <label className={labelClass}>Tools (comma-separated)</label>
+              <label className={labelClass}>{t("fieldTools")}</label>
               <input type="text" value={toolsStr} onChange={e => setToolsStr(e.target.value)}
-                className={inputClass} placeholder="codebase_search, read, grep, glob" />
+                className={inputClass} placeholder={t("toolsPlaceholder")} />
             </div>
             <div>
-              <label className={labelClass}>System Prompt</label>
+              <label className={labelClass}>{t("fieldSystemPrompt")}</label>
               <textarea rows={4} value={systemPrompt} onChange={e => setSystemPrompt(e.target.value)}
-                className={inputClass + " font-mono text-xs"} placeholder="You are an expert agent that..." />
+                className={inputClass + " font-mono text-xs"} placeholder={t("systemPromptPlaceholder")} />
             </div>
           </>
         )}
 
         <div>
-          <label className={labelClass}>Tags (comma-separated)</label>
+          <label className={labelClass}>{t("fieldTags")}</label>
           <input type="text" value={tagsStr} onChange={e => setTagsStr(e.target.value)}
-            className={inputClass} placeholder="code-review, development, security" />
+            className={inputClass} placeholder={t("tagsPlaceholder")} />
         </div>
       </div>
 
       <div className="h-px bg-[rgba(255,255,255,0.07)]" />
 
       <div className={sectionClass}>
-        <h3 className="text-sm font-semibold text-indigo-400 uppercase tracking-wider">Author & Links</h3>
+        <h3 className="text-sm font-semibold text-indigo-400 uppercase tracking-wider">{t("authorLinks")}</h3>
         <div>
-          <label className={labelClass}>Author Name</label>
+          <label className={labelClass}>{t("fieldAuthorName")}</label>
           <input type="text" value={author} onChange={e => setAuthor(e.target.value)}
-            className={inputClass} placeholder="Your name or organization" />
+            className={inputClass} placeholder={t("fieldAuthorNamePlaceholder")} />
         </div>
         <div>
-          <label className={labelClass}>Author URL</label>
+          <label className={labelClass}>{t("fieldAuthorUrl")}</label>
           <input type="url" value={authorUrl} onChange={e => setAuthorUrl(e.target.value)}
-            className={inputClass} placeholder="https://github.com/your-profile" />
+            className={inputClass} placeholder={t("fieldAuthorUrlPlaceholder")} />
         </div>
         <div>
-          <label className={labelClass}>Repository URL</label>
+          <label className={labelClass}>{t("fieldRepositoryUrl")}</label>
           <input type="url" value={repository} onChange={e => setRepository(e.target.value)}
-            className={inputClass} placeholder="https://github.com/owner/repo" />
-          <p className="text-xs text-[#55556a] mt-1">GitHub repository for auto-fetching stars, topics, and license info</p>
+            className={inputClass} placeholder={t("fieldRepositoryUrlPlaceholder")} />
+          <p className="text-xs text-[#55556a] mt-1">{t("repositoryHelp")}</p>
         </div>
         <div>
-          <label className={labelClass}>Homepage</label>
+          <label className={labelClass}>{t("fieldHomepage")}</label>
           <input type="url" value={homepage} onChange={e => setHomepage(e.target.value)}
-            className={inputClass} placeholder="https://example.com" />
+            className={inputClass} placeholder={t("fieldHomepagePlaceholder")} />
         </div>
         <div>
-          <label className={labelClass}>License</label>
+          <label className={labelClass}>{t("fieldLicense")}</label>
           <input type="text" value={license} onChange={e => setLicense(e.target.value)}
-            className={inputClass} placeholder="MIT, Apache-2.0, GPL-3.0" />
+            className={inputClass} placeholder={t("fieldLicensePlaceholder")} />
         </div>
       </div>
 
       <div className="h-px bg-[rgba(255,255,255,0.07)]" />
 
       <div className={sectionClass}>
-        <h3 className="text-sm font-semibold text-indigo-400 uppercase tracking-wider">Media</h3>
+        <h3 className="text-sm font-semibold text-indigo-400 uppercase tracking-wider">{t("media")}</h3>
         <div>
-          <label className={labelClass}>Icon URL</label>
+          <label className={labelClass}>{t("fieldIconUrl")}</label>
           <input type="url" value={icon} onChange={e => setIcon(e.target.value)}
-            className={inputClass} placeholder="https://example.com/icon.png" />
+            className={inputClass} placeholder={t("fieldIconUrlPlaceholder")} />
         </div>
         <div>
-          <label className={labelClass}>Category</label>
+          <label className={labelClass}>{t("fieldCategory")}</label>
           <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className={inputClass}>
-            <option value="">No category</option>
+            <option value="">{t("noCategory")}</option>
             {categories.map(cat => (
               <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className={labelClass}>README / Documentation</label>
+          <label className={labelClass}>{t("fieldReadme")}</label>
           <textarea rows={6} value={readme} onChange={e => setReadme(e.target.value)}
-            className={`${inputClass} font-mono text-xs`} placeholder="Detailed documentation in markdown format..." />
-          <p className="text-xs text-[#55556a] mt-1">Supports Markdown formatting</p>
+            className={`${inputClass} font-mono text-xs`} placeholder={t("readmePlaceholder")} />
+          <p className="text-xs text-[#55556a] mt-1">{t("readmeHelp")}</p>
         </div>
       </div>
 
       <div className="pt-4 border-t border-[rgba(255,255,255,0.07)]">
-        <p className="text-xs text-[#55556a] mb-4">
-          Submissions are reviewed by admins before being published. Track your submission status on the dashboard.
-        </p>
+        <p className="text-xs text-[#55556a] mb-4">{t("reviewNote")}</p>
         <Button type="submit" variant="primary" disabled={loading}>
-          {loading ? "Submitting..." : "Submit for Review"}
+          {loading ? t("submitting") : t("submitForReview")}
         </Button>
       </div>
     </form>

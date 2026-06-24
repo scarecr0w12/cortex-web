@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MdxContent } from "@/components/docs/MdxContent";
-import { getContentBySlug, getContentSlugs, extractH1FromMdx } from "@/lib/markdown";
+import { getContentBySlug, extractH1FromMdx } from "@/lib/markdown";
 import { TableOfContents } from "@/components/docs/TableOfContents";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { generateBreadcrumbSchema, generateAlternates, SITE_URL } from "@/lib/seo";
@@ -12,8 +12,7 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  const slugs = getContentSlugs("getting-started");
-  return slugs.map((slug) => ({ slug: [slug] }));
+  return [{ slug: [] }, { slug: ["index"] }];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

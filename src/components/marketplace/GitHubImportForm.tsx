@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/shared/Button";
 import { Badge } from "@/components/shared/Badge";
 import { GitBranch, ExternalLink, CheckCircle, Loader } from "lucide-react";
@@ -11,6 +12,7 @@ interface GitHubImportFormProps {
 }
 
 export function GitHubImportForm({ type }: GitHubImportFormProps) {
+  const t = useTranslations("marketplaceList");
   const router = useRouter();
   const [repoUrl, setRepoUrl] = useState("");
   const [branch, setBranch] = useState("main");
@@ -60,23 +62,24 @@ export function GitHubImportForm({ type }: GitHubImportFormProps) {
 
   if (result?.success) {
     const entity = result.plugin || result.agent;
+    const entityType = result.type === "plugin" ? "Plugin" : "Agent";
     return (
       <div className="glass-card p-8 text-center">
         <CheckCircle className="w-12 h-12 mx-auto mb-4 text-green-400" />
-        <h2 className="text-xl font-bold text-[#e2e2ea] mb-2">Import Successful</h2>
+        <h2 className="text-xl font-bold text-[#e2e2ea] mb-2">{t("importSuccess")}</h2>
         <p className="text-[#9090a8] mb-2">
-          {result.type === "plugin" ? "Plugin" : "Agent"} <span className="text-[#e2e2ea] font-medium">{entity?.name}</span> has been imported.
+          {t("importSuccessDesc", { type: `${entityType} "${entity?.name}"` })}
         </p>
         <Badge variant={entity?.status === "approved" ? "green" : "yellow"}>
-          {entity?.status === "approved" ? "Approved" : "Pending Review"}
+          {entity?.status === "approved" ? t("importApproved") : t("importPending")}
         </Badge>
         <div className="flex items-center justify-center gap-4 mt-6">
           <button onClick={() => { setResult(null); setRepoUrl(""); }}
             className="text-sm text-indigo-400 hover:text-indigo-300">
-            Import Another
+            {t("importAnother")}
           </button>
           <a href={`/dashboard`} className="text-sm text-[#55556a] hover:text-[#e2e2ea]">
-            View Dashboard →
+            {t("viewDashboard")}
           </a>
         </div>
       </div>
@@ -88,10 +91,9 @@ export function GitHubImportForm({ type }: GitHubImportFormProps) {
       <div className="flex items-center gap-3 mb-2">
         <GitBranch className="w-5 h-5 text-indigo-400" />
         <div>
-          <h3 className="text-sm font-semibold text-[#e2e2ea]">Import from GitHub</h3>
+          <h3 className="text-sm font-semibold text-[#e2e2ea]">{t("importHeading")}</h3>
           <p className="text-xs text-[#55556a]">
-            Automatically import a {type} by providing its public GitHub repository URL.
-            The manifest will be read from the repository root.
+            {t("importDesc", { type })}
           </p>
         </div>
       </div>
@@ -101,15 +103,15 @@ export function GitHubImportForm({ type }: GitHubImportFormProps) {
       )}
 
       <div>
-        <label className="block text-sm font-medium text-[#e2e2ea] mb-1">Repository URL *</label>
+        <label className="block text-sm font-medium text-[#e2e2ea] mb-1">{t("importUrl")}</label>
         <input type="url" required value={repoUrl} onChange={e => setRepoUrl(e.target.value)}
           className={inputClass} placeholder="https://github.com/owner/my-cortex-plugin"
         />
-        <p className="text-xs text-[#55556a] mt-1">Public GitHub repository containing a cortex.json or manifest.json</p>
+        <p className="text-xs text-[#55556a] mt-1">{t("importUrlHelp")}</p>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-[#e2e2ea] mb-1">Branch</label>
+        <label className="block text-sm font-medium text-[#e2e2ea] mb-1">{t("importBranch")}</label>
         <input type="text" value={branch} onChange={e => setBranch(e.target.value)}
           className={inputClass} placeholder="main"
         />
@@ -119,22 +121,18 @@ export function GitHubImportForm({ type }: GitHubImportFormProps) {
         <input type="checkbox" checked={autoApprove}
           onChange={e => setAutoApprove(e.target.checked)}
           className="w-4 h-4 rounded border-[rgba(255,255,255,0.07)]" />
-        Auto-approve (requires admin privileges)
+        {t("importAutoApprove")}
       </label>
 
       <div className="bg-indigo-500/5 border border-indigo-500/20 rounded-lg p-3">
-        <p className="text-xs text-[#9090a8]">
-          The importer will read the manifest from the repository root, fetch GitHub metadata (stars, topics, license),
-          and create a submission. Required manifest fields: name, version, kind (esm/mcp/wasm) for plugins,
-          or provider/model for agents.
-        </p>
+        <p className="text-xs text-[#9090a8]">{t("importHelp")}</p>
       </div>
 
       <Button type="submit" disabled={loading || !repoUrl}>
         {loading ? (
-          <><Loader className="w-4 h-4 mr-1.5 animate-spin" /> Importing...</>
+          <><Loader className="w-4 h-4 mr-1.5 animate-spin" /> {t("importing")}</>
         ) : (
-          <><ExternalLink className="w-4 h-4 mr-1.5" /> Import from GitHub</>
+          <><ExternalLink className="w-4 h-4 mr-1.5" /> {t("importButton")}</>
         )}
       </Button>
     </form>

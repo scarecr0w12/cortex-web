@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-CortexPrism Web is the official website and marketplace for [CortexPrism](https://cortexprism.io), an open-source AI Agent Operating System for building, deploying, and managing AI agents. The site serves as a marketing site, documentation portal (42+ MDX pages), plugin/agent marketplace with REST API, admin panel, and user system.
+CortexPrism Web is the official website and marketplace for [CortexPrism](https://cortexprism.io), an open-source AI Agent Operating System for building, deploying, and managing AI agents. The site serves as a marketing site, documentation portal (107+ MDX pages), plugin/agent marketplace with REST API, admin panel, and user system.
 
 ## Tech Stack
 
@@ -32,7 +32,7 @@ Pages use the App Router at `src/app/` with route groups for related sections:
 src/app/
 ├── about/                # About CortexPrism
 ├── admin/                # Admin panel (submissions, users, roles, GitHub, settings, email, audit, activity)
-├── api/                  # REST API routes (40+ route files)
+├── api/                  # REST API routes (87+ route files)
 ├── changelog/            # Release history
 ├── contribute/           # Contributing guide
 ├── dashboard/            # User dashboard, settings, notifications
@@ -76,7 +76,7 @@ Components live in `src/components/` organized by domain:
 
 ### Database (Prisma + SQLite)
 
-18 models: User, Role, Permission, RolePermission, Plugin, AgentConfig, Category, SubmissionReview, UserRating, Screenshot, PluginVersion, AgentVersion, AuditLog, GitHubConnection, GitHubTopicScan, DiscoveredRepo, Setting, Notification.
+34 models: Permission, Role, RolePermission, Plugin, AgentConfig, Category, SubmissionReview, UserRating, Screenshot, PluginVersion, AgentVersion, AuditLog, GitHubConnection, GitHubTopicScan, DiscoveredRepo, Notification, KnowledgeBaseArticle, KbArticleComment, BlogPost, ReleaseWatch, NewsletterSubscription, NewsletterCampaign, EmailLog, Setting, AnalyticsSession, AnalyticsPageView, GuildConfig, ModerationAction, ReactionRole, AutoModRule, Poll, Ticket, TicketMessage, ChannelConfig.
 
 The database file lives at `prisma/marketplace.db` and is shared between the web app and Discord bot.
 
@@ -121,7 +121,7 @@ Copy `.env.example` to `.env` with:
 
 | File | Purpose |
 |------|---------|
-| `prisma/schema.prisma` | Database schema (14 models) |
+| `prisma/schema.prisma` | Database schema (34 models) |
 | `src/lib/auth.ts` | JWT + bcrypt auth helpers |
 | `src/lib/auth-middleware.ts` | Role/permission checking |
 | `src/lib/AuthContext.tsx` | React auth context provider |
@@ -140,7 +140,7 @@ Copy `.env.example` to `.env` with:
 | `src/lib/notifications.ts` | In-app notification creation helpers |
 | `src/lib/submissions.ts` | Submission approval/rejection notifications |
 | `src/middleware.ts` | CORS middleware |
-| `content/` | 42+ MDX documentation files |
+| `content/` | 107+ MDX documentation files |
 | `discord-bot/` | Standalone Discord bot service |
 | `docker-compose.yml` | Docker Compose (web + nginx) |
 

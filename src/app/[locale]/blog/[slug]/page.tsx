@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { Badge } from "@/components/shared/Badge";
 import { formatDate } from "@/lib/utils";
@@ -36,12 +37,13 @@ function estimateReadTime(content: string): number {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const t = await getTranslations("blogDetail");
   const post = await prisma.blogPost.findFirst({
     where: { slug: params.slug, published: true },
     select: { title: true, slug: true, excerpt: true, coverImage: true, publishedAt: true, createdAt: true, updatedAt: true },
   });
 
-  if (!post) return { title: "Post Not Found" };
+  if (!post) return { title: t("postNotFound") };
 
   const desc = post.excerpt
     ? post.excerpt.length > 160
@@ -87,6 +89,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BlogDetailPage({ params }: Props) {
+  const t = await getTranslations("blogDetail");
+  const tc = await getTranslations("components");
   const post = await prisma.blogPost.findFirst({
     where: { slug: params.slug, published: true },
     include: {
@@ -129,7 +133,7 @@ export default async function BlogDetailPage({ params }: Props) {
           className="inline-flex items-center gap-1.5 text-sm text-[#9090a8] hover:text-[#e2e2ea] transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Blog
+          {t("backToBlog")}
         </Link>
 
         {post.coverImage && (
@@ -176,11 +180,11 @@ export default async function BlogDetailPage({ params }: Props) {
             )}
             <span className="flex items-center gap-1.5">
               <Clock className="w-4 h-4" />
-              {readTime} min read
+              {readTime} {tc("minRead")}
             </span>
             <span className="flex items-center gap-1.5">
               <Eye className="w-4 h-4" />
-              {formatNumber(post.viewCount)} {post.viewCount === 1 ? "view" : "views"}
+              {formatNumber(post.viewCount)} {post.viewCount === 1 ? tc("view") : tc("views")}
             </span>
             <div className="ml-auto">
               <ShareButton

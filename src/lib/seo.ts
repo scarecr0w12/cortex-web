@@ -4,7 +4,7 @@ export const SITE_URL =
 export const SITE_NAME = "CortexPrism";
 
 export const SITE_DESCRIPTION =
-  "CortexPrism v0.52.0 — the open-source Agent Operating System: an AI OS with 5-tier persistent memory, 60+ built-in tools, 30 LLM providers, MCP plugin marketplace, overhauled web UI with dark/light theme and experience levels, and enterprise-grade Parallax security with LLM supervisor — powered by Deno. Self-host your autonomous AI agents with confidence. Apache 2.0 licensed.";
+  "CortexPrism v0.53.0 — the open-source Agent Operating System: an AI OS with 5-tier persistent memory, 60+ built-in tools, 30 LLM providers, MCP plugin marketplace, multi-user collaboration, overhauled web UI with dark/light theme and experience levels, and enterprise-grade Parallax security with LLM supervisor — powered by Deno. Self-host your autonomous AI agents with confidence. Apache 2.0 licensed.";
 
 const SITE_TAGLINE = "Open-Source AI Agent Operating System — Powered by Deno";
 

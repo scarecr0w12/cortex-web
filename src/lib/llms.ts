@@ -34,7 +34,7 @@ export function buildLlmsTxt(): string {
 
   lines.push(`# ${SITE_NAME} — Open-Source Agent Operating System`);
   lines.push("");
-  lines.push("> CortexPrism v0.52.0 is an open-source Agent Operating System with 30 LLM providers, 5-tier memory system, MCP plugin marketplace, sandboxed code execution, overhauled web UI with dark/light theme, and parallax enterprise-grade security. Self-host autonomous AI agents — Apache 2.0 licensed.");
+  lines.push("> CortexPrism v0.53.0 is an open-source Agent Operating System with 30 LLM providers, 5-tier memory system, MCP plugin marketplace, sandboxed code execution, multi-user collaboration, federation, overhauled web UI, and parallax enterprise-grade security. Self-host autonomous AI agents — Apache 2.0 licensed.");
   lines.push("");
 
   lines.push("## Get Started");
@@ -45,11 +45,11 @@ export function buildLlmsTxt(): string {
   lines.push("");
 
   lines.push("## Documentation");
-  lines.push(`- [CLI Reference](${SITE_URL}/docs/cli): Every CortexPrism command — agent, plugins, sessions, marketplace, and more (47 commands)`);
+  lines.push(`- [CLI Reference](${SITE_URL}/docs/cli): Every CortexPrism command — agent, plugins, sessions, marketplace, and more (51 commands)`);
 
-  lines.push(`- [Architecture](${SITE_URL}/docs/architecture): Agent loop, channels, daemon, memory system, model router, pipeline, and security (19 deep-dives)`);
+  lines.push(`- [Architecture](${SITE_URL}/docs/architecture): Agent loop, channels, daemon, memory system, model router, pipeline, and security (25 deep-dives)`);
 
-  lines.push(`- [Developer Guide](${SITE_URL}/docs/developer-guide): Build ESM, MCP, and WASM plugins — agent development, best practices, publishing, submission standards (11 guides)`);
+  lines.push(`- [Developer Guide](${SITE_URL}/docs/developer-guide): Build ESM, MCP, and WASM plugins — agent development, best practices, publishing, submission standards (10 guides)`);
   lines.push(`- [Knowledge Base](${SITE_URL}/docs/knowledge-base): FAQ, troubleshooting, migration guides, performance tuning, and security guidelines`);
   lines.push(`- [Design Docs](${SITE_URL}/docs/design-docs): Design decisions and RFCs`);
   lines.push("");

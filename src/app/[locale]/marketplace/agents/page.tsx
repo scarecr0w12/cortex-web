@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Search, X } from "lucide-react";
 import { AgentCard } from "@/components/marketplace/AgentCard";
 import { Pagination } from "@/components/shared/Pagination";
@@ -20,6 +21,8 @@ interface AgentResponse {
 }
 
 export default function AgentListingPage() {
+  const t = useTranslations("marketplaceList");
+
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -70,8 +73,8 @@ export default function AgentListingPage() {
   return (
     <div className="max-w-page mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#e2e2ea] mb-2">Agents</h1>
-        <p className="text-[#9090a8]">Pre-configured agent configurations for various tasks and domains.</p>
+        <h1 className="text-3xl font-bold text-[#e2e2ea] mb-2">{t("heading_agents")}</h1>
+        <p className="text-[#9090a8]">{t("subtitle_agents")}</p>
       </div>
 
       <div className="space-y-6 mb-8">
@@ -81,7 +84,7 @@ export default function AgentListingPage() {
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Search agents by name, description, or model..."
+            placeholder={t("searchPlaceholderAgents")}
             className="w-full pl-10 pr-10 py-3 bg-[#111118] border border-[rgba(255,255,255,0.07)] rounded-xl text-sm text-[#e2e2ea] placeholder:text-[#55556a] focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-colors"
           />
           {search && (
@@ -94,7 +97,7 @@ export default function AgentListingPage() {
         {/* Category Filter Section */}
         <div className="glass-card p-4">
           <div className="flex items-center gap-2 mb-3 justify-between">
-            <h3 className="text-xs font-semibold text-[#e2e2ea] uppercase tracking-wider">Categories</h3>
+            <h3 className="text-xs font-semibold text-[#e2e2ea] uppercase tracking-wider">{t("categories")}</h3>
             {selectedCategory && (
               <span className="text-xs text-indigo-400 bg-indigo-500/10 px-2 py-1 rounded">
                 1 selected
@@ -110,7 +113,7 @@ export default function AgentListingPage() {
                   : "bg-[#0f0f15] text-[#9090a8] border-[rgba(255,255,255,0.07)] hover:border-indigo-500/30 hover:text-[#e2e2ea]"
               }`}
             >
-              All Categories
+              {t("allCategories")}
             </button>
             {categories.map(cat => (
               <button
@@ -132,7 +135,7 @@ export default function AgentListingPage() {
         {providers.length > 0 && (
           <div className="glass-card p-4">
             <div className="flex items-center gap-2 mb-3">
-              <h3 className="text-xs font-semibold text-[#e2e2ea] uppercase tracking-wider">AI Providers</h3>
+              <h3 className="text-xs font-semibold text-[#e2e2ea] uppercase tracking-wider">{t("aiProviders")}</h3>
               {selectedProvider && (
                 <span className="text-xs text-purple-400 bg-purple-500/10 px-2 py-1 rounded">
                   1 selected
@@ -160,7 +163,7 @@ export default function AgentListingPage() {
 
       {data && !loading && (
         <p className="text-sm text-[#55556a] mb-4">
-          Showing {data.agents.length} of {data.total} agent{data.total !== 1 ? "s" : ""}
+          {t("showing")} {data.agents.length} of {data.total} agent{data.total !== 1 ? "s" : ""}
           {selectedProvider && <> from <span className="text-[#9090a8]">{selectedProvider}</span></>}
         </p>
       )}
@@ -183,13 +186,13 @@ export default function AgentListingPage() {
       ) : error ? (
         <div className="text-center py-20">
           <div className="text-4xl mb-4 opacity-30">⚠️</div>
-          <p className="text-lg text-[#9090a8] mb-1">Failed to load agents</p>
+          <p className="text-lg text-[#9090a8] mb-1">{t("loadFailed")}</p>
           <p className="text-sm text-[#55556a]">{error}</p>
           <button
             onClick={() => { setError(null); setLoading(true); setRetryCount(c => c + 1) }}
             className="mt-4 px-4 py-2 text-sm rounded-lg bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors"
           >
-            Try again
+            {t("retry")}
           </button>
         </div>
       ) : data && data.agents.length > 0 ? (
@@ -204,18 +207,18 @@ export default function AgentListingPage() {
       ) : (
         <div className="text-center py-20">
           <div className="text-4xl mb-4 opacity-30">🤖</div>
-          <p className="text-lg text-[#9090a8] mb-1">No agents found</p>
+          <p className="text-lg text-[#9090a8] mb-1">{t("noResults")}</p>
           <p className="text-sm text-[#55556a]">
             {search || selectedCategory || selectedProvider
-              ? "Try adjusting your search or filters"
-              : "No agents are published yet. Check back later."}
+              ? t("noResultsDesc")
+              : t("checkBack")}
           </p>
           {(search || selectedCategory || selectedProvider) && (
             <button
               onClick={() => { setSearch(""); setSelectedCategory(""); setSelectedProvider(""); setPage(1) }}
               className="mt-4 px-4 py-2 text-sm rounded-lg bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors"
             >
-              Clear all filters
+              {t("clearFilters")}
             </button>
           )}
         </div>

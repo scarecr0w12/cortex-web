@@ -2,6 +2,34 @@
 
 Security hardening and operational security recommendations for CortexPrism deployments.
 
+## Multi-User Security (v0.53.0+)
+
+### User Account Management
+
+- Change the default admin password immediately after first run
+- Use strong, unique passwords for all user accounts (PBKDF2 hashing is used)
+- Disable unused user accounts rather than deleting them (preserves audit trail)
+- Review team memberships regularly and remove inactive members
+
+### API Token Security
+
+- Create separate API tokens per application/use case with minimal scope
+- Set expiration dates on all API tokens
+- Use team-scoped tokens to limit access to specific team resources
+- Revoke compromised tokens immediately via `DELETE /api/auth/tokens/:id`
+
+### Team Access Controls
+
+- Use join policy controls (`open`, `invite`, `closed`) for each team
+- Assign member roles (`admin` / `member`) sparingly
+- Instance admins should use separate non-admin accounts for daily work
+
+### Federation Security
+
+- Only pair with trusted instances using pairing tokens
+- Rotate federation pairing tokens periodically
+- Revoke federation trusts immediately if a peer is compromised
+
 ## Overview
 
 CortexPrism's Parallax security model provides defense-in-depth protection. This guide covers how to configure and operate CortexPrism securely.

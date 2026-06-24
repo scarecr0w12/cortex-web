@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { useTranslations } from "next-intl";
 import { MessageSquare, Send, Loader2, User } from "lucide-react";
 
 interface Comment {
@@ -12,6 +13,7 @@ interface Comment {
 }
 
 export function KbArticleComments({ slug }: { slug: string }) {
+  const t = useTranslations("components");
   const { user } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +63,7 @@ export function KbArticleComments({ slug }: { slug: string }) {
     <div className="mt-12 border-t border-[rgba(255,255,255,0.07)] pt-8">
       <h2 className="text-lg font-semibold text-[#e2e2ea] mb-4 flex items-center gap-2">
         <MessageSquare className="w-5 h-5 text-indigo-400" />
-        Comments
+        {t("comments")}
         {comments.length > 0 && (
           <span className="text-sm font-normal text-[#55556a]">({comments.length})</span>
         )}
@@ -76,7 +78,7 @@ export function KbArticleComments({ slug }: { slug: string }) {
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder={user ? "Share your thoughts..." : "Sign in to leave a comment..."}
+              placeholder={user ? t("shareThoughts") : t("signInToComment")}
               disabled={!user || submitting}
               rows={3}
               className="w-full px-3 py-2 bg-[#111118] border border-[rgba(255,255,255,0.07)] rounded-lg text-sm text-[#e2e2ea] placeholder:text-[#55556a] focus:outline-none focus:border-indigo-500/50 resize-y disabled:opacity-50"
@@ -89,7 +91,7 @@ export function KbArticleComments({ slug }: { slug: string }) {
                 className="mt-2 flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors disabled:opacity-50"
               >
                 {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-                Post Comment
+                {t("postComment")}
               </button>
             )}
           </div>
@@ -102,7 +104,7 @@ export function KbArticleComments({ slug }: { slug: string }) {
         </div>
       ) : comments.length === 0 ? (
         <p className="text-sm text-[#55556a] text-center py-4">
-          No comments yet. Be the first to share your thoughts!
+          {t("noComments")}
         </p>
       ) : (
         <div className="space-y-4">
@@ -118,7 +120,7 @@ export function KbArticleComments({ slug }: { slug: string }) {
               <div>
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className="text-sm font-medium text-[#e2e2ea]">
-                    {comment.author?.displayName || comment.author?.username || "Anonymous"}
+                    {comment.author?.displayName || comment.author?.username || t("anonymous")}
                   </span>
                   <span className="text-xs text-[#55556a]">
                     {new Date(comment.createdAt).toLocaleDateString()}

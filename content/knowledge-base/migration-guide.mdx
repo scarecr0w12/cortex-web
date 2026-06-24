@@ -9,6 +9,7 @@ This guide covers upgrading between CortexPrism versions and migrating data betw
 | 0.0.x | 0.1.x | Database migration (`cortex migrate`) |
 | 0.1.x | 0.2.x | Config format update |
 | 0.2.x | 1.0.0 | Full migration (see below) |
+| 0.52.x | 0.53.0 | DB migrations 044–047 (users, teams, tokens, scoping) |
 
 ## Checking Your Version
 
@@ -149,3 +150,14 @@ If you have an existing tool configuration, you can wrap it as a CortexPrism plu
 3. **Check plugins** — `cortex plugins list`
 4. **Verify data** — `cortex memory search "test"` (if you had memory)
 5. **Check logs** — Review Lens audit log for errors
+6. **Set up users** — `cortex users list` and create users if using multi-user
+
+## 0.53.0 Migration Notes
+
+The 0.53.0 release introduces multi-user collaboration with significant database changes:
+
+- **Migrations 044–047** run automatically on startup. They create `users`, `teams`, `team_memberships`, `user_tokens`, `agents`, `resource_shares`, `instance_identity`, and `federation_peers` tables.
+- An auto-admin user is created on first run. Default credentials: `admin` / `admin` (change immediately).
+- Existing agents from `config.json` are preserved as fallback — they are migrated to the `agents` DB table.
+- Existing resource rows are backfilled with admin ownership.
+- No manual migration steps are required — all migrations are idempotent and safe to re-run.

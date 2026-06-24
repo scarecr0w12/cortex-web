@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { StarRating } from "@/components/shared/StarRating";
 import { formatDate } from "@/lib/utils";
 import { Star, MessageSquare } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Rating {
   id: string;
@@ -23,19 +24,16 @@ const accentConfig = {
   plugin: {
     icon: "text-indigo-400",
     button: "bg-indigo-500/10 text-indigo-300 border-indigo-500/20 hover:bg-indigo-500/20",
-    emptyText: "Be the first to rate this plugin!",
-    placeholder: "Share your experience with this plugin...",
   },
   agent: {
     icon: "text-purple-400",
     button: "bg-purple-500/10 text-purple-300 border-purple-500/20 hover:bg-purple-500/20",
-    emptyText: "Be the first to rate this agent!",
-    placeholder: "Share your experience with this agent...",
   },
 };
 
 export function ReviewSection({ itemId, type }: ReviewSectionProps) {
   const { user } = useAuth();
+  const t = useTranslations("marketplaceList");
   const accent = accentConfig[type];
   const [ratings, setRatings] = useState<Rating[]>([]);
   const [averageRating, setAverageRating] = useState(0);
@@ -76,12 +74,15 @@ export function ReviewSection({ itemId, type }: ReviewSectionProps) {
     setSubmitting(false);
   };
 
+  const placeholder = type === "plugin" ? t("pluginReviewPlaceholder") : t("agentReviewPlaceholder");
+  const emptyText = type === "plugin" ? t("pluginReviewEmpty") : t("agentReviewEmpty");
+
   return (
     <div className="glass-card p-6 mb-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-[#e2e2ea] flex items-center gap-2">
           <MessageSquare className={`w-4 h-4 ${accent.icon}`} />
-          Reviews ({totalRatings})
+          {t("reviews", { count: totalRatings })}
         </h2>
         {averageRating > 0 && (
           <div className="flex items-center gap-2">
@@ -96,7 +97,7 @@ export function ReviewSection({ itemId, type }: ReviewSectionProps) {
           onClick={() => setShowForm(true)}
           className={`mb-4 px-4 py-2 text-sm rounded-lg ${accent.button} transition-colors`}
         >
-          {ratings.some(r => r.user.id === user.id) ? "Update Your Review" : "Write a Review"}
+          {ratings.some(r => r.user.id === user.id) ? t("updateReview") : t("writeReview")}
         </button>
       )}
 
@@ -116,7 +117,7 @@ export function ReviewSection({ itemId, type }: ReviewSectionProps) {
           <textarea
             value={userReview}
             onChange={e => setUserReview(e.target.value)}
-            placeholder={accent.placeholder}
+            placeholder={placeholder}
             rows={3}
             className="w-full px-3 py-2 bg-[#111118] border border-[rgba(255,255,255,0.07)] rounded-lg text-sm text-[#e2e2ea] focus:outline-none focus:border-indigo-500/50 mb-3"
           />
@@ -126,20 +127,20 @@ export function ReviewSection({ itemId, type }: ReviewSectionProps) {
               disabled={submitting || userRating === 0}
               className="px-4 py-2 text-sm rounded-lg bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors disabled:opacity-50"
             >
-              {submitting ? "Submitting..." : "Submit"}
+              {submitting ? t("submitting") : t("submit")}
             </button>
             <button
               onClick={() => { setShowForm(false); setUserRating(0); setUserReview(""); }}
               className="px-4 py-2 text-sm rounded-lg text-[#55556a] hover:text-[#e2e2ea] transition-colors"
             >
-              Cancel
+              {t("cancel")}
             </button>
           </div>
         </div>
       )}
 
       {ratings.length === 0 ? (
-        <p className="text-sm text-[#55556a] text-center py-6">No reviews yet. {accent.emptyText}</p>
+        <p className="text-sm text-[#55556a] text-center py-6">{t("noReviews")} {emptyText}</p>
       ) : (
         <div className="space-y-3 max-h-96 overflow-y-auto">
           {ratings.map((r) => (

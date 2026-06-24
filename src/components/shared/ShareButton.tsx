@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import {
   Share2, Twitter, Facebook, Linkedin, Link, Mail, Check, X,
   MessageCircle, ExternalLink,
@@ -54,6 +55,7 @@ export function ShareButton({
   size = "sm",
   className,
 }: ShareButtonProps) {
+  const t = useTranslations("components");
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -104,11 +106,11 @@ export function ShareButton({
           variantStyles[variant] || variantStyles.secondary,
           sizeStyles[size] || sizeStyles.sm,
         )}
-        aria-label="Share"
+        aria-label={t("share")}
         aria-expanded={open}
       >
         {open ? <X className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
-        <span className="hidden sm:inline">Share</span>
+        <span className="hidden sm:inline">{t("share")}</span>
       </button>
 
       {open && (
@@ -133,7 +135,7 @@ export function ShareButton({
               className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-[#9090a8] rounded-lg transition-colors hover:text-emerald-400"
             >
               {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Link className="w-4 h-4" />}
-              {copied ? "Copied!" : "Copy Link"}
+              {copied ? t("copied") : t("copyLink")}
             </button>
           </div>
         </div>

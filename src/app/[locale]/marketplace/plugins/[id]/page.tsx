@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { getRepoMetadata, getRepoReadme } from "@/lib/github";
 import { PluginDetailView } from "@/components/marketplace/PluginDetail";
@@ -11,10 +12,11 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const t = await getTranslations("marketplaceList");
   const plugin = await prisma.plugin.findFirst({
     where: { status: "approved", OR: [{ id: params.id }, { slug: params.id }] },
   });
-  if (!plugin) return { title: "Plugin Not Found" };
+  if (!plugin) return { title: t("notFound") };
   const desc = plugin.description?.length
     ? plugin.description.length > 160
       ? plugin.description.slice(0, 157) + "..."
@@ -55,6 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PluginDetailPage({ params }: Props) {
+  const t = await getTranslations("marketplaceList");
   const plugin = await prisma.plugin.findFirst({
     where: { status: "approved", OR: [{ id: params.id }, { slug: params.id }] },
     include: { category: true, screenshots: { orderBy: { order: "asc" } }, versions: { orderBy: { createdAt: "desc" }, take: 10 } },
@@ -68,9 +71,9 @@ export default async function PluginDetailPage({ params }: Props) {
   ]);
 
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "Home", url: SITE_URL },
-    { name: "Marketplace", url: `${SITE_URL}/marketplace` },
-    { name: "Plugins", url: `${SITE_URL}/marketplace/plugins` },
+    { name: t("home"), url: SITE_URL },
+    { name: t("breadcrumbMarketplace"), url: `${SITE_URL}/marketplace` },
+    { name: t("breadcrumbPlugins"), url: `${SITE_URL}/marketplace/plugins` },
     { name: plugin.name, url: `${SITE_URL}/marketplace/plugins/${plugin.slug}` },
   ]);
 

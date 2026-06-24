@@ -2,7 +2,7 @@
 
 **Open-source AI Agent Operating System — CLI, API, web UI, and marketplace.**
 
-CortexPrism v0.50.0 is a runtime for building, deploying, and managing AI agents. It provides a unified interface to 24 LLM providers, a 5-tier memory system with hybrid retrieval, sandboxed code execution, defense-in-depth security, and a plugin marketplace — all running locally on your machine.
+CortexPrism v0.53.0 is a runtime for building, deploying, and managing AI agents. It provides a unified interface to 30 LLM providers, a 5-tier memory system with hybrid retrieval, sandboxed code execution, defense-in-depth security, multi-user collaboration with teams and API tokens, instance federation, and a plugin marketplace — all running locally on your machine.
 
 - **Agent Loop** — Multi-turn reasoning with tool orchestration, memory injection, and reflection
 - **Multi-Provider** — Anthropic, OpenAI, Google, Groq, Mistral, DeepSeek, Ollama, and more
@@ -32,7 +32,7 @@ Visit [cortexprism.io](https://cortexprism.io) to explore the marketplace and fu
 ## Features
 
 ### Interactive Chat
-Chat with 24 LLM providers through a unified interface. Switch providers mid-session, configure fallback chains, stream responses. Uses the overhauled TUI with 12 slash commands.
+Chat with 30 LLM providers through a unified interface. Switch providers mid-session, configure fallback chains, stream responses. Uses the overhauled TUI with 12 slash commands.
 
 ```
 cortex agent chat --model claude-sonnet-4-20250514
@@ -143,7 +143,7 @@ cortex agent create --name code-reviewer --model claude-sonnet-4-20250514
 |-----------|-------------|
 | **Agent Loop** | Core reasoning + tool loop — LLM calls, tool execution, memory, reflection, metacognition |
 | **Memory System** | 5-tier memory with hybrid FTS5 + vector embedding retrieval, entity graph, cross-agent context |
-| **LLM Layer** | 24 providers with unified interface, Model Quartermaster (6-signal prediction), cost optimizer |
+| **LLM Layer** | 30 providers with unified interface, Model Quartermaster (6-signal prediction), cost optimizer |
 | **Tool System** | 60+ built-in tools with extensible registry, Quartermaster tool orchestration learning |
 | **Security (Parallax)** | 3-stage policy gate, LLM supervisor, encrypted vault, DLP guard, AI guardrails, audit logging |
 | **Sandbox** | Docker, subprocess, E2B, Daytona backends with resource limits |

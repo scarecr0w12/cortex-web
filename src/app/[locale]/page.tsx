@@ -14,7 +14,7 @@ import path from "path";
 export const metadata: Metadata = {
   title: "CortexPrism — Open-Source Agent Operating System | AI OS for Autonomous AI Agents",
   description:
-    "CortexPrism v0.52.0 is the open-source Agent Operating System — a self-hosted AI OS with 30 LLM providers, 5-tier persistent memory, 60+ built-in tools, MCP plugin marketplace, sandboxed code execution, overhauled web UI with dark/light theme and experience levels, and enterprise-grade Parallax security with LLM supervisor. Powered by Deno. Apache 2.0 licensed.",
+    "CortexPrism v0.53.0 is the open-source Agent Operating System — a self-hosted AI OS with 30 LLM providers, 5-tier persistent memory, 60+ built-in tools, MCP plugin marketplace, sandboxed code execution, multi-user collaboration with teams, API tokens, and federation, overhauled web UI with dark/light theme and experience levels, and enterprise-grade Parallax security with LLM supervisor. Powered by Deno. Apache 2.0 licensed.",
   keywords: [
     "agent operating system",
     "AI agent operating system",
@@ -54,17 +54,17 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CortexPrism — Open-Source Agent Operating System | AI OS for Autonomous AI Agents",
     description:
-      "The open-source Agent Operating System: a self-hosted AI OS with 30 LLM providers, 5-tier persistent memory, 60+ tools, MCP plugin marketplace, sandboxed code execution, overhauled web UI with dark/light theme and experience levels, and enterprise-grade Parallax security with LLM supervisor. Powered by Deno. Apache 2.0 licensed.",
+      "The open-source Agent Operating System: a self-hosted AI OS with 30 LLM providers, 5-tier persistent memory, 60+ tools, MCP plugin marketplace, sandboxed code execution, multi-user collaboration with teams, API tokens, and federation, overhauled web UI, and enterprise-grade Parallax security with LLM supervisor. Powered by Deno. Apache 2.0 licensed.",
     url: "https://cortexprism.io",
   },
   twitter: {
     title: "CortexPrism — Open-Source Agent Operating System | AI OS for Autonomous AI Agents",
     description:
-      "The open-source Agent Operating System: a self-hosted AI OS with 30 LLM providers, 5-tier memory, 60+ tools, sandboxed code execution, and enterprise-grade Parallax security. Powered by Deno. Apache 2.0 licensed.",
+      "The open-source Agent Operating System: a self-hosted AI OS with 30 LLM providers, 5-tier memory, 60+ tools, sandboxed code execution, multi-user collaboration with teams and federation, and enterprise-grade Parallax security. Powered by Deno. Apache 2.0 licensed.",
   },
 };
 
-const CORTEX_VERSION_DEFAULT = "0.52.0";
+const CORTEX_VERSION_DEFAULT = "0.53.0";
 
 function getCortexVersion(): string {
   const envVersion = process.env.NEXT_PUBLIC_CORTEX_VERSION;

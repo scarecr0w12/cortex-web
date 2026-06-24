@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Bug, BookOpen, Puzzle, MessageCircle, ExternalLink } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { generateAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -33,55 +34,52 @@ export const metadata: Metadata = {
   },
 };
 
-const sections = [
-  {
-    icon: Bug,
-    title: "Report Issues",
-    description: "Found a bug or have a feature request? Open an issue on GitHub with a clear description, reproduction steps, and expected behavior.",
-    link: "https://github.com/CortexPrism/cortex/issues",
-    label: "Open an Issue",
-  },
-  {
-    icon: MessageCircle,
-    title: "Join the Community",
-    description: "Chat with developers and users on Discord. Get help, share ideas, discuss features, and stay up to date with the latest development.",
-    link: "https://discord.gg/wYxbmQeWY3",
-    label: "Join Discord",
-  },
-  {
-    icon: BookOpen,
-    title: "Submit Pull Requests",
-    description: "Fork the repository, create a feature branch, make your changes, and submit a PR. Make sure to follow the coding conventions and add tests.",
-    link: "https://github.com/CortexPrism/cortex/pulls",
-    label: "View Pull Requests",
-  },
-  {
-    icon: Puzzle,
-    title: "Develop Plugins",
-    description: "Build plugins for the CortexPrism marketplace. Plugins can be ESM modules, MCP servers, or WebAssembly modules.",
-    link: "/marketplace/publish/plugin",
-    label: "Publish a Plugin",
-  },
-];
+export default async function ContributePage() {
+  const t = await getTranslations("contributePage");
 
-export default function ContributePage() {
+  const sections = [
+    {
+      icon: Bug,
+      title: t("reportIssues"),
+      description: t("reportIssuesDesc"),
+      link: "https://github.com/CortexPrism/cortex/issues",
+      label: t("reportIssuesLabel"),
+    },
+    {
+      icon: MessageCircle,
+      title: t("joinCommunity"),
+      description: t("joinCommunityDesc"),
+      link: "https://discord.gg/wYxbmQeWY3",
+      label: t("joinCommunityLabel"),
+    },
+    {
+      icon: BookOpen,
+      title: t("submitPrs"),
+      description: t("submitPrsDesc"),
+      link: "https://github.com/CortexPrism/cortex/pulls",
+      label: t("submitPrsLabel"),
+    },
+    {
+      icon: Puzzle,
+      title: t("developPlugins"),
+      description: t("developPluginsDesc"),
+      link: "/marketplace/publish/plugin",
+      label: t("developPluginsLabel"),
+    },
+  ];
+
   return (
     <div className="max-w-page-narrow mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 md:py-20">
       <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">Contribute</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">{t("heading")}</h1>
         <p className="mt-4 text-lg text-[#9090a8]">
-          Help us build the future of AI agent technology. Contributions of all kinds are welcome.
+          {t("subtitle")}
         </p>
       </div>
 
       <div className="glass-card p-8 mb-12">
         <p className="text-[#9090a8] leading-relaxed">
-          CortexPrism is an open-source project released under the{" "}
-          <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300">
-            Apache 2.0 License
-          </a>
-          . We welcome contributions from the community — whether it&apos;s fixing bugs, adding features,
-          improving documentation, or developing plugins. Every contribution makes the project better for everyone.
+          {t("licenseText")}
         </p>
       </div>
 
@@ -107,13 +105,13 @@ export default function ContributePage() {
       </div>
 
       <div className="glass-card p-8">
-        <h2 className="text-xl font-bold text-[#e2e2ea] mb-4">Development Setup</h2>
+        <h2 className="text-xl font-bold text-[#e2e2ea] mb-4">{t("devSetup")}</h2>
         <div className="space-y-4 text-sm text-[#9090a8]">
-          <p>To set up a local development environment:</p>
+          <p>{t("devSetupDesc")}</p>
           <div className="glass-card p-4">
             <pre className="text-sm font-mono">
               <code>
-                <span className="text-[#55556a]"># Clone the repository</span>
+                <span className="text-[#55556a]">{t("devSetupCodeComment1")}</span>
                 {"\n"}
                 <span className="text-green-400">git clone</span>
                 <span className="text-[#e2e2ea]"> https://github.com/CortexPrism/cortex.git</span>
@@ -121,12 +119,12 @@ export default function ContributePage() {
                 <span className="text-green-400">cd</span>
                 <span className="text-[#e2e2ea]"> cortex</span>
                 {"\n\n"}
-                <span className="text-[#55556a]"># Install dependencies and initialize databases</span>
+                <span className="text-[#55556a]">{t("devSetupCodeComment2")}</span>
                 {"\n"}
                 <span className="text-green-400">deno run --allow-all</span>
                 <span className="text-[#e2e2ea]"> src/db/migrate.ts</span>
                 {"\n\n"}
-                <span className="text-[#55556a]"># Run tests</span>
+                <span className="text-[#55556a]">{t("devSetupCodeComment3")}</span>
                 {"\n"}
                 <span className="text-green-400">deno task</span>
                 <span className="text-[#e2e2ea]"> test</span>
@@ -134,11 +132,13 @@ export default function ContributePage() {
             </pre>
           </div>
           <p>
-            For more details, check the{" "}
+            {t("devSetupInstructions")}
+          </p>
+          <p>
+            {t("moreDetails")}{" "}
             <Link href="https://github.com/CortexPrism/cortex/blob/main/CONTRIBUTING.md" className="text-indigo-400 hover:text-indigo-300">
-              Contributing Guide
-            </Link>{" "}
-            on GitHub.
+              {t("contributingGuide")}
+            </Link>
           </p>
         </div>
       </div>

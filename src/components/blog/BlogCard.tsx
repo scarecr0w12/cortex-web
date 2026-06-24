@@ -1,4 +1,7 @@
+"use client";
+
 import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/shared/Badge";
 import { formatDate, formatNumber } from "@/lib/utils";
 import { Calendar, User, ArrowRight, Eye } from "lucide-react";
@@ -26,7 +29,8 @@ function tagColor(tag: string): (typeof accentColors)[number] {
 }
 
 export function BlogCard({ post }: BlogCardProps) {
-  const authorName = post.author?.displayName || post.author?.username || "CortexPrism";
+  const t = useTranslations("components");
+  const authorName = post.author?.displayName || post.author?.username || t("unknown");
 
   return (
     <Link

@@ -4,7 +4,7 @@
 
 ### What is CortexPrism?
 
-CortexPrism is an open-source AI Agent Operating System written in TypeScript/Deno. It provides a runtime for building, deploying, and managing AI agents with support for 24 LLM providers, a 5-tier memory system, sandboxed code execution, and a defense-in-depth security model.
+CortexPrism is an open-source AI Agent Operating System written in TypeScript/Deno. It provides a runtime for building, deploying, and managing AI agents with support for 30 LLM providers, a 5-tier memory system, sandboxed code execution, and a defense-in-depth security model.
 
 ### What is an AI Agent Operating System?
 
@@ -30,7 +30,7 @@ Yes. CortexPrism is released under the Apache 2.0 License. The source code is av
 
 ### What providers are supported?
 
-24 providers are supported: Anthropic Claude, OpenAI, Google Gemini, Mistral AI, Groq, DeepSeek, OpenRouter, xAI Grok, Together AI, AWS Bedrock, Cohere, Ollama, Cerebras, Fireworks AI, Perplexity, NVIDIA NIM, Moonshot (Kimi), Novita AI, LM Studio, LiteLLM, Hugging Face, Alibaba (Qwen), Venice AI, and Kilo AI.
+30 providers are supported: Anthropic Claude, OpenAI, Google Gemini, Mistral AI, Groq, DeepSeek, OpenRouter, xAI Grok, Together AI, AWS Bedrock, Cohere, Ollama, Cerebras, Fireworks AI, Perplexity, NVIDIA NIM, Moonshot (Kimi), Novita AI, LM Studio, LiteLLM, Hugging Face, Alibaba (Qwen), Venice AI, DeepInfra, Hyperbolic, MiniMax, Zhipu (GLM), Replicate, Cloudflare AI, and Kilo AI.
 
 ### Can I switch providers mid-session?
 
@@ -43,6 +43,28 @@ Yes. The CascadeRouter can be configured to try cheaper models first and escalat
 ### Can I use CortexPrism offline?
 
 CortexPrism requires network access for LLM API calls. However, you can run local models via Ollama for fully offline operation. The memory system, plugin management, and tool execution work offline.
+
+## Multi-User & Teams
+
+### How does multi-user work in 0.53.0?
+
+Each instance supports multiple user accounts with PBKDF2 password hashing. Users can belong to teams with admin or member roles. API tokens can be created for programmatic access with team-scoping and expiration dates.
+
+### How do I set up multi-user?
+
+On first run, an auto-admin user is created (username: `admin`, password: `admin` — change immediately). Use `cortex login` to authenticate, `cortex users create` to add users, and `cortex teams create` to organize them.
+
+### Can I share resources between users?
+
+Yes. The `POST /api/shares` endpoint allows resource sharing between users with ownership validation. Shares can be revoked at any time.
+
+### What is Federation?
+
+Federation allows two CortexPrism instances to establish a trust relationship via pairing tokens. Once paired, instances can coordinate agents, share resources, and exchange messages securely.
+
+### How do API tokens work?
+
+API tokens are created via `POST /api/auth/tokens` (or `cortex login --token`). Tokens are SHA-256 hashed, support team-scoping, expiration dates, and last-used tracking. Use `Authorization: Bearer <token>` for API access.
 
 ## Memory
 

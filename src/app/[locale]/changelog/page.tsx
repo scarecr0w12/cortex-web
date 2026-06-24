@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { GitBranch, GitCommit, ExternalLink, FileText } from "lucide-react";
 import { MdxContent } from "@/components/docs/MdxContent";
 import { generateAlternates } from "@/lib/seo";
@@ -88,6 +89,8 @@ export default async function ChangelogPage() {
     getChangelogMD("CortexPrism/cortex"),
   ]);
 
+  const t = await getTranslations("changelogPage");
+
   const allCommits = [...websiteCommits, ...cortexCommits]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 10);
@@ -95,9 +98,9 @@ export default async function ChangelogPage() {
   return (
     <div className="max-w-page-narrow mx-auto px-4 sm:px-6 lg:px-8 2xl:px-16 py-12 md:py-20">
       <div className="text-center mb-16">
-        <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">Changelog</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-[#e2e2ea]">{t("heading")}</h1>
         <p className="mt-4 text-lg text-[#9090a8]">
-          Release history from{" "}
+          {t("subtitle")}{" "}
           <a href="https://github.com/CortexPrism/cortex-web" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300">
             cortex-web
           </a>
@@ -112,7 +115,7 @@ export default async function ChangelogPage() {
         <section className="mb-12">
           <div className="flex items-center gap-2 mb-6">
             <GitCommit className="w-5 h-5 text-indigo-400" />
-            <h2 className="text-lg font-semibold text-[#e2e2ea]">Recent Commits</h2>
+            <h2 className="text-lg font-semibold text-[#e2e2ea]">{t("recentCommits")}</h2>
           </div>
           <div className="space-y-1">
             {allCommits.map((c) => (
@@ -140,7 +143,7 @@ export default async function ChangelogPage() {
         <section>
           <div className="flex items-center gap-2 mb-6">
             <FileText className="w-5 h-5 text-indigo-400" />
-            <h2 className="text-lg font-semibold text-[#e2e2ea]">Website</h2>
+            <h2 className="text-lg font-semibold text-[#e2e2ea]">{t("website")}</h2>
           </div>
           {websiteChangelog ? (
             <div className="glass-card p-6 md:p-8">
@@ -150,7 +153,7 @@ export default async function ChangelogPage() {
             </div>
           ) : (
             <div className="glass-card p-6 text-center text-sm text-[#55556a]">
-              No changelog available.
+              {t("noChangelog")}
             </div>
           )}
         </section>
@@ -158,7 +161,7 @@ export default async function ChangelogPage() {
         <section>
           <div className="flex items-center gap-2 mb-6">
             <GitBranch className="w-5 h-5 text-indigo-400" />
-            <h2 className="text-lg font-semibold text-[#e2e2ea]">Cortex Engine</h2>
+            <h2 className="text-lg font-semibold text-[#e2e2ea]">{t("cortexEngine")}</h2>
           </div>
           {cortexChangelog ? (
             <div className="glass-card p-6 md:p-8">
@@ -169,7 +172,7 @@ export default async function ChangelogPage() {
           ) : (
             <div className="glass-card p-8 flex items-center gap-3">
               <span className="text-sm text-[#55556a]">
-                Could not fetch cortex changelog from GitHub.
+                {t("couldNotFetch")}
               </span>
             </div>
           )}
@@ -184,7 +187,7 @@ export default async function ChangelogPage() {
           className="inline-flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300"
         >
           <ExternalLink className="w-3.5 h-3.5" />
-          Full commit history
+          {t("fullHistory")}
         </a>
         <span className="text-[#333]">·</span>
         <a

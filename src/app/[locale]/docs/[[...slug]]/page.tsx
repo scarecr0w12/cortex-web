@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MdxContent } from "@/components/docs/MdxContent";
-import { getContentBySlug, getContentSlugs, extractH1FromMdx } from "@/lib/markdown";
-import { getAllKbArticles, getKbArticleBySlug, getKbSlugs } from "@/lib/knowledge-base";
+import { getContentBySlug, extractH1FromMdx } from "@/lib/markdown";
+import { getAllKbArticles, getKbArticleBySlug } from "@/lib/knowledge-base";
 import { TableOfContents } from "@/components/docs/TableOfContents";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { KbArticleComments } from "@/components/docs/KbArticleComments";
@@ -33,17 +33,8 @@ const sectionLabels: Record<string, string> = {
 
 export async function generateStaticParams() {
   const params: { slug: string[] }[] = [];
-  for (const [dir, section] of Object.entries(sectionMap)) {
-    if (dir === "knowledge-base") {
-      params.push({ slug: [dir] });
-      const slugs = await getKbSlugs();
-      params.push(...slugs.map((s) => ({ slug: [dir, s] })));
-    } else {
-      const slugs = getContentSlugs(section);
-      params.push(
-        ...slugs.map((s) => ({ slug: [dir, s === "index" ? "" : s].filter(Boolean) }))
-      );
-    }
+  for (const dir of Object.keys(sectionMap)) {
+    params.push({ slug: [dir] });
   }
   return params;
 }

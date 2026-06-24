@@ -1,14 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 type Platform = "macos" | "linux" | "windows";
 
-const platforms: { key: Platform; label: string }[] = [
-  { key: "macos", label: "macOS" },
-  { key: "linux", label: "Linux / WSL" },
-  { key: "windows", label: "Windows" },
-];
+function usePlatforms() {
+  const t = useTranslations("home");
+  return [
+    { key: "macos" as const, label: t("macOS") },
+    { key: "linux" as const, label: t("linuxWSL") },
+    { key: "windows" as const, label: t("windows") },
+  ];
+}
 
 const commands: Record<Platform, { prompt: string; command: string }> = {
   macos: {
@@ -28,6 +32,7 @@ const commands: Record<Platform, { prompt: string; command: string }> = {
 export function InstallCommand() {
   const [platform, setPlatform] = useState<Platform>("macos");
   const { prompt, command } = commands[platform];
+  const platforms = usePlatforms();
 
   return (
     <div className="mt-10 max-w-xl mx-auto">

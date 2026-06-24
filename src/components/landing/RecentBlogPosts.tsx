@@ -1,9 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/routing";
+import { getTranslations } from "next-intl/server";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { ArrowRight } from "lucide-react";
 
 export async function RecentBlogPosts() {
+  const t = await getTranslations("home");
   const rawPosts = await prisma.blogPost.findMany({
     where: { published: true },
     orderBy: { publishedAt: "desc" },
@@ -27,18 +29,18 @@ export async function RecentBlogPosts() {
         <div className="flex items-end justify-between mb-10">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-indigo-400 mb-3">
-              From the Blog
+              {t("blogBadge")}
             </p>
             <h2 className="text-3xl md:text-4xl font-bold text-[#e2e2ea]">
-              Latest{" "}
-              <span className="gradient-text">posts &amp; updates</span>
+              {t("blogTitle1")}
+              <span className="gradient-text">{t("blogTitle2")}</span>
             </h2>
           </div>
           <Link
             href="/blog"
             className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
           >
-            View all posts
+            {t("blogViewAll")}
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -54,7 +56,7 @@ export async function RecentBlogPosts() {
             href="/blog"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
           >
-            View all posts
+            {t("blogViewAll")}
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
