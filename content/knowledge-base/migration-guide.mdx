@@ -42,7 +42,7 @@ CortexPrism uses SQLite with automatic migration support:
 
 ```bash
 # Run all pending migrations (idempotent, safe to run multiple times)
-cortex migrate
+cortex db migrate
 ```
 
 ### Manual Migration
@@ -54,7 +54,7 @@ If automatic migration fails, you can run migrations manually:
 cp ~/.cortex/data/cortex.db ~/.cortex/data/cortex.db.backup
 
 # Then re-run migrate
-cortex migrate
+cortex db migrate
 ```
 
 ## Data Directory Migration

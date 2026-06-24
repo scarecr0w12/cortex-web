@@ -1,5 +1,5 @@
 ---
-title: Remote Agents Architecture
+title: Remote Agents
 description: Distributed agent execution layer — hub-based WebSocket node management with capability tiers
 ---
 
@@ -79,7 +79,7 @@ Node → Hub:                    Hub → Node:
 
 ## Node Metrics
 
-Each heartbeat carries live system metrics from `/proc`:
+Each heartbeat carries live system metrics from `/proc` (Linux-specific; on macOS and Windows, alternative system APIs are used for equivalent metrics):
 
 ```typescript
 interface NodeMetrics {

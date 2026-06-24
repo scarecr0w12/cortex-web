@@ -30,14 +30,14 @@ checkPolicy(kind, value):
 
 Rules are evaluated by priority (ASC — lower number = higher precedence). If no rule matches, the default is **allow**.
 
-### Default Deny Rules
+### Policy Rules
 
 Seeded on first database migration:
 
 | Pattern | Blocks |
 |---------|--------|
 | `rm\s+-rf\s+/` | Recursive root delete |
-| `:\(\)\{.*\}` | Fork bomb patterns |
+| `:\(\)\{.*\}` | Fork bomb patterns (simplified regex example; production uses AST-based analysis) |
 | `dd\s+if=.*of=/dev/` | Direct disk writes |
 | `chmod\s+777\s+/` | World-writable root |
 
@@ -48,14 +48,16 @@ AES-256-GCM encrypted storage for sensitive credentials:
 ```
 vaultStore(name, value):
   passphrase = Deno.env.get('CORTEX_VAULT_KEY')
-  key = PBKDF2(passphrase, salt='cortex-vault-salt-v1', 200000, SHA-256) → AES-256 key
+  salt = crypto.getRandomValues(16 bytes)
+  key = PBKDF2(passphrase, salt, 200000, HMAC-SHA-256) → AES-256 key
   iv = crypto.getRandomValues(12 bytes)
   ciphertext = AES-GCM-256.encrypt(iv, key, value)
-  store(iv || ciphertext) in vault_entries
+  store(salt || iv || ciphertext) in vault_entries
 
 vaultGet(name):
   buf = vault_entries[name].encrypted_data
-  iv = buf[0:12]; cipher = buf[12:]
+  salt = buf[0:16]; iv = buf[16:28]; cipher = buf[28:]
+  key = PBKDF2(passphrase, salt, 200000, HMAC-SHA-256) → AES-256 key
   plaintext = AES-GCM-256.decrypt(iv, key, cipher)
   vault_access_log.insert(...)  — Full audit trail
   return plaintext
@@ -63,7 +65,7 @@ vaultGet(name):
 
 - Passphrase is **never** stored — only held in environment variable `CORTEX_VAULT_KEY` at runtime
 - All access is logged to `vault_access_log` with timestamps
-- PBKDF2 with 200,000 iterations of SHA-256 for key derivation
+- PBKDF2 with 200,000 iterations of HMAC-SHA-256 for key derivation
 
 ## Security Layers Summary
 
@@ -74,7 +76,7 @@ vaultGet(name):
 | Approval Gates | Configurable approval workflows for sensitive operations |
 | Sandboxing | Isolated Docker containers for code execution with resource limits |
 | Audit Logging | Comprehensive logging of all security-relevant events in Lens |
-| Default Deny | Pre-seeded rules blocking known dangerous patterns |
+| Policy Rules | Pre-seeded rules blocking known dangerous patterns |
 
 ## Audit Trail (Cortex Lens)
 

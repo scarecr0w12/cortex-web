@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateAlternates } from "@/lib/seo";
+import { SITE_URL, generateAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Publish an Agent — CortexPrism Marketplace",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "Publish an Agent — CortexPrism Marketplace",
     description:
       "Submit your pre-configured AI agent profile to the CortexPrism marketplace. Community-reviewed, open-source publication.",
-    url: "https://cortexprism.io/marketplace/publish/agent",
+    url: `${SITE_URL}/marketplace/publish/agent`,
   },
   twitter: {
     title: "Publish an Agent — CortexPrism Marketplace",

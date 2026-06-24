@@ -189,18 +189,18 @@ Metrics include:
 
 ## Benchmarking
 
-Use `cortex eval` to benchmark agent performance across 8 task categories:
+Use `cortex agent eval` to benchmark agent performance across 8 task categories:
 
 ```bash
 # Run evaluation suites
-cortex eval -s code_generation
-cortex eval -s bug_fix -m claude-sonnet-4-5
+cortex agent eval -s code_generation
+cortex agent eval -s bug_fix -m claude-sonnet-4-5
 
 # Compare against a baseline
-cortex eval -s refactoring -b baseline-run-001
+cortex agent eval -s refactoring -b baseline-run-001
 
 # Save current results as new baseline
-cortex eval -s code_review --save-baseline
+cortex agent eval -s code_review --save-baseline
 ```
 
 ## Production Tuning Checklist

@@ -4,7 +4,7 @@ import Link from "next/link";
 import {
   ArrowRight, Bot, Beaker, TestTube, GitBranch, Search, Shield, Mic, Monitor, Code2, Terminal, CheckCircle2,
 } from "lucide-react";
-import { generateAlternates } from "@/lib/seo";
+import { SITE_URL, generateAlternates } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("useCases");
@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: `Agent Operating System Use Cases — Voice Agents, Dev Assistants, Automation & Enterprise AI`,
       description: t("subtitle"),
-      url: "https://cortexprism.io/use-cases",
+      url: `${SITE_URL}/use-cases`,
     },
     twitter: {
       title: `Agent Operating System Use Cases — Voice Agents, Dev Assistants, Automation & Enterprise AI`,
@@ -203,7 +203,7 @@ export default async function UseCasesPage() {
                 <pre className="text-sm font-mono overflow-x-auto">
                   <code>
                     <span className="text-[#55556a]">$ </span>
-                    <span className="text-green-400">curl -fsSL https://cortexprism.io/install.sh</span>
+                    <span className="text-green-400">curl -fsSL ${SITE_URL}/install.sh</span>
                     <span className="text-[#e2e2ea]"> | bash</span>
                   </code>
                 </pre>

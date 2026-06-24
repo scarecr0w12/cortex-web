@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateAlternates } from "@/lib/seo";
+import { SITE_URL, generateAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Publish a Plugin — CortexPrism Marketplace",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: "Publish a Plugin — CortexPrism Marketplace",
     description:
       "Submit your ESM, MCP, or WASM plugin to the CortexPrism marketplace. Community-reviewed, open-source publication.",
-    url: "https://cortexprism.io/marketplace/publish/plugin",
+    url: `${SITE_URL}/marketplace/publish/plugin`,
   },
   twitter: {
     title: "Publish a Plugin — CortexPrism Marketplace",

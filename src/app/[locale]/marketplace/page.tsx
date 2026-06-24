@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { ArrowRight, Puzzle, Bot, Sparkles, TrendingUp, Zap } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
-import { generateAlternates } from "@/lib/seo";
+import { SITE_URL, generateAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: "CortexPrism Marketplace — AI Plugins, MCP Servers & Agent Configs",
     description:
       "Discover AI plugins (ESM modules, MCP servers, WASM runtimes) and pre-configured agent profiles. Community-driven marketplace for the open-source AI Agent Operating System.",
-    url: "https://cortexprism.io/marketplace",
+    url: `${SITE_URL}/marketplace`,
   },
   twitter: {
     title: "CortexPrism Marketplace — AI Plugins, MCP Servers & Agent Configs",

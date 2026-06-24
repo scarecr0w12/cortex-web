@@ -7,14 +7,14 @@ import { FeatureGrid } from "@/components/landing/FeatureGrid";
 import { RecentBlogPosts } from "@/components/landing/RecentBlogPosts";
 import { CtaSection } from "@/components/landing/CtaSection";
 import { StructuredData } from "@/components/seo/StructuredData";
-import { generateSoftwareAppSchema, generateAlternates } from "@/lib/seo";
+import { SITE_URL, generateSoftwareAppSchema, generateAlternates, OG_IMAGE_URL } from "@/lib/seo";
 import fs from "fs";
 import path from "path";
 
 export const metadata: Metadata = {
   title: "CortexPrism — Open-Source Agent Operating System | AI OS for Autonomous AI Agents",
   description:
-    "CortexPrism v0.53.0 is the open-source Agent Operating System — a self-hosted AI OS with 30 LLM providers, 5-tier persistent memory, 60+ built-in tools, MCP plugin marketplace, sandboxed code execution, multi-user collaboration with teams, API tokens, and federation, overhauled web UI with dark/light theme and experience levels, and enterprise-grade Parallax security with LLM supervisor. Powered by Deno. Apache 2.0 licensed.",
+    "CortexPrism v0.53.1 is the open-source Agent Operating System — a self-hosted AI OS with 30 LLM providers, 5-tier persistent memory, 60+ built-in tools, MCP plugin marketplace, sandboxed code execution, multi-user collaboration with teams, API tokens, and federation, overhauled web UI with dark/light theme and experience levels, and enterprise-grade Parallax security with LLM supervisor. Powered by Deno. Apache 2.0 licensed.",
   keywords: [
     "agent operating system",
     "AI agent operating system",
@@ -55,7 +55,8 @@ export const metadata: Metadata = {
     title: "CortexPrism — Open-Source Agent Operating System | AI OS for Autonomous AI Agents",
     description:
       "The open-source Agent Operating System: a self-hosted AI OS with 30 LLM providers, 5-tier persistent memory, 60+ tools, MCP plugin marketplace, sandboxed code execution, multi-user collaboration with teams, API tokens, and federation, overhauled web UI, and enterprise-grade Parallax security with LLM supervisor. Powered by Deno. Apache 2.0 licensed.",
-    url: "https://cortexprism.io",
+    url: `${SITE_URL}`,
+    images: [{ url: OG_IMAGE_URL, width: 1200, height: 630 }],
   },
   twitter: {
     title: "CortexPrism — Open-Source Agent Operating System | AI OS for Autonomous AI Agents",
@@ -64,7 +65,7 @@ export const metadata: Metadata = {
   },
 };
 
-const CORTEX_VERSION_DEFAULT = "0.53.0";
+const CORTEX_VERSION_DEFAULT = "0.53.1";
 
 function getCortexVersion(): string {
   const envVersion = process.env.NEXT_PUBLIC_CORTEX_VERSION;

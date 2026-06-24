@@ -2,9 +2,10 @@ import createMiddleware from "next-intl/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { routing } from "./i18n/routing";
+import { SITE_URL } from "@/lib/seo";
 
 const allowedOrigins = [
-  "https://cortexprism.io",
+  SITE_URL,
   "http://localhost:3000",
   "http://localhost:3001",
 ];

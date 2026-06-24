@@ -27,8 +27,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Install CortexPrism — Self-Host Your Agent Operating System in One Command",
     description:
-      "One command to install the open-source Agent Operating System on Linux, macOS, or Windows. curl -fsSL https://cortexprism.io/install.sh | bash — fully self-hosted, no cloud required.",
-    url: "https://cortexprism.io/install",
+      "One command to install the open-source Agent Operating System on Linux, macOS, or Windows. curl -fsSL ${SITE_URL}/install.sh | bash — fully self-hosted, no cloud required.",
+    url: `${SITE_URL}/install`,
   },
   twitter: {
     title: "Install CortexPrism — Self-Host Your Agent Operating System in One Command",
@@ -46,7 +46,7 @@ const howToSchema = generateHowToSchema({
   steps: [
     {
       name: "Run the one-command installer",
-      text: "On macOS or Linux, run: curl -fsSL https://cortexprism.io/install.sh | bash. On Windows PowerShell, run: iwr https://cortexprism.io/install.ps1 -useb | iex",
+      text: `On macOS or Linux, run: curl -fsSL ${SITE_URL}/install.sh | bash. On Windows PowerShell, run: iwr ${SITE_URL}/install.ps1 -useb | iex`,
     },
     {
       name: "Run initial setup",
@@ -85,22 +85,22 @@ export default async function InstallPage() {
             <pre className="text-xs font-mono whitespace-pre-wrap break-all">
               <code>
                 <span className="text-[#55556a]">$ </span>
-                <span className="text-green-400">curl -fsSL https://cortexprism.io/install.sh</span>
-                <span className="text-[#e2e2ea]"> | bash</span>
-              </code>
-            </pre>
+                <span className="text-green-400">curl -fsSL ${SITE_URL}/install.sh</span>
+                  <span className="text-[#e2e2ea]"> | bash</span>
+                </code>
+              </pre>
+            </div>
           </div>
-        </div>
-
-        <div className="glass-card p-6">
-          <h3 className="text-sm font-semibold text-[#e2e2ea] mb-3">
-            {t("linuxWslLabel")}
-          </h3>
-          <div className="glass-card p-3">
-            <pre className="text-xs font-mono whitespace-pre-wrap break-all">
-              <code>
-                <span className="text-[#55556a]">$ </span>
-                <span className="text-green-400">curl -fsSL https://cortexprism.io/install.sh</span>
+  
+          <div className="glass-card p-6">
+            <h3 className="text-sm font-semibold text-[#e2e2ea] mb-3">
+              {t("linuxWslLabel")}
+            </h3>
+            <div className="glass-card p-3">
+              <pre className="text-xs font-mono whitespace-pre-wrap break-all">
+                <code>
+                  <span className="text-[#55556a]">$ </span>
+                  <span className="text-green-400">curl -fsSL ${SITE_URL}/install.sh</span>
                 <span className="text-[#e2e2ea]"> | bash</span>
               </code>
             </pre>
@@ -115,7 +115,7 @@ export default async function InstallPage() {
             <pre className="text-xs font-mono whitespace-pre-wrap break-all">
               <code>
                 <span className="text-[#55556a]">PS&gt; </span>
-                <span className="text-green-400">iwr https://cortexprism.io/install.ps1</span>
+                <span className="text-green-400">iwr ${SITE_URL}/install.ps1</span>
                 <span className="text-[#e2e2ea]"> -useb | iex</span>
               </code>
             </pre>

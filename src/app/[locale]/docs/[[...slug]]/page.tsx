@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: "CortexPrism Documentation — Guides, CLI & Architecture",
         description:
           "CLI reference, architecture deep-dives, knowledge base, design docs, and developer guides. Everything you need to build with the CortexPrism AI Agent Operating System.",
-        url: "https://cortexprism.io/docs",
+        url: `${SITE_URL}/docs`,
       },
       twitter: {
         title: "CortexPrism Documentation — Guides, CLI & Architecture",
@@ -74,7 +74,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           title: "CortexPrism Knowledge Base — Guides & Troubleshooting",
           description:
             "Browse CortexPrism knowledge base articles: FAQ, troubleshooting, migration guides, performance tuning, and security guidelines.",
-          url: "https://cortexprism.io/docs/knowledge-base",
+          url: `${SITE_URL}/docs/knowledge-base`,
         },
         twitter: {
           title: "CortexPrism Knowledge Base — Guides & Troubleshooting",
@@ -98,7 +98,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: `${article.title} — CortexPrism Knowledge Base`,
         description: desc,
-        url: `https://cortexprism.io/docs/knowledge-base/${article.slug}`,
+        url: `${SITE_URL}/docs/knowledge-base/${article.slug}`,
         type: "article",
       },
       twitter: {
@@ -122,7 +122,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       alternates: generateAlternates(docPath),
       openGraph: {
         title: `${h1} — CortexPrism ${sectionLabel}`,
-        url: `https://cortexprism.io${docPath}`,
+        url: `${SITE_URL}${docPath}`,
         type: "article",
       },
       twitter: {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { GitBranch, GitCommit, ExternalLink, FileText } from "lucide-react";
 import { MdxContent } from "@/components/docs/MdxContent";
-import { generateAlternates } from "@/lib/seo";
+import { SITE_URL, generateAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     title: "CortexPrism Changelog — Agent Operating System Release History & Commits",
     description:
       "Recent commits from cortex engine and cortex-web repositories. Track changes, new features, bug fixes, and improvements in the open-source Agent Operating System.",
-    url: "https://cortexprism.io/changelog",
+    url: `${SITE_URL}/changelog`,
   },
   twitter: {
     title: "CortexPrism Changelog — Agent Operating System Release History & Commits",

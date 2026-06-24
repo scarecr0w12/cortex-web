@@ -1,6 +1,7 @@
 import { getContentBySlug, getContentSlugs } from "@/lib/markdown";
 import { getKbArticleBySlug } from "@/lib/knowledge-base";
 import { DOCS_SECTION_LABELS } from "@/lib/llms";
+import { SITE_URL } from "@/lib/seo";
 
 const sectionMap: Record<string, string> = {
   cli: "cli",
@@ -63,7 +64,7 @@ export async function GET(
         : slugToTitle(fileSlug);
 
     const header = `# ${title}\n\n`;
-    const footer = `\n\n---\n*Source: [https://cortexprism.io/docs/${section}${fileSlug === "index" ? "" : `/${fileSlug}`}](https://cortexprism.io/docs/${section}${fileSlug === "index" ? "" : `/${fileSlug}`})*`;
+    const footer = `\n\n---\n*Source: [${SITE_URL}/docs/${section}${fileSlug === "index" ? "" : `/${fileSlug}`}](${SITE_URL}/docs/${section}${fileSlug === "index" ? "" : `/${fileSlug}`})*`;
 
     return new Response(header + content + footer, {
       headers: {

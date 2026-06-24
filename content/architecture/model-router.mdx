@@ -25,7 +25,7 @@ This cost-optimized approach ensures simple queries use cheaper models while com
     "cascade": [
       { "provider": "ollama", "model": "llama3.2:3b" },
       { "provider": "ollama", "model": "llama3.1:8b" },
-      { "provider": "anthropic", "model": "claude-sonnet-4-5" }
+      { "provider": "anthropic", "model": "claude-sonnet-4-20250514" }
     ]
   }
 }
@@ -41,7 +41,7 @@ This cost-optimized approach ensures simple queries use cheaper models while com
 
 | Provider | Kind | Default Model |
 |----------|------|---------------|
-| Anthropic | `anthropic` | `claude-sonnet-4-5` |
+| Anthropic | `anthropic` | `claude-sonnet-4-20250514` |
 | OpenAI | `openai` | `gpt-4o` |
 | Google Gemini | `google` | `gemini-2.0-flash` |
 | Mistral | `mistral` | `mistral-large-latest` |
@@ -69,7 +69,7 @@ interface LLMProvider {
 
 ## Features
 
-- **Multi-Provider**: 30 LLM providers through a unified interface (12 most common shown above; full list includes Kilo AI, Cerebras, Fireworks, Perplexity, NVIDIA NIM, Moonshot, Novita AI, LM Studio, LiteLLM, Hugging Face, Alibaba Qwen, Venice AI, DeepInfra, Hyperbolic, MiniMax, Zhipu, Replicate, Cloudflare AI)
+- **Multi-Provider**: 30 LLM providers through a unified interface (12 most common shown above; full list includes Cerebras, Fireworks, Perplexity, NVIDIA NIM, Moonshot, Novita AI, LM Studio, LiteLLM, Hugging Face, Alibaba Qwen, DeepInfra, Hyperbolic, MiniMax, Zhipu, Replicate, Cloudflare AI)
 - **Cascading Router**: Cheapest model first, escalate on low confidence
 - **Failover**: Automatic fallback to next provider on errors
 - **Cost Optimization**: Route simple queries to cheaper/ local models

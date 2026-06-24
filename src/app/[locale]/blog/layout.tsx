@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateMetaBase, generateAlternates } from "@/lib/seo";
+import { SITE_URL, generateMetaBase, generateAlternates } from "@/lib/seo";
 
 const base = generateMetaBase("/blog");
 
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     title: "CortexPrism Blog — Agent Operating System Insights & AI Tutorials",
     description:
       "Explore tutorials, architecture deep-dives, community spotlights, and release updates from the open-source Agent Operating System.",
-    url: "https://cortexprism.io/blog",
+    url: `${SITE_URL}/blog`,
     type: "website",
   },
   robots: { index: true, follow: true },

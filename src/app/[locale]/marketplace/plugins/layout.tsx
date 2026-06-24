@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateAlternates } from "@/lib/seo";
+import { SITE_URL, generateAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "CortexPrism Plugins — ESM, MCP & WASM Extensions for Your Agent Operating System",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: "CortexPrism Plugins — ESM, MCP & WASM Extensions for Your Agent Operating System",
     description:
       "Discover plugins for CortexPrism: ESM modules, MCP servers, and WASM runtimes. Filter by category and plugin type to find the perfect extension.",
-    url: "https://cortexprism.io/marketplace/plugins",
+    url: `${SITE_URL}/marketplace/plugins`,
   },
   robots: {
     index: true,

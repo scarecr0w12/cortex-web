@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Bug, BookOpen, Puzzle, MessageCircle, ExternalLink } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { generateAlternates } from "@/lib/seo";
+import { SITE_URL, generateAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Contribute to CortexPrism — Open-Source Agent Operating System",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: "Contribute to CortexPrism — Open-Source Agent Operating System",
     description:
       "Help build the future of AI agent technology. Report bugs, submit PRs, develop plugins for the marketplace, or join the Discord community.",
-    url: "https://cortexprism.io/contribute",
+    url: `${SITE_URL}/contribute`,
   },
   twitter: {
     title: "Contribute to CortexPrism — Open-Source Agent Operating System",

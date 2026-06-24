@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { ArrowRight, Shield, Zap, Globe, Github, Heart, Code2 } from "lucide-react";
-import { generateAlternates } from "@/lib/seo";
+import { SITE_URL, generateAlternates } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("about");
@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: `${t("headline")} — CortexPrism`,
       description: t("subtitle"),
-      url: "https://cortexprism.io/about",
+      url: `${SITE_URL}/about`,
     },
     twitter: {
       title: `${t("headline")} — CortexPrism`,

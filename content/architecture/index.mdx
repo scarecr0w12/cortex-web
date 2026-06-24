@@ -1,6 +1,6 @@
 # Architecture Overview
 
-CortexPrism is a single-process AI Agent Operating System written in TypeScript/Deno. It exposes a CLI, a REST API + WebSocket server, and a web UI. All state is persisted in SQLite databases using WAL mode via `@libsql/client`.
+CortexPrism is a modular AI Agent Operating System written in TypeScript/Deno. It exposes a CLI, a REST API + WebSocket server, and a web UI. All state is persisted in SQLite databases using WAL mode via `@libsql/client`.
 
 ## High-Level Architecture
 
@@ -30,7 +30,7 @@ CortexPrism is a single-process AI Agent Operating System written in TypeScript/
 │   └──────────────────────────────────────────────┘             │
 │                                                                 │
 │   SQLite databases (WAL mode)                                   │
-│   cortex.db · memory.db · lens.db · vault.db · plugins.db       │
+│   cortex.db · memory.db · lens.db · vault.db · plugins.db · sessions/<id>.db │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -38,7 +38,7 @@ CortexPrism is a single-process AI Agent Operating System written in TypeScript/
 
 | Component | Description |
 |-----------|-------------|
-| **Agent Loop** | 7-stage orchestrator with metacognition assessment, memory injection, MQM model selection, LLM call, tool execution, adversarial critique, and post-turn processing |
+| **Agent Loop** | 7-stage orchestration including setup, history loading, metacognition assessment, prompt building, model selection, LLM streaming with tool execution, and post-turn processing |
 | **Metacognition** | Pre-execution task assessment with confidence scoring, decision classification (direct/ask_first/delegate/plan_with_rollback/parallelize), and low-confidence auto-escalation |
 | **Memory System** | 5-tier memory with hybrid FTS5 keyword + vector embedding retrieval and exponential decay scoring |
 | **LLM Layer** | 30 provider implementations with unified `LLMProvider` interface and CascadeRouter |

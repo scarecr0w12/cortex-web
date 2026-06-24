@@ -29,12 +29,12 @@ Windows users can also use Git Bash or WSL2 with the macOS/Linux command above.
 
 ```bash
 # macOS / Linux
-curl -fsSL https://deno.land/install.sh | sh
+curl -fsSL https://deno.com/install.sh | sh
 ```
 
 ```powershell
 # Windows (PowerShell)
-iwr https://deno.land/install.ps1 -useb | iex
+iwr https://deno.com/install.ps1 -useb | iex
 ```
 
 Or use your package manager:
@@ -44,7 +44,7 @@ Or use your package manager:
 brew install deno
 
 # Linux (apt/curl)
-curl -fsSL https://deno.land/install.sh | sh
+curl -fsSL https://deno.com/install.sh | sh
 ```
 
 ```powershell
@@ -81,7 +81,7 @@ Download the latest binary from the [Releases page](https://github.com/CortexPri
 curl -LO https://github.com/CortexPrism/cortex/releases/latest/download/cortex-linux-x64
 chmod +x cortex-linux-x64
 ./cortex-linux-x64 setup
-./cortex-linux-x64 chat
+./cortex-linux-x64 agent chat
 ```
 
 ## Docker Installation
@@ -95,7 +95,7 @@ docker pull cortexprism/cortex:latest
 docker run -it --rm \
   -v ~/.cortex:/home/cortex/.cortex \
   -e CORTEX_VAULT_KEY=your-passphrase \
-  cortexprism/cortex:latest chat
+  cortexprism/cortex:latest agent chat
 
 # Run server
 docker run -d --rm \

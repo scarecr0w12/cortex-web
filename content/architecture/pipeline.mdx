@@ -1,5 +1,5 @@
 ---
-title: Pipeline System Architecture
+title: Pipeline System
 description: 12-stage hook-based processing pipeline for the agent turn lifecycle
 ---
 
@@ -122,7 +122,7 @@ Each hook has a priority determining execution order within a stage.
 
 ## Pipeline Context
 
-Hooks receive a read-only `PipelineContext` with:
+Hooks receive a mutable `PipelineContext` with:
 - `sessionId`, `turnId` — Current session/turn identifiers
 - `tokensUsed`, `costUsd` — Current consumption metrics
 - `toolCallsMade` — Count of tool calls this turn

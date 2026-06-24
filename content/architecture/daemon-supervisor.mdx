@@ -37,7 +37,7 @@ cortex daemon start / chat / serve auto-start
 
 ## IPC Protocol
 
-All daemons communicate via Unix domain sockets:
+All daemons communicate via Unix domain sockets (Linux/macOS; on Windows, named pipes are used at equivalent paths):
 
 ```
 /tmp/cortex/validator.sock

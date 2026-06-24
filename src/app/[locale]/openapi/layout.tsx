@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateAlternates } from "@/lib/seo";
+import { SITE_URL, generateAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "API Documentation — CortexPrism Agent Operating System REST & WebSocket API",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     title: "CortexPrism API Documentation — Agent Operating System OpenAPI Spec",
     description:
       "Browse the full OpenAPI specification for the CortexPrism Agent Operating System REST API. Agent management, sessions, memory, plugins, and more.",
-    url: "https://cortexprism.io/openapi",
+    url: `${SITE_URL}/openapi`,
   },
   robots: {
     index: true,

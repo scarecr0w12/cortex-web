@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const rawTitle = (frontmatter.title as string) || extractedTitle || "Getting Started";
   const title = rawTitle.includes("CortexPrism") ? rawTitle : `${rawTitle} — CortexPrism`;
   const desc = (frontmatter.description as string) || `Step-by-step guide for ${extractedTitle.toLowerCase()}. Learn how to get the most out of the CortexPrism AI Agent Operating System.`;
-  const url = `https://cortexprism.io/getting-started/${slug === "index" ? "" : slug}`;
+  const url = `${SITE_URL}/getting-started/${slug === "index" ? "" : slug}`;
   return {
     title,
     description: desc,

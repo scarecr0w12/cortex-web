@@ -9,9 +9,9 @@ The sandbox system allows agents to execute code safely in isolated environments
 ## How It Works
 
 ```bash
-cortex run script.py                 # Auto-detect language, run in sandbox
-cortex run script.py --no-sandbox    # Skip sandbox, run as subprocess
-cortex run script.py --fix           # Enable auto-fix on failure
+cortex sandbox run script.py                 # Auto-detect language, run in sandbox
+cortex sandbox run script.py --no-sandbox    # Skip sandbox, run as subprocess
+cortex sandbox run script.py --fix           # Enable auto-fix on failure
 ```
 
 ## Docker Sandbox
@@ -59,10 +59,10 @@ runInSandbox(code)
 
 ```bash
 # Enable auto-fix
-cortex run buggy-code.py --fix
+cortex sandbox run buggy-code.py --fix
 
 # Increase max fix attempts
-cortex run complex.js --fix --max-fix 8
+cortex sandbox run complex.js --fix --max-fix 8
 ```
 
 ## Security Considerations
@@ -75,7 +75,7 @@ cortex run complex.js --fix --max-fix 8
 
 ## Configuration
 
-Sandbox resource limits are hardcoded constants in the executor:
+Sandbox resource limits are configurable in `~/.cortex/config.json` under the `sandbox` section (see [Performance Tuning](/docs/knowledge-base/performance-tuning#sandbox-resource-limits) for details):
 
 | Constraint | Value |
 |------------|-------|

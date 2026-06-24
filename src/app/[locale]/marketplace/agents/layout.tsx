@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateAlternates } from "@/lib/seo";
+import { SITE_URL, generateAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "CortexPrism Agents — Pre-Configured AI Agent Profiles for Your Agent Operating System",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: "CortexPrism Agents — Pre-Configured AI Agent Profiles for Your Agent Operating System",
     description:
       "Find pre-configured agent profiles for CortexPrism. Specialized agents for coding, data analysis, research, and more. Filter by provider and category.",
-    url: "https://cortexprism.io/marketplace/agents",
+    url: `${SITE_URL}/marketplace/agents`,
   },
   robots: {
     index: true,
