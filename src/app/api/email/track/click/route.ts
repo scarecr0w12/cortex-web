@@ -14,9 +14,10 @@ export async function GET(request: NextRequest) {
 
     prisma.emailLog.findFirst({
       where: { messageId: id },
-      select: { id: true, campaignId: true, status: true },
+      select: { id: true, campaignId: true, status: true, to: true },
     }).then((log) => {
       if (log) {
+        console.log(`[track:click] messageId=${id.slice(0, 8)}... to=${log.to} campaign=${log.campaignId || "none"} url=${redirectUrl.slice(0, 80)}`);
         return trackEmailEvent({
           messageId: id,
           eventType: "click",
@@ -25,8 +26,12 @@ export async function GET(request: NextRequest) {
           userAgent,
           clickUrl: redirectUrl,
         });
+      } else {
+        console.log(`[track:click] messageId=${id.slice(0, 8)}... — no EmailLog found`);
       }
-    }).catch(() => {});
+    }).catch((err) => {
+      console.error(`[track:click] error for messageId=${id.slice(0, 8)}...:`, err);
+    });
   }
 
   if (!redirectUrl.startsWith("http://") && !redirectUrl.startsWith("https://")) {

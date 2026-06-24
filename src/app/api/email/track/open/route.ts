@@ -12,9 +12,10 @@ export async function GET(request: NextRequest) {
 
     prisma.emailLog.findFirst({
       where: { messageId: id },
-      select: { id: true, campaignId: true, status: true },
+      select: { id: true, campaignId: true, status: true, to: true },
     }).then((log) => {
       if (log) {
+        console.log(`[track:open] messageId=${id.slice(0, 8)}... to=${log.to} campaign=${log.campaignId || "none"}`);
         return trackEmailEvent({
           messageId: id,
           eventType: "open",
@@ -22,8 +23,12 @@ export async function GET(request: NextRequest) {
           ip,
           userAgent,
         });
+      } else {
+        console.log(`[track:open] messageId=${id.slice(0, 8)}... — no EmailLog found`);
       }
-    }).catch(() => {});
+    }).catch((err) => {
+      console.error(`[track:open] error for messageId=${id.slice(0, 8)}...:`, err);
+    });
   }
 
   const pixel = Buffer.from(
